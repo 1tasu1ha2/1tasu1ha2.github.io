@@ -52,7 +52,7 @@ body::before {
 }
 
 .title-icon {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(5rem, 10vw, 8rem);
     color: #00bfff;
     animation: pulse 2s infinite;
 }
@@ -113,7 +113,7 @@ body::before {
 
 .input-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
@@ -175,7 +175,7 @@ body::before {
 
 .btn-start {
     background: linear-gradient(45deg, #00ff88, #00cc6a);
-    color: #000000;
+    color: #ffffff;
 }
 
 .btn-start:hover:not(:disabled) {
@@ -309,10 +309,6 @@ body::before {
         max-width: 100%;
     }
     
-    .input-grid {
-        grid-template-columns: 1fr;
-    }
-    
     .controls {
         justify-content: center;
     }
@@ -334,7 +330,7 @@ body::before {
     }
     
     .title-icon {
-        font-size: 2rem;
+        font-size: 4rem;
     }
     
     .tool-box {
