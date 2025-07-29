@@ -1,4 +1,4 @@
-class GodfielderTool {
+class Godfielder {
     constructor() {
         this.isRunning = false;
         this.bots = [];
@@ -103,7 +103,8 @@ class GodfielderTool {
             });
 
             if (!tokenRes.ok) {
-                throw new Error(`Authentication failed: ${tokenRes.status}`);
+                const errorText = await tokenRes.text();
+                throw new Error(`Authentication failed: ${tokenRes.status} - ${errorText}`);
             }
 
             const tokenData = await tokenRes.json();
@@ -123,14 +124,15 @@ class GodfielderTool {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    mode: 'hidden',
+                    mode: "hidden",
                     password: room,
                     userName: processedName
                 })
             });
 
             if (!roomRes.ok) {
-                throw new Error(`Room creation failed: ${roomRes.status}`);
+                const errorText = await roomRes.text();
+                throw new Error(`Room creation failed: ${roomRes.status} - ${errorText}`);
             }
 
             const roomData = await roomRes.json();
@@ -147,14 +149,15 @@ class GodfielderTool {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    mode: 'hidden',
+                    mode: "hidden",
                     roomId: roomId,
                     userName: processedName
                 })
             });
 
             if (!joinRes.ok) {
-                throw new Error(`Room join failed: ${joinRes.status}`);
+                const errorText = await joinRes.text();
+                throw new Error(`Room join failed: ${joinRes.status} - ${errorText}`);
             }
 
             this.log(`Bot ${botId}: Successfully joined room`, 'success', 'check_circle');
@@ -178,14 +181,15 @@ class GodfielderTool {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    mode: 'hidden',
+                    mode: "hidden",
                     roomId: roomId,
                     text: processedMessage
                 })
             });
 
             if (!response.ok) {
-                throw new Error(`Message send failed: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`Message send failed: ${response.status} - ${errorText}`);
             }
 
             this.log(`Bot ${botId}: Message sent - "${processedMessage}"`, 'success', 'message');
@@ -270,5 +274,5 @@ class GodfielderTool {
 
 // Initialize the tool when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new GodfielderTool();
+    new Godfielder();
 });
