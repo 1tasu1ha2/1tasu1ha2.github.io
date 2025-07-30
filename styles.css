@@ -35,7 +35,6 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   margin-bottom: 3rem;
   text-align: center;
 }
@@ -50,28 +49,12 @@ body::before {
   text-shadow: 0 0 30px rgba(0, 191, 255, 0.5);
 }
 
-.title-icon {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  color: #00bfff;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
-  align-items: start;
-  justify-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .tool-box {
@@ -80,7 +63,8 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
   padding: 1.5rem;
-  max-width: 450px;
+  width: 100%;
+  min-width: 0;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0
     rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
@@ -218,7 +202,8 @@ body::before {
 
 .log-box {
   height: 160px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 0.6rem;
   font-family: "Courier New", monospace;
   font-size: 0.7rem;
@@ -233,8 +218,17 @@ body::before {
   padding: 0.3rem;
   border-radius: 4px;
   animation: fadeIn 0.3s ease;
-  white-space: nowrap;
   min-height: 1.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.log-entry:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.log-entry.expanded {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 @keyframes fadeIn {
@@ -281,12 +275,14 @@ body::before {
 }
 
 .log-message {
-  flex-shrink: 0;
+  flex: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .log-box::-webkit-scrollbar {
   width: 6px;
-  height: 6px;
 }
 
 .log-box::-webkit-scrollbar-track {
@@ -303,8 +299,10 @@ body::before {
   background: rgba(0, 191, 255, 0.7);
 }
 
-.log-box::-webkit-scrollbar-corner {
-  background: rgba(255, 255, 255, 0.1);
+@media (max-width: 1200px) {
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -319,7 +317,6 @@ body::before {
 
   .tool-box {
     padding: 1.25rem;
-    max-width: 100%;
   }
 
   .controls {
@@ -334,15 +331,7 @@ body::before {
 }
 
 @media (max-width: 480px) {
-  .header {
-    gap: 0.5rem;
-  }
-
   .title {
-    font-size: 2rem;
-  }
-
-  .title-icon {
     font-size: 2rem;
   }
 
