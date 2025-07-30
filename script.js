@@ -211,6 +211,35 @@ class Godfielder {
     }
   }
 
+  async removeBot(botId, token, roomId) {
+    try {
+      this.log(`Bot ${botId}: Leaving room...`, "info", "room")
+
+      const response = await fetch("https://asia-northeast1-godfield.cloudfunctions.net/removeRoomUser", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mode: "hidden",
+          roomId: roomId,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Room leave failed: ${response.status} - ${errorText}`)
+      }
+
+      this.log(`Bot ${botId}: Left room`, "success", "check_circle")
+      return true
+    } catch (error) {
+      this.log(`Bot ${botId}: Leave failed`, "error", "error", error.message)
+      return false
+    }
+  }
+
   async start() {
     if (this.isRunning) return
 
@@ -264,16 +293,26 @@ class Godfielder {
     }
   }
 
-  stop() {
+  async stop() {
     if (!this.isRunning) return
 
     this.isRunning = false
-    this.startBtn.disabled = false
+    this.startBtn.disabled = true
     this.stopBtn.disabled = true
 
     this.intervalIds.forEach((id) => clearInterval(id))
     this.intervalIds = []
+
+    this.log("Stopping all bots...", "warning", "warning")
+
+    for (const bot of this.bots) {
+      await this.removeBot(bot.id, bot.token, bot.roomId)
+      await new Promise((resolve) => setTimeout(resolve, 200))
+    }
+
     this.bots = []
+    this.startBtn.disabled = false
+    this.stopBtn.disabled = true
 
     this.log("All bots stopped", "warning", "warning")
   }
