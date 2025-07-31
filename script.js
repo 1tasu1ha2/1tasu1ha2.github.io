@@ -192,6 +192,7 @@ class Config {
     this.channelIds = []
     this.currentChannelIndex = 0
     this.memberFetchTimeout = null
+    this.fetchingLogEntry = null
   }
 
   initElements() {
@@ -211,7 +212,7 @@ class Config {
     this.filterValidBtn.addEventListener("click", () => this.filterValidTokens())
   }
 
-  log(message, type = "info", icon = "info") {
+  log(message, type = "info", icon = "info", details = null) {
     const time = new Date().toLocaleTimeString()
     const entry = document.createElement("div")
     entry.className = `log-entry ${type}`
@@ -231,8 +232,22 @@ class Config {
       <span class="log-message">${message}</span>
     `
 
+    if (details) {
+      entry.addEventListener("click", () => {
+        const messageSpan = entry.querySelector(".log-message")
+        if (entry.classList.contains("expanded")) {
+          messageSpan.textContent = message
+          entry.classList.remove("expanded")
+        } else {
+          messageSpan.textContent = details
+          entry.classList.add("expanded")
+        }
+      })
+    }
+
     this.configLogBox.appendChild(entry)
     this.configLogBox.scrollTop = this.configLogBox.scrollHeight
+    return entry
   }
 
   parseList(input) {
@@ -247,12 +262,12 @@ class Config {
     const serverId = this.serverIdInput.value.trim()
 
     if (!tokens.length) {
-      this.log("No tokens provided", "error", "error")
+      this.log("No tokens", "error", "error")
       return
     }
 
     if (!serverId) {
-      this.log("No server ID provided", "error", "error")
+      this.log("No server ID", "error", "error")
       return
     }
 
@@ -272,13 +287,13 @@ class Config {
           const textChannels = channels.filter((channel) => channel.type === 0)
           const channelIds = textChannels.map((channel) => channel.id)
           this.channelIdsInput.value = channelIds.join("\n")
-          this.log(`Fetched ${channelIds.length} text channels`, "success", "check_circle")
+          this.log(`Got ${channelIds.length} channels`, "success", "check_circle")
           break
         } else {
           this.log(`Token failed: ${response.status}`, "warning", "warning")
         }
       } catch (error) {
-        this.log(`Error: ${error.message}`, "error", "error")
+        this.log("Fetch failed", "error", "error", error.message)
       }
     }
 
@@ -291,17 +306,17 @@ class Config {
     const channelIds = this.parseList(this.channelIdsInput.value)
 
     if (!tokens.length) {
-      this.log("No tokens provided", "error", "error")
+      this.log("No tokens", "error", "error")
       return
     }
 
     if (!serverId) {
-      this.log("No server ID provided", "error", "error")
+      this.log("No server ID", "error", "error")
       return
     }
 
     if (!channelIds.length) {
-      this.log("No channel IDs provided", "error", "error")
+      this.log("No channel IDs", "error", "error")
       return
     }
 
@@ -311,11 +326,10 @@ class Config {
     this.channelIds = channelIds
     this.currentChannelIndex = 0
 
-    this.log("Starting member collection via WebSocket...", "info", "alternate_email")
+    this.fetchingLogEntry = this.log("Fetching members...", "info", "alternate_email")
 
     for (const token of tokens) {
       this.currentToken = token
-      this.log(`Trying token ${tokens.indexOf(token) + 1}...`, "info", "alternate_email")
 
       const success = await this.connectWebSocket()
       if (success) {
@@ -326,7 +340,7 @@ class Config {
     }
 
     if (this.allMembers.size === 0) {
-      this.log("No members found with any token", "warning", "warning")
+      this.log("No members found", "warning", "warning")
     }
 
     this.fetchMentionsBtn.disabled = false
@@ -342,9 +356,7 @@ class Config {
       let heartbeatInterval = null
       let hasConnected = false
 
-      this.ws.onopen = () => {
-        this.log("WebSocket connected", "info", "alternate_email")
-      }
+      this.ws.onopen = () => {}
 
       this.ws.onmessage = (event) => {
         const data = JSON.parse(event.data)
@@ -377,7 +389,6 @@ class Config {
           case 0:
             if (data.t === "READY") {
               hasConnected = true
-              this.log("WebSocket authenticated, fetching members...", "success", "check_circle")
               this.requestMemberChunk()
             } else if (data.t === "GUILD_MEMBER_LIST_UPDATE") {
               this.processMemberListUpdate(data.d)
@@ -387,7 +398,6 @@ class Config {
             break
 
           case 9:
-            this.log("Invalid session, reconnecting...", "warning", "warning")
             if (heartbeatInterval) clearInterval(heartbeatInterval)
             this.ws.close()
             break
@@ -395,7 +405,6 @@ class Config {
       }
 
       this.ws.onerror = (error) => {
-        this.log("WebSocket error", "error", "error")
         if (heartbeatInterval) clearInterval(heartbeatInterval)
         resolve(false)
       }
@@ -405,7 +414,6 @@ class Config {
         if (this.memberFetchTimeout) clearTimeout(this.memberFetchTimeout)
 
         if (!hasConnected) {
-          this.log("Failed to connect with this token", "error", "error")
           resolve(false)
         } else {
           this.finalizeMemberCollection()
@@ -415,7 +423,6 @@ class Config {
 
       setTimeout(() => {
         if (!hasConnected) {
-          this.log("Connection timeout", "error", "error")
           this.ws.close()
           resolve(false)
         }
@@ -425,13 +432,11 @@ class Config {
 
   requestMemberChunk() {
     if (this.currentChannelIndex >= this.channelIds.length) {
-      this.log("Completed scanning all channels", "info", "alternate_email")
       this.ws.close()
       return
     }
 
     const channelId = this.channelIds[this.currentChannelIndex]
-    this.log(`Scanning channel ${this.currentChannelIndex + 1}/${this.channelIds.length}`, "info", "alternate_email")
 
     this.ws.send(
       JSON.stringify({
@@ -467,8 +472,6 @@ class Config {
       })
     }
 
-    this.log(`Found ${this.allMembers.size} unique users so far`, "info", "alternate_email")
-
     if (this.memberFetchTimeout) {
       clearTimeout(this.memberFetchTimeout)
     }
@@ -487,14 +490,13 @@ class Config {
         }
       })
     }
-
-    this.log(`Chunk received: ${this.allMembers.size} unique users total`, "info", "alternate_email")
   }
 
   finalizeMemberCollection() {
     if (this.allMembers.size > 0) {
       this.mentionIdsInput.value = Array.from(this.allMembers).join("\n")
-      this.log(`Successfully collected ${this.allMembers.size} unique user IDs`, "success", "check_circle")
+      const details = `Scanned ${this.channelIds.length} channels\nFound ${this.allMembers.size} unique users\nExcluded bot accounts`
+      this.log(`Got ${this.allMembers.size} members`, "success", "check_circle", details)
     } else {
       this.log("No members found", "warning", "warning")
     }
@@ -504,23 +506,23 @@ class Config {
     const configTokens = this.parseList(this.configTokensInput.value)
 
     if (configTokens.length === 0) {
-      this.log("No tokens provided", "error", "error")
+      this.log("No tokens", "error", "error")
       return
     }
 
     document.getElementById("tokens").value = configTokens.join("\n")
 
-    this.log("Starting token validation...", "info", "info")
+    this.log("Validating tokens...", "info", "info")
 
     const tokenChecker = window.tokenCheckerInstance
     await tokenChecker.checkTokens()
 
     if (tokenChecker.validTokens.length > 0) {
       this.configTokensInput.value = tokenChecker.validTokens.join("\n")
-      this.log(`Filtered to ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
+      this.log(`Got ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
     } else {
       this.configTokensInput.value = ""
-      this.log("No valid tokens found", "warning", "warning")
+      this.log("No valid tokens", "warning", "warning")
     }
   }
 }
