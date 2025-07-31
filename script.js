@@ -1,76 +1,3 @@
-class LayoutManager {
-  constructor() {
-    this.toolsGrid = document.getElementById("toolsGrid")
-    this.toolBoxes = Array.from(document.querySelectorAll(".tool-box"))
-    this.columns = 3
-    this.gap = 32
-    this.init()
-  }
-
-  init() {
-    this.updateLayout()
-    window.addEventListener("resize", () => this.updateLayout())
-
-    const observer = new MutationObserver(() => {
-      setTimeout(() => this.updateLayout(), 100)
-    })
-
-    this.toolBoxes.forEach((box) => {
-      observer.observe(box, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ["style", "class"],
-      })
-    })
-  }
-
-  updateLayout() {
-    const containerWidth = this.toolsGrid.offsetWidth
-    const screenWidth = window.innerWidth
-
-    if (screenWidth <= 768) {
-      this.columns = 1
-      this.toolBoxes.forEach((box, index) => {
-        box.style.position = "static"
-        box.style.width = "100%"
-        box.style.left = "0"
-        box.style.top = "0"
-      })
-      this.toolsGrid.style.height = "auto"
-      return
-    } else if (screenWidth <= 1200) {
-      this.columns = 2
-    } else {
-      this.columns = 3
-    }
-
-    const boxWidth = (containerWidth - (this.columns - 1) * this.gap) / this.columns
-    const columnHeights = new Array(this.columns).fill(0)
-
-    this.toolBoxes.forEach((box, index) => {
-      box.style.position = "absolute"
-      box.style.width = `${boxWidth}px`
-
-      const shortestColumnIndex = columnHeights.indexOf(Math.min(...columnHeights))
-
-      const left = shortestColumnIndex * (boxWidth + this.gap)
-      const top = columnHeights[shortestColumnIndex]
-
-      box.style.left = `${left}px`
-      box.style.top = `${top}px`
-
-      setTimeout(() => {
-        const boxHeight = box.offsetHeight
-        columnHeights[shortestColumnIndex] += boxHeight + this.gap
-
-        const maxHeight = Math.max(...columnHeights)
-        this.toolsGrid.style.height = `${maxHeight}px`
-      }, 0)
-    })
-  }
-}
-
 class TokenChecker {
   constructor() {
     this.validTokens = []
@@ -782,7 +709,6 @@ class Godfielder {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  new LayoutManager()
   window.tokenCheckerInstance = new TokenChecker()
   new Config()
   new Godfielder()
