@@ -55,6 +55,7 @@ body::before {
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  align-items: start;
 }
 
 .tool-box {
@@ -68,6 +69,7 @@ body::before {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0
     rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+  align-self: start;
 }
 
 .tool-box:hover {
@@ -189,16 +191,6 @@ body::before {
 .btn-copy:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
-}
-
-.btn-filter {
-  background: linear-gradient(45deg, #ffc107, #e0a800);
-  color: #000000;
-}
-
-.btn-filter:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
 }
 
 .btn:disabled {
