@@ -87,8 +87,8 @@ class TokenChecker {
 
     const globalName = data.global_name || "None"
     const username = data.username || "Unknown"
-    const email = !isBot && data.email ? data.email : isBot ? "N/A" : "None"
-    const phone = !isBot && data.phone ? data.phone : isBot ? "N/A" : "None"
+    const email = !isBot && data.email ? data.email : "None"
+    const phone = !isBot && data.phone ? data.phone : "None"
 
     card.innerHTML = `
       <div class="account-header">
