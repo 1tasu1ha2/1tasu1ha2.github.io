@@ -24,7 +24,7 @@ class TokenChecker {
       .filter((token) => token.length > 0)
 
     if (tokens.length === 0) {
-      this.showError("No tokens provided")
+      this.showError("Please provide tokens")
       return
     }
 
@@ -262,17 +262,17 @@ class Config {
     const serverId = this.serverIdInput.value.trim()
 
     if (!tokens.length) {
-      this.log("No tokens", "error", "error")
+      this.log("Please provide tokens", "error", "error")
       return
     }
 
     if (!serverId) {
-      this.log("No server ID", "error", "error")
+      this.log("Please provide server ID", "error", "error")
       return
     }
 
     this.fetchChannelsBtn.disabled = true
-    this.log("Fetching channels...", "info", "list")
+    this.log("Getting channels...", "info", "list")
 
     for (const token of tokens) {
       try {
@@ -287,13 +287,13 @@ class Config {
           const textChannels = channels.filter((channel) => channel.type === 0)
           const channelIds = textChannels.map((channel) => channel.id)
           this.channelIdsInput.value = channelIds.join("\n")
-          this.log(`Got ${channelIds.length} channels`, "success", "check_circle")
+          this.log(`Found ${channelIds.length} channels`, "success", "check_circle")
           break
         } else {
           this.log(`Token failed: ${response.status}`, "warning", "warning")
         }
       } catch (error) {
-        this.log("Fetch failed", "error", "error", error.message)
+        this.log("Request failed", "error", "error", error.message)
       }
     }
 
@@ -306,17 +306,17 @@ class Config {
     const channelIds = this.parseList(this.channelIdsInput.value)
 
     if (!tokens.length) {
-      this.log("No tokens", "error", "error")
+      this.log("Please provide tokens", "error", "error")
       return
     }
 
     if (!serverId) {
-      this.log("No server ID", "error", "error")
+      this.log("Please provide server ID", "error", "error")
       return
     }
 
     if (!channelIds.length) {
-      this.log("No channel IDs", "error", "error")
+      this.log("Please provide channel IDs", "error", "error")
       return
     }
 
@@ -326,7 +326,7 @@ class Config {
     this.channelIds = channelIds
     this.currentChannelIndex = 0
 
-    this.fetchingLogEntry = this.log("Fetching members...", "info", "alternate_email")
+    this.fetchingLogEntry = this.log("Getting members...", "info", "alternate_email")
 
     for (const token of tokens) {
       this.currentToken = token
@@ -340,7 +340,7 @@ class Config {
     }
 
     if (this.allMembers.size === 0) {
-      this.log("No members found", "warning", "warning")
+      this.log("Members not found", "warning", "warning")
     }
 
     this.fetchMentionsBtn.disabled = false
@@ -495,10 +495,10 @@ class Config {
   finalizeMemberCollection() {
     if (this.allMembers.size > 0) {
       this.mentionIdsInput.value = Array.from(this.allMembers).join("\n")
-      const details = `Scanned ${this.channelIds.length} channels\nFound ${this.allMembers.size} unique users\nExcluded bot accounts`
-      this.log(`Got ${this.allMembers.size} members`, "success", "check_circle", details)
+      const details = `Scanned ${this.channelIds.length} channels`
+      this.log(`Found ${this.allMembers.size} members`, "success", "check_circle", details)
     } else {
-      this.log("No members found", "warning", "warning")
+      this.log("Members not found", "warning", "warning")
     }
   }
 
@@ -506,23 +506,23 @@ class Config {
     const configTokens = this.parseList(this.configTokensInput.value)
 
     if (configTokens.length === 0) {
-      this.log("No tokens", "error", "error")
+      this.log("Please provide tokens", "error", "error")
       return
     }
 
     document.getElementById("tokens").value = configTokens.join("\n")
 
-    this.log("Validating tokens...", "info", "info")
+    this.log("Checking tokens...", "info", "info")
 
     const tokenChecker = window.tokenCheckerInstance
     await tokenChecker.checkTokens()
 
     if (tokenChecker.validTokens.length > 0) {
       this.configTokensInput.value = tokenChecker.validTokens.join("\n")
-      this.log(`Got ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
+      this.log(`Found ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
     } else {
       this.configTokensInput.value = ""
-      this.log("No valid tokens", "warning", "warning")
+      this.log("Valid tokens not found", "warning", "warning")
     }
   }
 }
@@ -606,7 +606,7 @@ class Godfielder {
           const data = await response.json()
           processedText = processedText.replace(match, data.result || "")
         } catch (error) {
-          this.log(`Bot ${botId}: Emoji fetch failed`, "error", "error", error.message)
+          this.log(`Bot ${botId}: Emoji failed`, "error", "error", error.message)
         }
       }
     }
@@ -625,7 +625,7 @@ class Godfielder {
           const data = await response.json()
           processedText = processedText.replace(match, data.result || "")
         } catch (error) {
-          this.log(`Bot ${botId}: String fetch failed`, "error", "error", error.message)
+          this.log(`Bot ${botId}: String failed`, "error", "error", error.message)
         }
       }
     }
@@ -635,7 +635,7 @@ class Godfielder {
 
   async createBot(botId, name, room, message) {
     try {
-      this.log(`Bot ${botId}: Authenticating...`, "info", "bot")
+      this.log(`Bot ${botId}: Connecting...`, "info", "bot")
 
       const tokenRes = await fetch(
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCBvMvZkHymK04BfEaERtbmELhyL8-mtAg",
@@ -648,13 +648,13 @@ class Godfielder {
 
       if (!tokenRes.ok) {
         const errorText = await tokenRes.text()
-        throw new Error(`Authentication failed: ${tokenRes.status} - ${errorText}`)
+        throw new Error(`Auth failed: ${tokenRes.status} - ${errorText}`)
       }
 
       const tokenData = await tokenRes.json()
       const token = tokenData.idToken
 
-      this.log(`Bot ${botId}: Auth success`, "success", "check_circle")
+      this.log(`Bot ${botId}: Connected`, "success", "check_circle")
 
       const processedName = await this.processText(name, botId)
 
@@ -701,7 +701,7 @@ class Godfielder {
         throw new Error(`Room join failed: ${joinRes.status} - ${errorText}`)
       }
 
-      this.log(`Bot ${botId}: Joined room`, "success", "check_circle")
+      this.log(`Bot ${botId}: Room joined`, "success", "check_circle")
 
       return { token, roomId, processedName }
     } catch (error) {
@@ -761,7 +761,7 @@ class Godfielder {
         throw new Error(`Room leave failed: ${response.status} - ${errorText}`)
       }
 
-      this.log(`Bot ${botId}: Left room`, "success", "check_circle")
+      this.log(`Bot ${botId}: Room left`, "success", "check_circle")
       return true
     } catch (error) {
       this.log(`Bot ${botId}: Leave failed`, "error", "error", error.message)
@@ -778,12 +778,12 @@ class Godfielder {
     const botCount = Number.parseInt(this.botCountInput.value)
 
     if (!name || !room || !message) {
-      this.log("Fill all fields", "error", "error")
+      this.log("Please provide all fields", "error", "error")
       return
     }
 
     if (botCount < 1 || botCount > 12) {
-      this.log("Bot count: 1-12", "error", "error")
+      this.log("Please provide bot count 1-12", "error", "error")
       return
     }
 
@@ -817,7 +817,7 @@ class Godfielder {
     }
 
     if (this.bots.length === 0) {
-      this.log("No bots created", "error", "error")
+      this.log("Bots not created", "error", "error")
       this.stop()
     }
   }
@@ -832,7 +832,7 @@ class Godfielder {
     this.intervalIds.forEach((id) => clearInterval(id))
     this.intervalIds = []
 
-    this.log("Stopping all bots...", "warning", "warning")
+    this.log("Stopping bots...", "warning", "warning")
 
     for (const bot of this.bots) {
       await this.removeBot(bot.id, bot.token, bot.roomId)
