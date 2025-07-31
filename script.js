@@ -280,7 +280,6 @@ class Config {
   async fetchMentions() {
     const tokens = this.parseList(this.configTokensInput.value)
     const serverId = this.serverIdInput.value.trim()
-    const channelIds = this.parseList(this.channelIdsInput.value)
 
     if (!tokens.length) {
       this.log("No tokens provided", "error", "error")
@@ -292,103 +291,84 @@ class Config {
       return
     }
 
-    if (!channelIds.length) {
-      this.log("No channel IDs provided", "error", "error")
-      return
-    }
-
     this.fetchMentionsBtn.disabled = true
-    this.log("Connecting to Discord...", "info", "alternate_email")
+    this.log("Fetching guild members...", "info", "alternate_email")
 
     const allMembers = new Set()
-    let processedChannels = 0
+    let after = null
+    let requestCount = 0
 
-    const ws = new WebSocket("wss://gateway.discord.gg/?v=9&encoding=json")
+    for (const token of tokens) {
+      try {
+        this.log(`Trying token ${tokens.indexOf(token) + 1}...`, "info", "alternate_email")
 
-    ws.onopen = () => {
-      ws.send(
-        JSON.stringify({
-          op: 2,
-          d: {
-            token: tokens[0],
-            properties: {
-              os: "Windows",
-              browser: "Discord",
-              device: "pc",
+        while (true) {
+          requestCount++
+          const url = `https://discord.com/api/v10/guilds/${serverId}/members?limit=1000${after ? `&after=${after}` : ""}`
+
+          const response = await fetch(url, {
+            headers: {
+              Authorization: token,
             },
-            intents: 4096,
-          },
-        }),
-      )
-    }
+          })
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data)
-
-      if (data.op === 0 && data.t === "READY") {
-        this.log("Connected, fetching all members...", "info", "alternate_email")
-
-        // 全チャンネルのメンバーリストを一度にリクエスト
-        const channelRanges = {}
-        channelIds.forEach((channelId) => {
-          channelRanges[channelId] = [[0, 99]]
-        })
-
-        ws.send(
-          JSON.stringify({
-            op: 14,
-            d: {
-              guild_id: serverId,
-              typing: false,
-              activities: false,
-              threads: true,
-              channels: channelRanges,
-            },
-          }),
-        )
-      }
-
-      if (data.t === "GUILD_MEMBER_LIST_UPDATE") {
-        const ops = data.d.ops || []
-
-        ops.forEach((op) => {
-          if (op.items) {
-            op.items.forEach((item) => {
-              if (item.member && item.member.user) {
-                const user = item.member.user
-                // Botを除外してユーザーIDのみを追加
-                if (!user.bot) {
-                  allMembers.add(user.id)
-                }
-              }
-            })
+          if (!response.ok) {
+            if (response.status === 403) {
+              this.log(`Token ${tokens.indexOf(token) + 1}: No permission`, "warning", "warning")
+              break
+            } else if (response.status === 429) {
+              const retryAfter = response.headers.get("retry-after")
+              this.log(`Rate limited, waiting ${retryAfter}s...`, "warning", "warning")
+              await new Promise((resolve) => setTimeout(resolve, (Number.parseInt(retryAfter) + 1) * 1000))
+              continue
+            } else {
+              this.log(`Token ${tokens.indexOf(token) + 1}: Error ${response.status}`, "error", "error")
+              break
+            }
           }
-        })
 
-        processedChannels++
-        this.log(`Processed channel ${processedChannels}/${channelIds.length}`, "info", "alternate_email")
+          const members = await response.json()
 
-        // 全チャンネルの処理が完了したら結果を表示
-        if (processedChannels >= channelIds.length) {
-          if (allMembers.size > 0) {
-            this.mentionIdsInput.value = Array.from(allMembers).join("\n")
-            this.log(`Fetched ${allMembers.size} unique user mentions (bots excluded)`, "success", "check_circle")
-          } else {
-            this.log("No user mentions found", "warning", "warning")
+          if (!Array.isArray(members) || members.length === 0) {
+            break
           }
-          ws.close()
+
+          members.forEach((member) => {
+            if (member.user && !member.user.bot) {
+              allMembers.add(member.user.id)
+            }
+          })
+
+          this.log(`Fetched ${members.length} members (${allMembers.size} unique users)`, "info", "alternate_email")
+
+          if (members.length < 1000) {
+            break
+          }
+
+          after = members[members.length - 1].user.id
+          await new Promise((resolve) => setTimeout(resolve, 1000))
         }
+
+        if (allMembers.size > 0) {
+          this.mentionIdsInput.value = Array.from(allMembers).join("\n")
+          this.log(
+            `Successfully fetched ${allMembers.size} unique user IDs (${requestCount} requests)`,
+            "success",
+            "check_circle",
+          )
+          this.fetchMentionsBtn.disabled = false
+          return
+        }
+      } catch (error) {
+        this.log(`Token ${tokens.indexOf(token) + 1}: ${error.message}`, "error", "error")
       }
     }
 
-    ws.onerror = () => {
-      this.log("WebSocket error", "error", "error")
-      ws.close()
+    if (allMembers.size === 0) {
+      this.log("No members found with any token", "warning", "warning")
     }
 
-    ws.onclose = () => {
-      this.fetchMentionsBtn.disabled = false
-    }
+    this.fetchMentionsBtn.disabled = false
   }
 
   async filterValidTokens() {
