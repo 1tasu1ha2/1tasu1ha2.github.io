@@ -9,12 +9,14 @@ class TokenChecker {
     this.tokensInput = document.getElementById("tokens")
     this.checkBtn = document.getElementById("checkBtn")
     this.copyValidBtn = document.getElementById("copyValidBtn")
+    this.filterValidBtn = document.getElementById("filterValidBtn")
     this.resultsBox = document.getElementById("resultsBox")
   }
 
   bindEvents() {
     this.checkBtn.addEventListener("click", () => this.checkTokens())
     this.copyValidBtn.addEventListener("click", () => this.copyValidTokens())
+    this.filterValidBtn.addEventListener("click", () => this.filterValidTokens())
   }
 
   async checkTokens() {
@@ -171,6 +173,26 @@ class TokenChecker {
     })
   }
 
+  async filterValidTokens() {
+    const configTokens = document
+      .getElementById("configTokens")
+      .value.split("\n")
+      .map((token) => token.trim())
+      .filter((token) => token.length > 0)
+
+    if (configTokens.length === 0) {
+      this.showError("No tokens in Config")
+      return
+    }
+
+    this.tokensInput.value = configTokens.join("\n")
+    await this.checkTokens()
+
+    if (this.validTokens.length > 0) {
+      document.getElementById("configTokens").value = this.validTokens.join("\n")
+    }
+  }
+
   showError(message) {
     this.resultsBox.innerHTML = `
       <div style="text-align: center; color: #ff4757; padding: 2rem;">
@@ -178,6 +200,187 @@ class TokenChecker {
         <div>${message}</div>
       </div>
     `
+  }
+}
+
+class Config {
+  constructor() {
+    this.initElements()
+    this.bindEvents()
+  }
+
+  initElements() {
+    this.configTokensInput = document.getElementById("configTokens")
+    this.serverIdInput = document.getElementById("serverId")
+    this.channelIdsInput = document.getElementById("channelIds")
+    this.mentionIdsInput = document.getElementById("mentionIds")
+    this.fetchChannelsBtn = document.getElementById("fetchChannelsBtn")
+    this.fetchMentionsBtn = document.getElementById("fetchMentionsBtn")
+    this.configLogBox = document.getElementById("configLogBox")
+  }
+
+  bindEvents() {
+    this.fetchChannelsBtn.addEventListener("click", () => this.fetchChannels())
+    this.fetchMentionsBtn.addEventListener("click", () => this.fetchMentions())
+  }
+
+  log(message, type = "info", icon = "info") {
+    const time = new Date().toLocaleTimeString()
+    const entry = document.createElement("div")
+    entry.className = `log-entry ${type}`
+
+    const iconMap = {
+      info: "info",
+      success: "check_circle",
+      error: "error",
+      warning: "warning",
+      list: "list",
+      alternate_email: "alternate_email",
+    }
+
+    entry.innerHTML = `
+      <span class="log-time">${time}</span>
+      <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
+      <span class="log-message">${message}</span>
+    `
+
+    this.configLogBox.appendChild(entry)
+    this.configLogBox.scrollTop = this.configLogBox.scrollHeight
+  }
+
+  parseList(input) {
+    return input
+      .split("\n")
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0)
+  }
+
+  async fetchChannels() {
+    const tokens = this.parseList(this.configTokensInput.value)
+    const serverId = this.serverIdInput.value.trim()
+
+    if (!tokens.length) {
+      this.log("No tokens provided", "error", "error")
+      return
+    }
+
+    if (!serverId) {
+      this.log("No server ID provided", "error", "error")
+      return
+    }
+
+    this.fetchChannelsBtn.disabled = true
+    this.log("Fetching channels...", "info", "list")
+
+    for (const token of tokens) {
+      try {
+        const response = await fetch(`https://discord.com/api/v10/guilds/${serverId}/channels`, {
+          headers: {
+            Authorization: token,
+          },
+        })
+
+        if (response.ok) {
+          const channels = await response.json()
+          const channelIds = channels.map((channel) => channel.id)
+          this.channelIdsInput.value = channelIds.join("\n")
+          this.log(`Fetched ${channelIds.length} channels`, "success", "check_circle")
+          break
+        } else {
+          this.log(`Token failed: ${response.status}`, "warning", "warning")
+        }
+      } catch (error) {
+        this.log(`Error: ${error.message}`, "error", "error")
+      }
+    }
+
+    this.fetchChannelsBtn.disabled = false
+  }
+
+  async fetchMentions() {
+    const tokens = this.parseList(this.configTokensInput.value)
+    const serverId = this.serverIdInput.value.trim()
+    const channelIds = this.parseList(this.channelIdsInput.value)
+
+    if (!tokens.length) {
+      this.log("No tokens provided", "error", "error")
+      return
+    }
+
+    if (!serverId) {
+      this.log("No server ID provided", "error", "error")
+      return
+    }
+
+    if (!channelIds.length) {
+      this.log("No channel IDs provided", "error", "error")
+      return
+    }
+
+    this.fetchMentionsBtn.disabled = true
+    this.log("Connecting to Discord...", "info", "alternate_email")
+
+    const ws = new WebSocket("wss://gateway.discord.gg/?v=9&encoding=json")
+
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify({
+          op: 2,
+          d: {
+            token: tokens[0],
+            properties: {
+              os: "Windows",
+              browser: "Discord",
+              device: "pc",
+            },
+            intents: 4096,
+          },
+        }),
+      )
+    }
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+
+      if (data.op === 0 && data.t === "READY") {
+        this.log("Connected, fetching members...", "info", "alternate_email")
+        ws.send(
+          JSON.stringify({
+            op: 14,
+            d: {
+              guild_id: serverId,
+              typing: false,
+              activities: false,
+              threads: true,
+              channels: {
+                [channelIds[0]]: [[0, 0]],
+              },
+            },
+          }),
+        )
+      }
+
+      if (data.t === "GUILD_MEMBER_LIST_UPDATE") {
+        const members = data.d.ops[0].items.filter((item) => item.member).map((item) => item.member.user.id)
+
+        if (members.length) {
+          this.mentionIdsInput.value = members.join("\n")
+          this.log(`Fetched ${members.length} mentions`, "success", "check_circle")
+        } else {
+          this.log("No mentions found", "warning", "warning")
+        }
+        ws.close()
+      }
+    }
+
+    ws.onerror = () => {
+      this.log("WebSocket error", "error", "error")
+      ws.close()
+    }
+
+    ws.onclose = () => {
+      this.fetchMentionsBtn.disabled = false
+    }
   }
 }
 
@@ -503,5 +706,6 @@ class Godfielder {
 
 document.addEventListener("DOMContentLoaded", () => {
   new TokenChecker()
+  new Config()
   new Godfielder()
 })
