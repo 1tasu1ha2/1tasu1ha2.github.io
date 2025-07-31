@@ -300,6 +300,9 @@ class Config {
     this.fetchMentionsBtn.disabled = true
     this.log("Connecting to Discord...", "info", "alternate_email")
 
+    const allMembers = new Set()
+    let processedChannels = 0
+
     const ws = new WebSocket("wss://gateway.discord.gg/?v=9&encoding=json")
 
     ws.onopen = () => {
@@ -323,7 +326,14 @@ class Config {
       const data = JSON.parse(event.data)
 
       if (data.op === 0 && data.t === "READY") {
-        this.log("Connected, fetching members...", "info", "alternate_email")
+        this.log("Connected, fetching all members...", "info", "alternate_email")
+
+        // 全チャンネルのメンバーリストを一度にリクエスト
+        const channelRanges = {}
+        channelIds.forEach((channelId) => {
+          channelRanges[channelId] = [[0, 99]]
+        })
+
         ws.send(
           JSON.stringify({
             op: 14,
@@ -332,24 +342,42 @@ class Config {
               typing: false,
               activities: false,
               threads: true,
-              channels: {
-                [channelIds[0]]: [[0, 0]],
-              },
+              channels: channelRanges,
             },
           }),
         )
       }
 
       if (data.t === "GUILD_MEMBER_LIST_UPDATE") {
-        const members = data.d.ops[0].items.filter((item) => item.member).map((item) => item.member.user.id)
+        const ops = data.d.ops || []
 
-        if (members.length) {
-          this.mentionIdsInput.value = members.join("\n")
-          this.log(`Fetched ${members.length} mentions`, "success", "check_circle")
-        } else {
-          this.log("No mentions found", "warning", "warning")
+        ops.forEach((op) => {
+          if (op.items) {
+            op.items.forEach((item) => {
+              if (item.member && item.member.user) {
+                const user = item.member.user
+                // Botを除外してユーザーIDのみを追加
+                if (!user.bot) {
+                  allMembers.add(user.id)
+                }
+              }
+            })
+          }
+        })
+
+        processedChannels++
+        this.log(`Processed channel ${processedChannels}/${channelIds.length}`, "info", "alternate_email")
+
+        // 全チャンネルの処理が完了したら結果を表示
+        if (processedChannels >= channelIds.length) {
+          if (allMembers.size > 0) {
+            this.mentionIdsInput.value = Array.from(allMembers).join("\n")
+            this.log(`Fetched ${allMembers.size} unique user mentions (bots excluded)`, "success", "check_circle")
+          } else {
+            this.log("No user mentions found", "warning", "warning")
+          }
+          ws.close()
         }
-        ws.close()
       }
     }
 
