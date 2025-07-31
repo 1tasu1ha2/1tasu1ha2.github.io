@@ -35,13 +35,13 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
   text-align: center;
 }
 
 .title {
   font-family: "Saira Stencil One", cursive;
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(4rem, 8vw, 6rem);
   background: linear-gradient(45deg, #00bfff, #0080ff, #ffffff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -121,7 +121,7 @@ body::before {
   border-radius: 8px;
   padding: 0.6rem;
   color: #ffffff;
-  font-family: "Orbitron", monospace;
+  font-family: "M PLUS 1 Code", monospace;
   font-size: 0.85rem;
   transition: all 0.3s ease;
   resize: vertical;
@@ -449,7 +449,7 @@ body::before {
 
 @media (max-width: 480px) {
   .title {
-    font-size: 2rem;
+    font-size: 3rem;
   }
 
   .tool-box {
