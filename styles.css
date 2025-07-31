@@ -50,13 +50,9 @@ body::before {
 }
 
 .tools-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  align-items: start;
-  grid-auto-rows: min-content;
+  position: relative;
 }
 
 .tool-box {
@@ -70,8 +66,8 @@ body::before {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0
     rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
-  align-self: start;
   height: fit-content;
+  position: absolute;
 }
 
 .tool-box:hover {
@@ -418,8 +414,15 @@ body::before {
 
 @media (max-width: 1200px) {
   .tools-grid {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    align-items: start;
     grid-auto-rows: min-content;
+  }
+
+  .tool-box {
+    position: static;
   }
 }
 
@@ -429,12 +432,14 @@ body::before {
   }
 
   .tools-grid {
+    display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
   .tool-box {
     padding: 1.25rem;
+    position: static;
   }
 
   .controls {
