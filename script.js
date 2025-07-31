@@ -9,14 +9,12 @@ class TokenChecker {
     this.tokensInput = document.getElementById("tokens")
     this.checkBtn = document.getElementById("checkBtn")
     this.copyValidBtn = document.getElementById("copyValidBtn")
-    this.filterValidBtn = document.getElementById("filterValidBtn")
     this.resultsBox = document.getElementById("resultsBox")
   }
 
   bindEvents() {
     this.checkBtn.addEventListener("click", () => this.checkTokens())
     this.copyValidBtn.addEventListener("click", () => this.copyValidTokens())
-    this.filterValidBtn.addEventListener("click", () => this.filterValidTokens())
   }
 
   async checkTokens() {
@@ -172,35 +170,6 @@ class TokenChecker {
       }, 2000)
     })
   }
-
-  async filterValidTokens() {
-    const configTokens = document
-      .getElementById("configTokens")
-      .value.split("\n")
-      .map((token) => token.trim())
-      .filter((token) => token.length > 0)
-
-    if (configTokens.length === 0) {
-      this.showError("No tokens in Config")
-      return
-    }
-
-    this.tokensInput.value = configTokens.join("\n")
-    await this.checkTokens()
-
-    if (this.validTokens.length > 0) {
-      document.getElementById("configTokens").value = this.validTokens.join("\n")
-    }
-  }
-
-  showError(message) {
-    this.resultsBox.innerHTML = `
-      <div style="text-align: center; color: #ff4757; padding: 2rem;">
-        <span class="material-icons" style="font-size: 2rem; margin-bottom: 0.5rem;">error</span>
-        <div>${message}</div>
-      </div>
-    `
-  }
 }
 
 class Config {
@@ -216,12 +185,14 @@ class Config {
     this.mentionIdsInput = document.getElementById("mentionIds")
     this.fetchChannelsBtn = document.getElementById("fetchChannelsBtn")
     this.fetchMentionsBtn = document.getElementById("fetchMentionsBtn")
+    this.filterValidBtn = document.getElementById("filterValidBtn")
     this.configLogBox = document.getElementById("configLogBox")
   }
 
   bindEvents() {
     this.fetchChannelsBtn.addEventListener("click", () => this.fetchChannels())
     this.fetchMentionsBtn.addEventListener("click", () => this.fetchMentions())
+    this.filterValidBtn.addEventListener("click", () => this.filterValidTokens())
   }
 
   log(message, type = "info", icon = "info") {
@@ -380,6 +351,32 @@ class Config {
 
     ws.onclose = () => {
       this.fetchMentionsBtn.disabled = false
+    }
+  }
+
+  async filterValidTokens() {
+    const configTokens = this.parseList(this.configTokensInput.value)
+
+    if (configTokens.length === 0) {
+      this.log("No tokens in Config", "error", "error")
+      return
+    }
+
+    // Token Checkerの入力欄にトークンを設定
+    document.getElementById("tokens").value = configTokens.join("\n")
+
+    this.log("Starting token validation...", "info", "info")
+
+    // Token CheckerのcheckTokensメソッドを呼び出し
+    const tokenChecker = window.tokenCheckerInstance
+    await tokenChecker.checkTokens()
+
+    // 有効なトークンをConfigに戻す
+    if (tokenChecker.validTokens.length > 0) {
+      this.configTokensInput.value = tokenChecker.validTokens.join("\n")
+      this.log(`Filtered to ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
+    } else {
+      this.log("No valid tokens found", "warning", "warning")
     }
   }
 }
@@ -705,7 +702,7 @@ class Godfielder {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  new TokenChecker()
+  window.tokenCheckerInstance = new TokenChecker()
   new Config()
   new Godfielder()
 })
