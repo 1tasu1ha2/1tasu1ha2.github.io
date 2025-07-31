@@ -56,6 +56,7 @@ body::before {
   max-width: 1200px;
   margin: 0 auto;
   align-items: start;
+  grid-auto-rows: min-content;
 }
 
 .tool-box {
@@ -70,6 +71,7 @@ body::before {
     rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
   align-self: start;
+  height: fit-content;
 }
 
 .tool-box:hover {
@@ -417,6 +419,7 @@ body::before {
 @media (max-width: 1200px) {
   .tools-grid {
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: min-content;
   }
 }
 
