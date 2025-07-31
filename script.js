@@ -185,6 +185,13 @@ class Config {
   constructor() {
     this.initElements()
     this.bindEvents()
+    this.allMembers = new Set()
+    this.ws = null
+    this.currentToken = null
+    this.serverId = null
+    this.channelIds = []
+    this.currentChannelIndex = 0
+    this.memberFetchTimeout = null
   }
 
   initElements() {
@@ -262,9 +269,10 @@ class Config {
 
         if (response.ok) {
           const channels = await response.json()
-          const channelIds = channels.map((channel) => channel.id)
+          const textChannels = channels.filter((channel) => channel.type === 0)
+          const channelIds = textChannels.map((channel) => channel.id)
           this.channelIdsInput.value = channelIds.join("\n")
-          this.log(`Fetched ${channelIds.length} channels`, "success", "check_circle")
+          this.log(`Fetched ${channelIds.length} text channels`, "success", "check_circle")
           break
         } else {
           this.log(`Token failed: ${response.status}`, "warning", "warning")
@@ -280,6 +288,7 @@ class Config {
   async fetchMentions() {
     const tokens = this.parseList(this.configTokensInput.value)
     const serverId = this.serverIdInput.value.trim()
+    const channelIds = this.parseList(this.channelIdsInput.value)
 
     if (!tokens.length) {
       this.log("No tokens provided", "error", "error")
@@ -291,84 +300,204 @@ class Config {
       return
     }
 
-    this.fetchMentionsBtn.disabled = true
-    this.log("Fetching guild members...", "info", "alternate_email")
-
-    const allMembers = new Set()
-    let after = null
-    let requestCount = 0
-
-    for (const token of tokens) {
-      try {
-        this.log(`Trying token ${tokens.indexOf(token) + 1}...`, "info", "alternate_email")
-
-        while (true) {
-          requestCount++
-          const url = `https://discord.com/api/v10/guilds/${serverId}/members?limit=1000${after ? `&after=${after}` : ""}`
-
-          const response = await fetch(url, {
-            headers: {
-              Authorization: token,
-            },
-          })
-
-          if (!response.ok) {
-            if (response.status === 403) {
-              this.log(`Token ${tokens.indexOf(token) + 1}: No permission`, "warning", "warning")
-              break
-            } else if (response.status === 429) {
-              const retryAfter = response.headers.get("retry-after")
-              this.log(`Rate limited, waiting ${retryAfter}s...`, "warning", "warning")
-              await new Promise((resolve) => setTimeout(resolve, (Number.parseInt(retryAfter) + 1) * 1000))
-              continue
-            } else {
-              this.log(`Token ${tokens.indexOf(token) + 1}: Error ${response.status}`, "error", "error")
-              break
-            }
-          }
-
-          const members = await response.json()
-
-          if (!Array.isArray(members) || members.length === 0) {
-            break
-          }
-
-          members.forEach((member) => {
-            if (member.user && !member.user.bot) {
-              allMembers.add(member.user.id)
-            }
-          })
-
-          this.log(`Fetched ${members.length} members (${allMembers.size} unique users)`, "info", "alternate_email")
-
-          if (members.length < 1000) {
-            break
-          }
-
-          after = members[members.length - 1].user.id
-          await new Promise((resolve) => setTimeout(resolve, 1000))
-        }
-
-        if (allMembers.size > 0) {
-          this.mentionIdsInput.value = Array.from(allMembers).join("\n")
-          this.log(
-            `Successfully fetched ${allMembers.size} unique user IDs (${requestCount} requests)`,
-            "success",
-            "check_circle",
-          )
-          this.fetchMentionsBtn.disabled = false
-          return
-        }
-      } catch (error) {
-        this.log(`Token ${tokens.indexOf(token) + 1}: ${error.message}`, "error", "error")
-      }
+    if (!channelIds.length) {
+      this.log("No channel IDs provided", "error", "error")
+      return
     }
 
-    if (allMembers.size === 0) {
+    this.fetchMentionsBtn.disabled = true
+    this.allMembers.clear()
+    this.serverId = serverId
+    this.channelIds = channelIds
+    this.currentChannelIndex = 0
+
+    this.log("Starting member collection via WebSocket...", "info", "alternate_email")
+
+    for (const token of tokens) {
+      this.currentToken = token
+      this.log(`Trying token ${tokens.indexOf(token) + 1}...`, "info", "alternate_email")
+
+      const success = await this.connectWebSocket()
+      if (success) {
+        break
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+    }
+
+    if (this.allMembers.size === 0) {
       this.log("No members found with any token", "warning", "warning")
     }
 
     this.fetchMentionsBtn.disabled = false
+  }
+
+  connectWebSocket() {
+    return new Promise((resolve) => {
+      if (this.ws) {
+        this.ws.close()
+      }
+
+      this.ws = new WebSocket("wss://gateway.discord.gg/?v=9&encoding=json")
+      let heartbeatInterval = null
+      let hasConnected = false
+
+      this.ws.onopen = () => {
+        this.log("WebSocket connected", "info", "alternate_email")
+      }
+
+      this.ws.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+
+        switch (data.op) {
+          case 10:
+            const heartbeatIntervalMs = data.d.heartbeat_interval
+            heartbeatInterval = setInterval(() => {
+              if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.ws.send(JSON.stringify({ op: 1, d: null }))
+              }
+            }, heartbeatIntervalMs)
+
+            this.ws.send(
+              JSON.stringify({
+                op: 2,
+                d: {
+                  token: this.currentToken,
+                  properties: {
+                    os: "Windows",
+                    browser: "Discord Client",
+                    device: "desktop",
+                  },
+                  intents: 513,
+                },
+              }),
+            )
+            break
+
+          case 0:
+            if (data.t === "READY") {
+              hasConnected = true
+              this.log("WebSocket authenticated, fetching members...", "success", "check_circle")
+              this.requestMemberChunk()
+            } else if (data.t === "GUILD_MEMBER_LIST_UPDATE") {
+              this.processMemberListUpdate(data.d)
+            } else if (data.t === "GUILD_MEMBERS_CHUNK") {
+              this.processMemberChunk(data.d)
+            }
+            break
+
+          case 9:
+            this.log("Invalid session, reconnecting...", "warning", "warning")
+            if (heartbeatInterval) clearInterval(heartbeatInterval)
+            this.ws.close()
+            break
+        }
+      }
+
+      this.ws.onerror = (error) => {
+        this.log("WebSocket error", "error", "error")
+        if (heartbeatInterval) clearInterval(heartbeatInterval)
+        resolve(false)
+      }
+
+      this.ws.onclose = (event) => {
+        if (heartbeatInterval) clearInterval(heartbeatInterval)
+        if (this.memberFetchTimeout) clearTimeout(this.memberFetchTimeout)
+
+        if (!hasConnected) {
+          this.log("Failed to connect with this token", "error", "error")
+          resolve(false)
+        } else {
+          this.finalizeMemberCollection()
+          resolve(true)
+        }
+      }
+
+      setTimeout(() => {
+        if (!hasConnected) {
+          this.log("Connection timeout", "error", "error")
+          this.ws.close()
+          resolve(false)
+        }
+      }, 10000)
+    })
+  }
+
+  requestMemberChunk() {
+    if (this.currentChannelIndex >= this.channelIds.length) {
+      this.log("Completed scanning all channels", "info", "alternate_email")
+      this.ws.close()
+      return
+    }
+
+    const channelId = this.channelIds[this.currentChannelIndex]
+    this.log(`Scanning channel ${this.currentChannelIndex + 1}/${this.channelIds.length}`, "info", "alternate_email")
+
+    this.ws.send(
+      JSON.stringify({
+        op: 14,
+        d: {
+          guild_id: this.serverId,
+          typing: false,
+          activities: false,
+          threads: false,
+          channels: {
+            [channelId]: [[0, 99]],
+          },
+        },
+      }),
+    )
+
+    this.memberFetchTimeout = setTimeout(() => {
+      this.currentChannelIndex++
+      this.requestMemberChunk()
+    }, 3000)
+  }
+
+  processMemberListUpdate(data) {
+    if (data.ops) {
+      data.ops.forEach((op) => {
+        if (op.items) {
+          op.items.forEach((item) => {
+            if (item.member && item.member.user && !item.member.user.bot) {
+              this.allMembers.add(item.member.user.id)
+            }
+          })
+        }
+      })
+    }
+
+    this.log(`Found ${this.allMembers.size} unique users so far`, "info", "alternate_email")
+
+    if (this.memberFetchTimeout) {
+      clearTimeout(this.memberFetchTimeout)
+    }
+
+    this.memberFetchTimeout = setTimeout(() => {
+      this.currentChannelIndex++
+      this.requestMemberChunk()
+    }, 1500)
+  }
+
+  processMemberChunk(data) {
+    if (data.members) {
+      data.members.forEach((member) => {
+        if (member.user && !member.user.bot) {
+          this.allMembers.add(member.user.id)
+        }
+      })
+    }
+
+    this.log(`Chunk received: ${this.allMembers.size} unique users total`, "info", "alternate_email")
+  }
+
+  finalizeMemberCollection() {
+    if (this.allMembers.size > 0) {
+      this.mentionIdsInput.value = Array.from(this.allMembers).join("\n")
+      this.log(`Successfully collected ${this.allMembers.size} unique user IDs`, "success", "check_circle")
+    } else {
+      this.log("No members found", "warning", "warning")
+    }
   }
 
   async filterValidTokens() {
