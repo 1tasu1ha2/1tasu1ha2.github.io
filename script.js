@@ -777,8 +777,18 @@ class Godfielder {
     const message = this.messageInput.value.trim()
     const botCount = Number.parseInt(this.botCountInput.value)
 
-    if (!name || !room || !message) {
-      this.log("Please provide all fields", "error", "error")
+    if (!name) {
+      this.log("Please provide name", "error", "error")
+      return
+    }
+
+    if (!room) {
+      this.log("Please provide room", "error", "error")
+      return
+    }
+
+    if (!message) {
+      this.log("Please provide message", "error", "error")
       return
     }
 
