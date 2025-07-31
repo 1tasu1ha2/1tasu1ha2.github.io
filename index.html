@@ -17,6 +17,41 @@
         </header>
 
         <main class="tools-grid">
+            <div class="tool-box" id="tokenChecker">
+                <div class="tool-header">
+                    <span class="material-icons tool-icon">verified_user</span>
+                    <h2 class="tool-title">Token Checker</h2>
+                </div>
+                
+                <div class="tool-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="tokens">Discord Tokens</label>
+                            <textarea id="tokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="checkBtn" class="btn btn-start">
+                            <span class="material-icons">search</span>
+                            Check
+                        </button>
+                        <button id="copyValidBtn" class="btn btn-copy" disabled>
+                            <span class="material-icons">content_copy</span>
+                            Copy Valid
+                        </button>
+                    </div>
+                    
+                    <div class="results-container">
+                        <div class="results-header">
+                            <span class="material-icons">account_circle</span>
+                            <span>Results</span>
+                        </div>
+                        <div id="resultsBox" class="results-box"></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="tool-box" id="godfielder">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">flash_on</span>
