@@ -40,6 +40,10 @@
                             <span class="material-icons">content_copy</span>
                             Copy Valid
                         </button>
+                        <button id="filterValidBtn" class="btn btn-filter">
+                            <span class="material-icons">filter_list</span>
+                            Filter Valid
+                        </button>
                     </div>
                     
                     <div class="results-container">
@@ -48,6 +52,61 @@
                             <span>Results</span>
                         </div>
                         <div id="resultsBox" class="results-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-box" id="config">
+                <div class="tool-header">
+                    <span class="material-icons tool-icon">settings</span>
+                    <h2 class="tool-title">Config</h2>
+                </div>
+                
+                <div class="tool-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="configTokens">Tokens</label>
+                            <textarea id="configTokens" placeholder="Enter tokens (one per line)" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="serverId">Server ID</label>
+                            <input type="text" id="serverId" placeholder="Enter server ID">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="channelIds">Channel IDs</label>
+                            <textarea id="channelIds" placeholder="Enter channel IDs (one per line)" rows="2"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="fetchChannelsBtn" class="btn btn-start">
+                            <span class="material-icons">list</span>
+                            Get Channels
+                        </button>
+                    </div>
+                    
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="mentionIds">Mention IDs</label>
+                            <textarea id="mentionIds" placeholder="Enter mention IDs (one per line)" rows="2"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="fetchMentionsBtn" class="btn btn-start">
+                            <span class="material-icons">alternate_email</span>
+                            Get Mentions
+                        </button>
+                    </div>
+                    
+                    <div class="log-container">
+                        <div class="log-header">
+                            <span class="material-icons">terminal</span>
+                            <span>Config Logs</span>
+                        </div>
+                        <div id="configLogBox" class="log-box"></div>
                     </div>
                 </div>
             </div>
