@@ -202,14 +202,14 @@ class Config {
     this.mentionIdsInput = document.getElementById("mentionIds")
     this.fetchChannelsBtn = document.getElementById("fetchChannelsBtn")
     this.fetchMentionsBtn = document.getElementById("fetchMentionsBtn")
-    this.filterValidBtn = document.getElementById("filterValidBtn")
+    this.validateTokensBtn = document.getElementById("validateTokensBtn")
     this.configLogBox = document.getElementById("configLogBox")
   }
 
   bindEvents() {
     this.fetchChannelsBtn.addEventListener("click", () => this.fetchChannels())
     this.fetchMentionsBtn.addEventListener("click", () => this.fetchMentions())
-    this.filterValidBtn.addEventListener("click", () => this.filterValidTokens())
+    this.validateTokensBtn.addEventListener("click", () => this.validateTokens())
   }
 
   log(message, type = "info", icon = "info", details = null) {
@@ -287,7 +287,7 @@ class Config {
           const textChannels = channels.filter((channel) => channel.type === 0)
           const channelIds = textChannels.map((channel) => channel.id)
           this.channelIdsInput.value = channelIds.join("\n")
-          this.log(`Found ${channelIds.length} channels`, "success", "check_circle")
+          this.log(`Got ${channelIds.length} channels`, "success", "check_circle")
           break
         } else {
           this.log(`Token failed: ${response.status}`, "warning", "warning")
@@ -431,12 +431,7 @@ class Config {
   }
 
   requestMemberChunk() {
-    if (this.currentChannelIndex >= this.channelIds.length) {
-      this.ws.close()
-      return
-    }
-
-    const channelId = this.channelIds[this.currentChannelIndex]
+    const channelId = this.channelIds[0]
 
     this.ws.send(
       JSON.stringify({
@@ -454,9 +449,8 @@ class Config {
     )
 
     this.memberFetchTimeout = setTimeout(() => {
-      this.currentChannelIndex++
-      this.requestMemberChunk()
-    }, 3000)
+      this.ws.close()
+    }, 5000)
   }
 
   processMemberListUpdate(data) {
@@ -477,9 +471,8 @@ class Config {
     }
 
     this.memberFetchTimeout = setTimeout(() => {
-      this.currentChannelIndex++
-      this.requestMemberChunk()
-    }, 1500)
+      this.ws.close()
+    }, 2000)
   }
 
   processMemberChunk(data) {
@@ -495,14 +488,14 @@ class Config {
   finalizeMemberCollection() {
     if (this.allMembers.size > 0) {
       this.mentionIdsInput.value = Array.from(this.allMembers).join("\n")
-      const details = `Scanned ${this.channelIds.length} channels`
-      this.log(`Found ${this.allMembers.size} members`, "success", "check_circle", details)
+      const details = `Used channel: ${this.channelIds[0]}`
+      this.log(`Got ${this.allMembers.size} members`, "success", "check_circle", details)
     } else {
       this.log("Members not found", "warning", "warning")
     }
   }
 
-  async filterValidTokens() {
+  async validateTokens() {
     const configTokens = this.parseList(this.configTokensInput.value)
 
     if (configTokens.length === 0) {
@@ -512,14 +505,14 @@ class Config {
 
     document.getElementById("tokens").value = configTokens.join("\n")
 
-    this.log("Checking tokens...", "info", "info")
+    this.log("Validating tokens...", "info", "info")
 
     const tokenChecker = window.tokenCheckerInstance
     await tokenChecker.checkTokens()
 
     if (tokenChecker.validTokens.length > 0) {
       this.configTokensInput.value = tokenChecker.validTokens.join("\n")
-      this.log(`Found ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
+      this.log(`Validated ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
     } else {
       this.configTokensInput.value = ""
       this.log("Valid tokens not found", "warning", "warning")
