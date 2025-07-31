@@ -26,7 +26,7 @@
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="tokens">Discord Tokens</label>
+                            <label for="tokens">Tokens</label>
                             <textarea id="tokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
                         </div>
                     </div>
@@ -64,7 +64,16 @@
                             <label for="configTokens">Tokens</label>
                             <textarea id="configTokens" placeholder="Enter tokens (one per line)" rows="3"></textarea>
                         </div>
-                        
+                    </div>
+
+                    <div class="controls">
+                        <button id="filterValidBtn" class="btn btn-start">
+                            <span class="material-icons">filter_list</span>
+                            Filter Valid
+                        </button>
+                    </div>
+
+                    <div class="input-grid">
                         <div class="input-group">
                             <label for="serverId">Server ID</label>
                             <input type="text" id="serverId" placeholder="Enter server ID">
@@ -84,7 +93,7 @@
                     </div>
                     
                     <div class="controls">
-                        <button id="filterValidBtn" class="btn btn-start">
+                        <button id="filterValidBtn" class="btn btn-start" style="display: none;">
                             <span class="material-icons">filter_list</span>
                             Filter Valid
                         </button>
@@ -107,7 +116,7 @@
                     <div class="log-container">
                         <div class="log-header">
                             <span class="material-icons">terminal</span>
-                            <span>Config Logs</span>
+                            <span>Logs</span>
                         </div>
                         <div id="configLogBox" class="log-box"></div>
                     </div>
