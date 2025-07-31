@@ -358,7 +358,7 @@ class Config {
     const configTokens = this.parseList(this.configTokensInput.value)
 
     if (configTokens.length === 0) {
-      this.log("No tokens in Config", "error", "error")
+      this.log("No tokens provided", "error", "error")
       return
     }
 
