@@ -114,7 +114,8 @@ body::before {
   font-weight: 500;
 }
 
-.input-group input {
+.input-group input,
+.input-group textarea {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
@@ -123,16 +124,19 @@ body::before {
   font-family: "Orbitron", monospace;
   font-size: 0.85rem;
   transition: all 0.3s ease;
+  resize: vertical;
 }
 
-.input-group input:focus {
+.input-group input:focus,
+.input-group textarea:focus {
   outline: none;
   border-color: #00bfff;
   box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.2);
   background: rgba(255, 255, 255, 0.15);
 }
 
-.input-group input::placeholder {
+.input-group input::placeholder,
+.input-group textarea::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -177,19 +181,31 @@ body::before {
   box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
 }
 
+.btn-copy {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: #ffffff;
+}
+
+.btn-copy:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+}
+
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.log-container {
+.log-container,
+.results-container {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   overflow: hidden;
 }
 
-.log-header {
+.log-header,
+.results-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -200,7 +216,8 @@ body::before {
   color: #00bfff;
 }
 
-.log-box {
+.log-box,
+.results-box {
   height: 160px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -229,6 +246,98 @@ body::before {
 
 .log-entry.expanded {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.account-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.account-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 191, 255, 0.3);
+}
+
+.account-basic {
+  flex: 1;
+}
+
+.account-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+}
+
+.account-type {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.account-type.user {
+  background: rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+}
+
+.account-type.bot {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.account-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+
+.account-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.account-detail-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.65rem;
+}
+
+.account-detail-value {
+  color: #ffffff;
+  word-break: break-all;
+}
+
+.account-token {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-family: "Courier New", monospace;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8);
+  word-break: break-all;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.account-token:hover {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 @keyframes fadeIn {
@@ -281,21 +390,25 @@ body::before {
   white-space: pre-wrap;
 }
 
-.log-box::-webkit-scrollbar {
+.log-box::-webkit-scrollbar,
+.results-box::-webkit-scrollbar {
   width: 6px;
 }
 
-.log-box::-webkit-scrollbar-track {
+.log-box::-webkit-scrollbar-track,
+.results-box::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
 
-.log-box::-webkit-scrollbar-thumb {
+.log-box::-webkit-scrollbar-thumb,
+.results-box::-webkit-scrollbar-thumb {
   background: rgba(0, 191, 255, 0.5);
   border-radius: 3px;
 }
 
-.log-box::-webkit-scrollbar-thumb:hover {
+.log-box::-webkit-scrollbar-thumb:hover,
+.results-box::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 191, 255, 0.7);
 }
 
@@ -328,6 +441,10 @@ body::before {
     justify-content: center;
     min-width: 120px;
   }
+
+  .account-details {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -339,7 +456,8 @@ body::before {
     padding: 1rem;
   }
 
-  .log-box {
+  .log-box,
+  .results-box {
     height: 140px;
   }
 }
