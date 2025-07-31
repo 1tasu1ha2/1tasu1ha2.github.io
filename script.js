@@ -1,3 +1,186 @@
+class TokenChecker {
+  constructor() {
+    this.validTokens = []
+    this.initElements()
+    this.bindEvents()
+  }
+
+  initElements() {
+    this.tokensInput = document.getElementById("tokens")
+    this.checkBtn = document.getElementById("checkBtn")
+    this.copyValidBtn = document.getElementById("copyValidBtn")
+    this.resultsBox = document.getElementById("resultsBox")
+  }
+
+  bindEvents() {
+    this.checkBtn.addEventListener("click", () => this.checkTokens())
+    this.copyValidBtn.addEventListener("click", () => this.copyValidTokens())
+  }
+
+  async checkTokens() {
+    const tokens = this.tokensInput.value
+      .split("\n")
+      .map((token) => token.trim())
+      .filter((token) => token.length > 0)
+
+    if (tokens.length === 0) {
+      this.showError("No tokens provided")
+      return
+    }
+
+    this.checkBtn.disabled = true
+    this.copyValidBtn.disabled = true
+    this.resultsBox.innerHTML = ""
+    this.validTokens = []
+
+    for (const token of tokens) {
+      await this.checkSingleToken(token)
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+
+    this.checkBtn.disabled = false
+    if (this.validTokens.length > 0) {
+      this.copyValidBtn.disabled = false
+    }
+  }
+
+  async checkSingleToken(token) {
+    try {
+      const response = await fetch("https://discord.com/api/v10/users/@me", {
+        headers: {
+          Authorization: `Bot ${token}`,
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        this.displayAccount(token, data, true)
+        this.validTokens.push(token)
+        return
+      }
+
+      const userResponse = await fetch("https://discord.com/api/v10/users/@me", {
+        headers: {
+          Authorization: token,
+        },
+      })
+
+      if (userResponse.ok) {
+        const userData = await userResponse.json()
+        this.displayAccount(token, userData, false)
+        this.validTokens.push(token)
+      } else {
+        this.displayInvalidToken(token)
+      }
+    } catch (error) {
+      this.displayInvalidToken(token, error.message)
+    }
+  }
+
+  displayAccount(token, data, isBot) {
+    const card = document.createElement("div")
+    card.className = "account-card"
+
+    const avatarUrl = data.avatar
+      ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png?size=128`
+      : `https://cdn.discordapp.com/embed/avatars/${(Number.parseInt(data.discriminator) || 0) % 5}.png`
+
+    const globalName = data.global_name || "None"
+    const username = data.username || "Unknown"
+    const email = !isBot && data.email ? data.email : isBot ? "N/A" : "None"
+    const phone = !isBot && data.phone ? data.phone : isBot ? "N/A" : "None"
+
+    card.innerHTML = `
+      <div class="account-header">
+        <img src="${avatarUrl}" alt="Avatar" class="account-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+        <div class="account-basic">
+          <div class="account-name">${globalName !== "None" ? globalName : username}</div>
+          <span class="account-type ${isBot ? "bot" : "user"}">${isBot ? "BOT" : "USER"}</span>
+        </div>
+      </div>
+      <div class="account-details">
+        <div class="account-detail">
+          <span class="account-detail-label">ID</span>
+          <span class="account-detail-value">${data.id}</span>
+        </div>
+        <div class="account-detail">
+          <span class="account-detail-label">Global Name</span>
+          <span class="account-detail-value">${globalName}</span>
+        </div>
+        <div class="account-detail">
+          <span class="account-detail-label">Username</span>
+          <span class="account-detail-value">${username}</span>
+        </div>
+        <div class="account-detail">
+          <span class="account-detail-label">Email</span>
+          <span class="account-detail-value">${email}</span>
+        </div>
+        <div class="account-detail">
+          <span class="account-detail-label">Phone</span>
+          <span class="account-detail-value">${phone}</span>
+        </div>
+        <div class="account-detail">
+          <span class="account-detail-label">Verified</span>
+          <span class="account-detail-value">${data.verified ? "Yes" : "No"}</span>
+        </div>
+      </div>
+      <div class="account-token" onclick="navigator.clipboard.writeText('${token}')" title="Click to copy token">
+        ${token}
+      </div>
+    `
+
+    this.resultsBox.appendChild(card)
+  }
+
+  displayInvalidToken(token, error = "Invalid token") {
+    const card = document.createElement("div")
+    card.className = "account-card"
+    card.style.borderColor = "rgba(255, 71, 87, 0.5)"
+
+    card.innerHTML = `
+      <div class="account-header">
+        <div style="width: 40px; height: 40px; background: rgba(255, 71, 87, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <span class="material-icons" style="color: #ff4757; font-size: 1.2rem;">error</span>
+        </div>
+        <div class="account-basic">
+          <div class="account-name">Invalid Token</div>
+          <span class="account-type" style="background: rgba(255, 71, 87, 0.2); color: #ff4757;">ERROR</span>
+        </div>
+      </div>
+      <div style="color: rgba(255, 255, 255, 0.6); font-size: 0.75rem; margin-bottom: 0.8rem;">
+        ${error}
+      </div>
+      <div class="account-token" style="border-color: rgba(255, 71, 87, 0.3);">
+        ${token}
+      </div>
+    `
+
+    this.resultsBox.appendChild(card)
+  }
+
+  copyValidTokens() {
+    if (this.validTokens.length === 0) return
+
+    const tokensText = this.validTokens.join("\n")
+    navigator.clipboard.writeText(tokensText).then(() => {
+      const originalText = this.copyValidBtn.innerHTML
+      this.copyValidBtn.innerHTML = '<span class="material-icons">check</span>Copied!'
+      setTimeout(() => {
+        this.copyValidBtn.innerHTML = originalText
+      }, 2000)
+    })
+  }
+
+  showError(message) {
+    this.resultsBox.innerHTML = `
+      <div style="text-align: center; color: #ff4757; padding: 2rem;">
+        <span class="material-icons" style="font-size: 2rem; margin-bottom: 0.5rem;">error</span>
+        <div>${message}</div>
+      </div>
+    `
+  }
+}
+
 class Godfielder {
   constructor() {
     this.isRunning = false
@@ -319,5 +502,6 @@ class Godfielder {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  new TokenChecker()
   new Godfielder()
 })
