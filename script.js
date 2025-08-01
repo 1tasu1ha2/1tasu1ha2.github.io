@@ -682,6 +682,7 @@ class Sender {
     this.sendIntervals = []
     this.currentMessageIndex = 0
     this.sendModeSelect = null
+    this.tokenCounters = new Map()
     this.initElements()
     this.bindEvents()
   }
@@ -730,10 +731,10 @@ class Sender {
     }
 
     entry.innerHTML = `
-    <span class="log-time">${time}</span>
-    <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-    <span class="log-message">${message}</span>
-  `
+      <span class="log-time">${time}</span>
+      <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
+      <span class="log-message">${message}</span>
+    `
 
     if (details) {
       entry.addEventListener("click", () => {
@@ -897,7 +898,7 @@ class Sender {
     }
   }
 
-  async sendMessage(token, channelId, message, tokenNumber, currentCount, totalCount, isInfinite) {
+  async sendMessage(token, channelId, message, tokenNumber, isInfinite, totalCount) {
     try {
       const processedMessage = await this.processMessage(message)
 
@@ -913,20 +914,41 @@ class Sender {
       })
 
       if (response.ok) {
+        const tokenKey = `${tokenNumber}-${channelId}`
+        if (!this.tokenCounters.has(tokenKey)) {
+          this.tokenCounters.set(tokenKey, 0)
+        }
+        this.tokenCounters.set(tokenKey, this.tokenCounters.get(tokenKey) + 1)
+
+        const currentCount = this.tokenCounters.get(tokenKey)
         const truncatedMessage =
           processedMessage.length > 50 ? processedMessage.substring(0, 50) + "..." : processedMessage
         const countInfo = isInfinite ? "" : ` (${currentCount}/${totalCount})`
         const details = `Message: "${processedMessage}"${countInfo}`
+
         this.log(`Token ${tokenNumber}: Message sent`, "success", "message", details)
-        return true
+        return { success: true, count: currentCount }
       } else {
         this.log(`Token ${tokenNumber}: Send failed`, "error", "error", `Status: ${response.status}`)
-        return false
+        return { success: false, count: 0 }
       }
     } catch (error) {
       this.log(`Token ${tokenNumber}: Send failed`, "error", "error", error.message)
-      return false
+      return { success: false, count: 0 }
     }
+  }
+
+  checkAllTokensCompleted(tokens, channelIds, count) {
+    for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex++) {
+      for (const channelId of channelIds) {
+        const tokenKey = `${tokenIndex + 1}-${channelId}`
+        const currentCount = this.tokenCounters.get(tokenKey) || 0
+        if (currentCount < count) {
+          return false
+        }
+      }
+    }
+    return true
   }
 
   async startSending() {
@@ -967,6 +989,7 @@ class Sender {
     this.startSendBtn.disabled = true
     this.stopSendBtn.disabled = false
     this.currentMessageIndex = 0
+    this.tokenCounters.clear()
 
     const tokenDelay = Math.floor(interval / tokens.length)
 
@@ -977,28 +1000,26 @@ class Sender {
         if (!this.isRunning) return
 
         channelIds.forEach((channelId) => {
-          let sentCount = 0
-
           const sendInterval = setInterval(async () => {
-            if (!this.isRunning || (!isInfinite && sentCount >= count)) {
+            if (!this.isRunning) {
               clearInterval(sendInterval)
+              return
+            }
+
+            const tokenKey = `${tokenIndex + 1}-${channelId}`
+            const currentCount = this.tokenCounters.get(tokenKey) || 0
+
+            if (!isInfinite && currentCount >= count) {
+              clearInterval(sendInterval)
+              if (this.checkAllTokensCompleted(tokens, channelIds, count)) {
+                this.stopSending()
+              }
               return
             }
 
             const message = this.getNextMessage()
             if (message) {
-              const success = await this.sendMessage(
-                token,
-                channelId,
-                message,
-                tokenIndex + 1,
-                sentCount + 1,
-                count,
-                isInfinite,
-              )
-              if (success) {
-                sentCount++
-              }
+              await this.sendMessage(token, channelId, message, tokenIndex + 1, isInfinite, count)
             }
           }, interval)
 
