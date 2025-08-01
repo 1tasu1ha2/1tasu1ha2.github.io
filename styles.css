@@ -147,6 +147,86 @@ body::before {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.custom-select {
+  position: relative;
+}
+
+.custom-select select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.6rem;
+  color: #ffffff;
+  font-family: "M PLUS 1 Code", monospace;
+  font-size: 0.85rem;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-select::after {
+  content: "▼";
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #00bfff;
+  pointer-events: none;
+  font-size: 0.7rem;
+}
+
+.custom-select select:focus {
+  outline: none;
+  border-color: #00bfff;
+  box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.custom-select select option {
+  background: #1a1a2e;
+  color: #ffffff;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-input {
+  display: none;
+}
+
+.toggle-label {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.toggle-input:checked + .toggle-label {
+  background: #00bfff;
+}
+
+.toggle-input:checked + .toggle-label .toggle-slider {
+  transform: translateX(26px);
+}
+
 .controls {
   display: flex;
   gap: 1rem;
@@ -255,6 +335,72 @@ body::before {
 
 .log-entry.expanded {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.message-pattern {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  animation: fadeIn 0.3s ease;
+  position: relative;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.message-number {
+  background: rgba(0, 191, 255, 0.2);
+  color: #00bfff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.message-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.message-control-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-control-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.message-control-btn.delete:hover {
+  background: rgba(255, 71, 87, 0.3);
+  color: #ff4757;
+}
+
+.message-content {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0.6rem;
+  font-family: "Courier New", monospace;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.4;
 }
 
 .account-card {
