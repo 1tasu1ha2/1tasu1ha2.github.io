@@ -1,4 +1,3 @@
-// Help system
 const helpTexts = {
   tokens: "Enter Discord bot tokens or user tokens, one per line. These will be validated to check if they're working.",
   configTokens:
@@ -38,7 +37,6 @@ function closeHelp() {
   document.getElementById("helpModal").style.display = "none"
 }
 
-// Close modal when clicking outside
 window.onclick = (event) => {
   const modal = document.getElementById("helpModal")
   if (event.target === modal) {
@@ -46,7 +44,6 @@ window.onclick = (event) => {
   }
 }
 
-// Custom Select functionality
 class CustomSelect {
   constructor(element) {
     this.element = element
@@ -726,7 +723,6 @@ class Sender {
   async processMessage(message) {
     let processedMessage = message
 
-    // Process /rs/ patterns
     const rsMatch = message.match(/\/rs(\d*)\//g)
     if (rsMatch) {
       for (const match of rsMatch) {
@@ -746,7 +742,6 @@ class Sender {
       }
     }
 
-    // Process /re/ patterns
     const reMatch = message.match(/\/re(\d*)\//g)
     if (reMatch) {
       for (const match of reMatch) {
@@ -766,7 +761,6 @@ class Sender {
       }
     }
 
-    // Process /rm/ patterns
     const rmMatch = message.match(/\/rm(\d*)\//g)
     if (rmMatch) {
       const mentionIds = this.parseList(document.getElementById("mentionIds").value)
