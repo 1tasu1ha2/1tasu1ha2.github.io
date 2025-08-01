@@ -1,25 +1,60 @@
 const helpTexts = {
-  tokens: "Enter Discord bot tokens or user tokens, one per line. These will be validated to check if they're working.",
+  tokens:
+    "Enter Discord bot tokens or user tokens, one per line.\nThese will be validated to check if they're working.",
   configTokens:
-    "Enter Discord tokens that will be used for fetching channels and sending messages. One token per line.",
+    "Enter Discord tokens that will be used for fetching channels and sending messages.\nOne token per line.",
   serverId: "Enter the Discord server (guild) ID where you want to fetch channels or send messages.",
   channelIds:
-    "Enter Discord channel IDs where messages will be sent, one per line. Use 'Get Channels' to automatically fetch them.",
+    "Enter Discord channel IDs where messages will be sent, one per line.\nUse 'Get Channels' to automatically fetch them.",
   mentionIds:
-    "Enter user IDs that can be mentioned in messages, one per line. Use 'Get Mentions' to automatically fetch server members.",
+    "Enter user IDs that can be mentioned in messages, one per line.\nUse 'Get Mentions' to automatically fetch server members.",
   messageInput:
-    "Enter your message pattern. Supports /rs/ for random strings, /re/ for random emojis, and /rm/ for random mentions.",
+    "Enter your message pattern.\nSupports /rs/ for random strings, /re/ for random emojis, and /rm/ for random mentions.",
   sendMode:
-    "Choose how messages are selected: Random picks a random pattern each time, Sequential goes through patterns in order.",
+    "Choose how messages are selected:\nRandom picks a random pattern each time, Sequential goes through patterns in order.",
   infiniteToggle:
-    "When enabled, messages will be sent continuously until stopped. When disabled, only the specified count will be sent.",
-  messageCount: "Number of messages to send per token per channel. Only used when Infinite Mode is disabled.",
-  messageInterval: "Time interval in milliseconds between each message. Minimum is 100ms to avoid rate limits.",
-  name: "Enter the name for Godfield bots. Supports /rs/ for random strings and /re/ for random emojis.",
-  room: "Enter the room password for Godfield. This will be used to create and join rooms.",
+    "When enabled, messages will be sent continuously until stopped.\nWhen disabled, only the specified count will be sent.",
+  messageCount: "Number of messages to send per token per channel.\nOnly used when Infinite Mode is disabled.",
+  messageInterval: "Time interval in milliseconds between each message.\nMinimum is 100ms to avoid rate limits.",
+  name: "Enter the name for Godfield bots.\nSupports /rs/ for random strings and /re/ for random emojis.",
+  room: "Enter the room password for Godfield.\nThis will be used to create and join rooms.",
   message:
-    "Enter the message that Godfield bots will send. Supports /rs/ for random strings and /re/ for random emojis.",
-  botCount: "Number of Godfield bots to create and run simultaneously. Must be between 1 and 12.",
+    "Enter the message that Godfield bots will send.\nSupports /rs/ for random strings and /re/ for random emojis.",
+  botCount: "Number of Godfield bots to create and run simultaneously.\nMust be between 1 and 12.",
+}
+
+const boxNames = {
+  tokens: "Token Checker",
+  configTokens: "Config",
+  serverId: "Config",
+  channelIds: "Config",
+  mentionIds: "Config",
+  messageInput: "Sender",
+  sendMode: "Sender",
+  infiniteToggle: "Sender",
+  messageCount: "Sender",
+  messageInterval: "Sender",
+  name: "Godfielder",
+  room: "Godfielder",
+  message: "Godfielder",
+  botCount: "Godfielder",
+}
+
+const fieldNames = {
+  tokens: "Tokens",
+  configTokens: "Tokens",
+  serverId: "Server ID",
+  channelIds: "Channel IDs",
+  mentionIds: "Mention IDs",
+  messageInput: "Message",
+  sendMode: "Send Mode",
+  infiniteToggle: "Infinite Mode",
+  messageCount: "Count",
+  messageInterval: "Interval",
+  name: "Name",
+  room: "Room",
+  message: "Message",
+  botCount: "Bot Count",
 }
 
 function showHelp(field) {
@@ -27,8 +62,12 @@ function showHelp(field) {
   const title = document.getElementById("helpTitle")
   const content = document.getElementById("helpContent")
 
-  title.textContent = field.charAt(0).toUpperCase() + field.slice(1) + " Help"
-  content.textContent = helpTexts[field] || "No help available for this field."
+  const boxName = boxNames[field] || "Unknown"
+  const fieldName = fieldNames[field] || field
+  title.textContent = `${boxName} - ${fieldName} Help`
+
+  const helpText = helpTexts[field] || "No help available for this field."
+  content.textContent = helpText
 
   modal.style.display = "block"
 }
