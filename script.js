@@ -927,6 +927,12 @@ class Sender {
         const details = `Message: "${processedMessage}"${countInfo}`
 
         this.log(`Token ${tokenNumber}: Message sent`, "success", "message", details)
+
+        // Check if all tokens have completed their count and auto-stop if needed
+        if (!isInfinite && this.checkAllTokensCompleted()) {
+          setTimeout(() => this.stopSending(), 100)
+        }
+
         return { success: true, count: currentCount }
       } else {
         this.log(`Token ${tokenNumber}: Send failed`, "error", "error", `Status: ${response.status}`)
@@ -938,7 +944,11 @@ class Sender {
     }
   }
 
-  checkAllTokensCompleted(tokens, channelIds, count) {
+  checkAllTokensCompleted() {
+    const tokens = this.parseList(document.getElementById("configTokens").value)
+    const channelIds = this.parseList(document.getElementById("channelIds").value)
+    const count = Number.parseInt(this.messageCountInput.value)
+
     for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex++) {
       for (const channelId of channelIds) {
         const tokenKey = `${tokenIndex + 1}-${channelId}`
@@ -1003,17 +1013,6 @@ class Sender {
           const sendInterval = setInterval(async () => {
             if (!this.isRunning) {
               clearInterval(sendInterval)
-              return
-            }
-
-            const tokenKey = `${tokenIndex + 1}-${channelId}`
-            const currentCount = this.tokenCounters.get(tokenKey) || 0
-
-            if (!isInfinite && currentCount >= count) {
-              clearInterval(sendInterval)
-              if (this.checkAllTokensCompleted(tokens, channelIds, count)) {
-                this.stopSending()
-              }
               return
             }
 
