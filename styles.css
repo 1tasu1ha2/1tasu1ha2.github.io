@@ -554,6 +554,7 @@ body::before {
   background: rgba(0, 0, 0, 0.5);
 }
 
+/* Modal Styles */
 .modal {
   display: none;
   position: fixed;
@@ -613,6 +614,8 @@ body::before {
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
   font-size: 0.9rem;
+  font-family: "M PLUS 1 Code", monospace;
+  white-space: pre-line;
 }
 
 @keyframes modalFadeIn {
