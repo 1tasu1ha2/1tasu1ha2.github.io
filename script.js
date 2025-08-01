@@ -535,6 +535,345 @@ class Config {
   }
 }
 
+class Sender {
+  constructor() {
+    this.messagePatterns = []
+    this.isRunning = false
+    this.sendIntervals = []
+    this.currentMessageIndex = 0
+    this.initElements()
+    this.bindEvents()
+  }
+
+  initElements() {
+    this.messageInput = document.getElementById("messageInput")
+    this.addMessageBtn = document.getElementById("addMessageBtn")
+    this.messagePatternsBox = document.getElementById("messagePatterns")
+    this.sendModeSelect = document.getElementById("sendMode")
+    this.infiniteToggle = document.getElementById("infiniteToggle")
+    this.messageCountInput = document.getElementById("messageCount")
+    this.messageIntervalInput = document.getElementById("messageInterval")
+    this.startSendBtn = document.getElementById("startSendBtn")
+    this.stopSendBtn = document.getElementById("stopSendBtn")
+    this.senderLogBox = document.getElementById("senderLogBox")
+    this.countGroup = document.getElementById("countGroup")
+  }
+
+  bindEvents() {
+    this.addMessageBtn.addEventListener("click", () => this.addMessage())
+    this.infiniteToggle.addEventListener("change", () => this.toggleInfiniteMode())
+    this.startSendBtn.addEventListener("click", () => this.startSending())
+    this.stopSendBtn.addEventListener("click", () => this.stopSending())
+  }
+
+  toggleInfiniteMode() {
+    if (this.infiniteToggle.checked) {
+      this.countGroup.style.display = "none"
+    } else {
+      this.countGroup.style.display = "flex"
+    }
+  }
+
+  log(message, type = "info", icon = "info", details = null) {
+    const time = new Date().toLocaleTimeString()
+    const entry = document.createElement("div")
+    entry.className = `log-entry ${type}`
+
+    const iconMap = {
+      info: "info",
+      success: "check_circle",
+      error: "error",
+      warning: "warning",
+      send: "send",
+    }
+
+    entry.innerHTML = `
+      <span class="log-time">${time}</span>
+      <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
+      <span class="log-message">${message}</span>
+    `
+
+    if (details) {
+      entry.addEventListener("click", () => {
+        const messageSpan = entry.querySelector(".log-message")
+        if (entry.classList.contains("expanded")) {
+          messageSpan.textContent = message
+          entry.classList.remove("expanded")
+        } else {
+          messageSpan.textContent = details
+          entry.classList.add("expanded")
+        }
+      })
+    }
+
+    this.senderLogBox.appendChild(entry)
+    this.senderLogBox.scrollTop = this.senderLogBox.scrollHeight
+  }
+
+  parseList(input) {
+    return input
+      .split("\n")
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0)
+  }
+
+  async processMessage(message) {
+    let processedMessage = message
+
+    // Process /rs/ patterns
+    const rsMatch = message.match(/\/rs(\d*)\//g)
+    if (rsMatch) {
+      for (const match of rsMatch) {
+        const lengthMatch = match.match(/\/rs(\d+)\//)
+        const length = lengthMatch ? lengthMatch[1] : ""
+        const url = length
+          ? `https://1tasu1ha2.vercel.app/api/random-string?length=${length}`
+          : "https://1tasu1ha2.vercel.app/api/random-string"
+
+        try {
+          const response = await fetch(url)
+          const data = await response.json()
+          processedMessage = processedMessage.replace(match, data.result || "")
+        } catch (error) {
+          this.log("String API failed", "error", "error", error.message)
+        }
+      }
+    }
+
+    // Process /re/ patterns
+    const reMatch = message.match(/\/re(\d*)\//g)
+    if (reMatch) {
+      for (const match of reMatch) {
+        const lengthMatch = match.match(/\/re(\d+)\//)
+        const length = lengthMatch ? lengthMatch[1] : ""
+        const url = length
+          ? `https://1tasu1ha2.vercel.app/api/random-emoji?length=${length}`
+          : "https://1tasu1ha2.vercel.app/api/random-emoji"
+
+        try {
+          const response = await fetch(url)
+          const data = await response.json()
+          processedMessage = processedMessage.replace(match, data.result || "")
+        } catch (error) {
+          this.log("Emoji API failed", "error", "error", error.message)
+        }
+      }
+    }
+
+    // Process /rm/ patterns
+    const rmMatch = message.match(/\/rm(\d*)\//g)
+    if (rmMatch) {
+      const mentionIds = this.parseList(document.getElementById("mentionIds").value)
+
+      if (mentionIds.length === 0) {
+        this.log("Please provide mention IDs", "error", "error")
+        return processedMessage
+      }
+
+      for (const match of rmMatch) {
+        const lengthMatch = match.match(/\/rm(\d+)\//)
+        const count = lengthMatch ? Number.parseInt(lengthMatch[1]) : 1
+
+        const selectedMentions = []
+        for (let i = 0; i < count && i < mentionIds.length; i++) {
+          const randomIndex = Math.floor(Math.random() * mentionIds.length)
+          selectedMentions.push(`<@${mentionIds[randomIndex]}>`)
+        }
+
+        processedMessage = processedMessage.replace(match, selectedMentions.join(" "))
+      }
+    }
+
+    return processedMessage
+  }
+
+  addMessage() {
+    const message = this.messageInput.value.trim()
+
+    if (!message) {
+      this.log("Please provide message", "error", "error")
+      return
+    }
+
+    this.messagePatterns.push(message)
+    this.messageInput.value = ""
+    this.renderMessagePatterns()
+    this.log(`Added message pattern ${this.messagePatterns.length}`, "success", "check_circle")
+  }
+
+  renderMessagePatterns() {
+    this.messagePatternsBox.innerHTML = ""
+
+    this.messagePatterns.forEach((pattern, index) => {
+      const patternElement = document.createElement("div")
+      patternElement.className = "message-pattern"
+
+      patternElement.innerHTML = `
+        <div class="message-header">
+          <span class="message-number">${index + 1}</span>
+          <div class="message-controls">
+            <button class="message-control-btn" onclick="window.senderInstance.moveMessage(${index}, -1)" ${index === 0 ? "disabled" : ""}>
+              <span class="material-icons" style="font-size: 1rem;">keyboard_arrow_up</span>
+            </button>
+            <button class="message-control-btn" onclick="window.senderInstance.moveMessage(${index}, 1)" ${index === this.messagePatterns.length - 1 ? "disabled" : ""}>
+              <span class="material-icons" style="font-size: 1rem;">keyboard_arrow_down</span>
+            </button>
+            <button class="message-control-btn delete" onclick="window.senderInstance.deleteMessage(${index})">
+              <span class="material-icons" style="font-size: 1rem;">delete</span>
+            </button>
+          </div>
+        </div>
+        <div class="message-content">${pattern}</div>
+      `
+
+      this.messagePatternsBox.appendChild(patternElement)
+    })
+  }
+
+  moveMessage(index, direction) {
+    const newIndex = index + direction
+    if (newIndex < 0 || newIndex >= this.messagePatterns.length) return
+
+    const temp = this.messagePatterns[index]
+    this.messagePatterns[index] = this.messagePatterns[newIndex]
+    this.messagePatterns[newIndex] = temp
+
+    this.renderMessagePatterns()
+  }
+
+  deleteMessage(index) {
+    this.messagePatterns.splice(index, 1)
+    this.renderMessagePatterns()
+    this.log(`Deleted message pattern ${index + 1}`, "warning", "warning")
+  }
+
+  getNextMessage() {
+    if (this.messagePatterns.length === 0) return null
+
+    if (this.sendModeSelect.value === "random") {
+      const randomIndex = Math.floor(Math.random() * this.messagePatterns.length)
+      return this.messagePatterns[randomIndex]
+    } else {
+      const message = this.messagePatterns[this.currentMessageIndex]
+      this.currentMessageIndex = (this.currentMessageIndex + 1) % this.messagePatterns.length
+      return message
+    }
+  }
+
+  async sendMessage(token, channelId, message) {
+    try {
+      const processedMessage = await this.processMessage(message)
+
+      const response = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+        method: "POST",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: processedMessage,
+        }),
+      })
+
+      if (response.ok) {
+        return true
+      } else {
+        this.log(`Send failed: ${response.status}`, "error", "error")
+        return false
+      }
+    } catch (error) {
+      this.log("Send failed", "error", "error", error.message)
+      return false
+    }
+  }
+
+  async startSending() {
+    if (this.isRunning) return
+
+    const tokens = this.parseList(document.getElementById("configTokens").value)
+    const channelIds = this.parseList(document.getElementById("channelIds").value)
+    const isInfinite = this.infiniteToggle.checked
+    const count = isInfinite ? Number.POSITIVE_INFINITY : Number.parseInt(this.messageCountInput.value)
+    const interval = Number.parseInt(this.messageIntervalInput.value)
+
+    if (!tokens.length) {
+      this.log("Please provide tokens", "error", "error")
+      return
+    }
+
+    if (!channelIds.length) {
+      this.log("Please provide channel IDs", "error", "error")
+      return
+    }
+
+    if (this.messagePatterns.length === 0) {
+      this.log("Please provide message patterns", "error", "error")
+      return
+    }
+
+    if (count < 1) {
+      this.log("Please provide valid count", "error", "error")
+      return
+    }
+
+    if (interval < 100) {
+      this.log("Please provide valid interval", "error", "error")
+      return
+    }
+
+    this.isRunning = true
+    this.startSendBtn.disabled = true
+    this.stopSendBtn.disabled = false
+    this.currentMessageIndex = 0
+
+    const tokenDelay = Math.floor(interval / tokens.length)
+    const totalMessages = isInfinite ? "∞" : tokens.length * channelIds.length * count
+
+    this.log(`Starting sender (${totalMessages} messages)`, "info", "send")
+
+    tokens.forEach((token, tokenIndex) => {
+      setTimeout(() => {
+        if (!this.isRunning) return
+
+        channelIds.forEach((channelId) => {
+          let sentCount = 0
+
+          const sendInterval = setInterval(async () => {
+            if (!this.isRunning || (!isInfinite && sentCount >= count)) {
+              clearInterval(sendInterval)
+              return
+            }
+
+            const message = this.getNextMessage()
+            if (message) {
+              const success = await this.sendMessage(token, channelId, message)
+              if (success) {
+                sentCount++
+                this.log(`Sent ${sentCount}/${isInfinite ? "∞" : count}`, "success", "check_circle")
+              }
+            }
+          }, interval)
+
+          this.sendIntervals.push(sendInterval)
+        })
+      }, tokenIndex * tokenDelay)
+    })
+  }
+
+  stopSending() {
+    if (!this.isRunning) return
+
+    this.isRunning = false
+    this.startSendBtn.disabled = false
+    this.stopSendBtn.disabled = true
+
+    this.sendIntervals.forEach((interval) => clearInterval(interval))
+    this.sendIntervals = []
+
+    this.log("Sender stopped", "warning", "warning")
+  }
+}
+
 class Godfielder {
   constructor() {
     this.isRunning = false
@@ -868,5 +1207,6 @@ class Godfielder {
 document.addEventListener("DOMContentLoaded", () => {
   window.tokenCheckerInstance = new TokenChecker()
   new Config()
+  window.senderInstance = new Sender()
   new Godfielder()
 })
