@@ -116,6 +116,88 @@
                 </div>
             </div>
 
+            <div class="tool-box" id="sender">
+                <div class="tool-header">
+                    <span class="material-icons tool-icon">send</span>
+                    <h2 class="tool-title">Sender</h2>
+                </div>
+                
+                <div class="tool-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="messageInput">Message</label>
+                            <textarea id="messageInput" placeholder="Enter message (supports /rs/, /re/, /rm/)" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="addMessageBtn" class="btn btn-start">
+                            <span class="material-icons">add</span>
+                            Add Message
+                        </button>
+                    </div>
+                    
+                    <div class="results-container">
+                        <div class="results-header">
+                            <span class="material-icons">message</span>
+                            <span>Message Patterns</span>
+                        </div>
+                        <div id="messagePatterns" class="results-box"></div>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="sendMode">Send Mode</label>
+                            <div class="custom-select">
+                                <select id="sendMode">
+                                    <option value="random">Random</option>
+                                    <option value="sequential">Sequential</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="infiniteToggle">Infinite Mode</label>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="infiniteToggle" class="toggle-input">
+                                <label for="infiniteToggle" class="toggle-label">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group" id="countGroup">
+                            <label for="messageCount">Count</label>
+                            <input type="number" id="messageCount" min="1" value="1" placeholder="Message count">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="messageInterval">Interval (ms)</label>
+                            <input type="number" id="messageInterval" min="100" value="1000" placeholder="Interval in milliseconds">
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="startSendBtn" class="btn btn-start">
+                            <span class="material-icons">play_arrow</span>
+                            Start
+                        </button>
+                        <button id="stopSendBtn" class="btn btn-stop" disabled>
+                            <span class="material-icons">stop</span>
+                            Stop
+                        </button>
+                    </div>
+                    
+                    <div class="log-container">
+                        <div class="log-header">
+                            <span class="material-icons">terminal</span>
+                            <span>Logs</span>
+                        </div>
+                        <div id="senderLogBox" class="log-box"></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="tool-box" id="godfielder">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">flash_on</span>
