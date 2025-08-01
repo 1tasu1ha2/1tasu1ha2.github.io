@@ -644,8 +644,7 @@ class Config {
   finalizeMemberCollection() {
     if (this.allMembers.size > 0) {
       this.mentionIdsInput.value = Array.from(this.allMembers).join("\n")
-      const details = `Token: ${this.currentTokenIndex + 1}/${this.parseList(this.configTokensInput.value).length}, Channel: ${this.currentChannelIndex + 1}/${this.channelIds.length}`
-      this.log(`Got ${this.allMembers.size} members`, "success", "check_circle", details)
+      this.log(`Got ${this.allMembers.size} members`, "success", "check_circle")
     } else {
       this.log("Members not found", "warning", "warning")
     }
@@ -727,13 +726,14 @@ class Sender {
       error: "error",
       warning: "warning",
       send: "send",
+      message: "message",
     }
 
     entry.innerHTML = `
-      <span class="log-time">${time}</span>
-      <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-      <span class="log-message">${message}</span>
-    `
+    <span class="log-time">${time}</span>
+    <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
+    <span class="log-message">${message}</span>
+  `
 
     if (details) {
       entry.addEventListener("click", () => {
@@ -897,7 +897,7 @@ class Sender {
     }
   }
 
-  async sendMessage(token, channelId, message) {
+  async sendMessage(token, channelId, message, tokenNumber, currentCount, totalCount, isInfinite) {
     try {
       const processedMessage = await this.processMessage(message)
 
@@ -913,13 +913,18 @@ class Sender {
       })
 
       if (response.ok) {
+        const truncatedMessage =
+          processedMessage.length > 50 ? processedMessage.substring(0, 50) + "..." : processedMessage
+        const countInfo = isInfinite ? "" : ` (${currentCount}/${totalCount})`
+        const details = `Message: "${processedMessage}"${countInfo}`
+        this.log(`Token ${tokenNumber}: Message sent`, "success", "message", details)
         return true
       } else {
-        this.log(`Send failed: ${response.status}`, "error", "error")
+        this.log(`Token ${tokenNumber}: Send failed`, "error", "error", `Status: ${response.status}`)
         return false
       }
     } catch (error) {
-      this.log("Send failed", "error", "error", error.message)
+      this.log(`Token ${tokenNumber}: Send failed`, "error", "error", error.message)
       return false
     }
   }
@@ -964,9 +969,8 @@ class Sender {
     this.currentMessageIndex = 0
 
     const tokenDelay = Math.floor(interval / tokens.length)
-    const totalMessages = isInfinite ? "∞" : tokens.length * channelIds.length * count
 
-    this.log(`Starting sender (${totalMessages} messages)`, "info", "send")
+    this.log(`Starting ${tokens.length} tokens...`, "info", "send")
 
     tokens.forEach((token, tokenIndex) => {
       setTimeout(() => {
@@ -983,10 +987,17 @@ class Sender {
 
             const message = this.getNextMessage()
             if (message) {
-              const success = await this.sendMessage(token, channelId, message)
+              const success = await this.sendMessage(
+                token,
+                channelId,
+                message,
+                tokenIndex + 1,
+                sentCount + 1,
+                count,
+                isInfinite,
+              )
               if (success) {
                 sentCount++
-                this.log(`Sent ${sentCount}/${isInfinite ? "∞" : count}`, "success", "check_circle")
               }
             }
           }, interval)
@@ -1004,10 +1015,12 @@ class Sender {
     this.startSendBtn.disabled = false
     this.stopSendBtn.disabled = true
 
+    this.log("Stopping tokens...", "warning", "warning")
+
     this.sendIntervals.forEach((interval) => clearInterval(interval))
     this.sendIntervals = []
 
-    this.log("Sender stopped", "warning", "warning")
+    this.log("All tokens stopped", "warning", "warning")
   }
 }
 
@@ -1051,10 +1064,10 @@ class Godfielder {
     }
 
     entry.innerHTML = `
-            <span class="log-time">${time}</span>
-            <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-            <span class="log-message">${message}</span>
-        `
+    <span class="log-time">${time}</span>
+    <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
+    <span class="log-message">${message}</span>
+  `
 
     if (details) {
       entry.addEventListener("click", () => {
