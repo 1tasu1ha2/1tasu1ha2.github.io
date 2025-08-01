@@ -188,6 +188,7 @@ class Config {
     this.allMembers = new Set()
     this.ws = null
     this.currentToken = null
+    this.currentTokenIndex = 0
     this.serverId = null
     this.channelIds = []
     this.currentChannelIndex = 0
@@ -324,15 +325,29 @@ class Config {
     this.allMembers.clear()
     this.serverId = serverId
     this.channelIds = channelIds
+    this.currentTokenIndex = 0
     this.currentChannelIndex = 0
 
-    this.fetchingLogEntry = this.log("Getting members...", "info", "alternate_email")
+    this.log("Getting members...", "info", "alternate_email")
 
-    for (const token of tokens) {
-      this.currentToken = token
+    let success = false
+    for (let tokenIndex = 0; tokenIndex < tokens.length && !success; tokenIndex++) {
+      this.currentToken = tokens[tokenIndex]
+      this.currentTokenIndex = tokenIndex
 
-      const success = await this.connectWebSocket()
-      if (success) {
+      for (let channelIndex = 0; channelIndex < channelIds.length && !success; channelIndex++) {
+        this.currentChannelIndex = channelIndex
+        this.allMembers.clear()
+
+        success = await this.connectWebSocket()
+        if (success && this.allMembers.size > 0) {
+          break
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
+
+      if (success && this.allMembers.size > 0) {
         break
       }
 
@@ -431,7 +446,7 @@ class Config {
   }
 
   requestMemberChunk() {
-    const channelId = this.channelIds[0]
+    const channelId = this.channelIds[this.currentChannelIndex]
 
     this.ws.send(
       JSON.stringify({
@@ -488,7 +503,7 @@ class Config {
   finalizeMemberCollection() {
     if (this.allMembers.size > 0) {
       this.mentionIdsInput.value = Array.from(this.allMembers).join("\n")
-      const details = `Used channel: ${this.channelIds[0]}`
+      const details = `Token: ${this.currentTokenIndex + 1}/${this.parseList(this.configTokensInput.value).length}, Channel: ${this.currentChannelIndex + 1}/${this.channelIds.length}`
       this.log(`Got ${this.allMembers.size} members`, "success", "check_circle", details)
     } else {
       this.log("Members not found", "warning", "warning")
