@@ -26,7 +26,10 @@
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="tokens">Tokens</label>
+                            <label for="tokens">
+                                Tokens
+                                <span class="help-icon material-icons" onclick="showHelp('tokens')">help_outline</span>
+                            </label>
                             <textarea id="tokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
                         </div>
                     </div>
@@ -61,7 +64,10 @@
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="configTokens">Tokens</label>
+                            <label for="configTokens">
+                                Tokens
+                                <span class="help-icon material-icons" onclick="showHelp('configTokens')">help_outline</span>
+                            </label>
                             <textarea id="configTokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
                         </div>
                     </div>
@@ -75,12 +81,18 @@
 
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="serverId">Server ID</label>
+                            <label for="serverId">
+                                Server ID
+                                <span class="help-icon material-icons" onclick="showHelp('serverId')">help_outline</span>
+                            </label>
                             <input type="text" id="serverId" placeholder="Enter server ID">
                         </div>
                         
                         <div class="input-group">
-                            <label for="channelIds">Channel IDs</label>
+                            <label for="channelIds">
+                                Channel IDs
+                                <span class="help-icon material-icons" onclick="showHelp('channelIds')">help_outline</span>
+                            </label>
                             <textarea id="channelIds" placeholder="Enter channel IDs (one per line)" rows="4"></textarea>
                         </div>
                     </div>
@@ -94,7 +106,10 @@
                     
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="mentionIds">Mention IDs</label>
+                            <label for="mentionIds">
+                                Mention IDs
+                                <span class="help-icon material-icons" onclick="showHelp('mentionIds')">help_outline</span>
+                            </label>
                             <textarea id="mentionIds" placeholder="Enter mention IDs (one per line)" rows="4"></textarea>
                         </div>
                     </div>
@@ -125,8 +140,11 @@
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="messageInput">Message</label>
-                            <textarea id="messageInput" placeholder="Enter message (supports /rs/, /re/, /rm/)" rows="4"></textarea>
+                            <label for="messageInput">
+                                Message
+                                <span class="help-icon material-icons" onclick="showHelp('messageInput')">help_outline</span>
+                            </label>
+                            <textarea id="messageInput" placeholder="Enter message" rows="4"></textarea>
                         </div>
                     </div>
                     
@@ -137,7 +155,7 @@
                         </button>
                     </div>
                     
-                    <div class="results-container">
+                    <div class="results-container message-patterns-container">
                         <div class="results-header">
                             <span class="material-icons">message</span>
                             <span>Message Patterns</span>
@@ -147,17 +165,27 @@
 
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="sendMode">Send Mode</label>
-                            <div class="custom-select">
-                                <select id="sendMode">
-                                    <option value="random">Random</option>
-                                    <option value="sequential">Sequential</option>
-                                </select>
+                            <label for="sendMode">
+                                Send Mode
+                                <span class="help-icon material-icons" onclick="showHelp('sendMode')">help_outline</span>
+                            </label>
+                            <div class="custom-select" id="sendModeSelect">
+                                <div class="select-display">
+                                    <span class="select-value">Random</span>
+                                    <span class="material-icons select-arrow">expand_more</span>
+                                </div>
+                                <div class="select-options">
+                                    <div class="select-option" data-value="random">Random</div>
+                                    <div class="select-option" data-value="sequential">Sequential</div>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="input-group">
-                            <label for="infiniteToggle">Infinite Mode</label>
+                            <label for="infiniteToggle">
+                                Infinite Mode
+                                <span class="help-icon material-icons" onclick="showHelp('infiniteToggle')">help_outline</span>
+                            </label>
                             <div class="toggle-container">
                                 <input type="checkbox" id="infiniteToggle" class="toggle-input">
                                 <label for="infiniteToggle" class="toggle-label">
@@ -167,13 +195,19 @@
                         </div>
                         
                         <div class="input-group" id="countGroup">
-                            <label for="messageCount">Count</label>
-                            <input type="number" id="messageCount" min="1" value="1" placeholder="Message count">
+                            <label for="messageCount">
+                                Count
+                                <span class="help-icon material-icons" onclick="showHelp('messageCount')">help_outline</span>
+                            </label>
+                            <input type="number" id="messageCount" min="1" value="1" placeholder="Enter count">
                         </div>
                         
                         <div class="input-group">
-                            <label for="messageInterval">Interval (ms)</label>
-                            <input type="number" id="messageInterval" min="100" value="1000" placeholder="Interval in milliseconds">
+                            <label for="messageInterval">
+                                Interval (ms)
+                                <span class="help-icon material-icons" onclick="showHelp('messageInterval')">help_outline</span>
+                            </label>
+                            <input type="number" id="messageInterval" min="100" value="1000" placeholder="Enter interval">
                         </div>
                     </div>
                     
@@ -207,23 +241,35 @@
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="name">Name</label>
+                            <label for="name">
+                                Name
+                                <span class="help-icon material-icons" onclick="showHelp('name')">help_outline</span>
+                            </label>
                             <input type="text" id="name" placeholder="Enter name">
                         </div>
                         
                         <div class="input-group">
-                            <label for="room">Room</label>
+                            <label for="room">
+                                Room
+                                <span class="help-icon material-icons" onclick="showHelp('room')">help_outline</span>
+                            </label>
                             <input type="text" id="room" placeholder="Enter room">
                         </div>
                         
                         <div class="input-group">
-                            <label for="message">Message</label>
+                            <label for="message">
+                                Message
+                                <span class="help-icon material-icons" onclick="showHelp('message')">help_outline</span>
+                            </label>
                             <input type="text" id="message" placeholder="Enter message">
                         </div>
                         
                         <div class="input-group">
-                            <label for="botCount">Bot Count</label>
-                            <input type="number" id="botCount" min="1" max="12" value="1" placeholder="1-12">
+                            <label for="botCount">
+                                Bot Count
+                                <span class="help-icon material-icons" onclick="showHelp('botCount')">help_outline</span>
+                            </label>
+                            <input type="number" id="botCount" min="1" max="12" value="1" placeholder="Enter bot count 1-12">
                         </div>
                     </div>
                     
@@ -248,6 +294,19 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="helpTitle">Help</h3>
+                <span class="modal-close" onclick="closeHelp()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="helpContent"></p>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
