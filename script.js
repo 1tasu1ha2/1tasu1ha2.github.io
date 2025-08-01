@@ -1,3 +1,108 @@
+// Help system
+const helpTexts = {
+  tokens: "Enter Discord bot tokens or user tokens, one per line. These will be validated to check if they're working.",
+  configTokens:
+    "Enter Discord tokens that will be used for fetching channels and sending messages. One token per line.",
+  serverId: "Enter the Discord server (guild) ID where you want to fetch channels or send messages.",
+  channelIds:
+    "Enter Discord channel IDs where messages will be sent, one per line. Use 'Get Channels' to automatically fetch them.",
+  mentionIds:
+    "Enter user IDs that can be mentioned in messages, one per line. Use 'Get Mentions' to automatically fetch server members.",
+  messageInput:
+    "Enter your message pattern. Supports /rs/ for random strings, /re/ for random emojis, and /rm/ for random mentions.",
+  sendMode:
+    "Choose how messages are selected: Random picks a random pattern each time, Sequential goes through patterns in order.",
+  infiniteToggle:
+    "When enabled, messages will be sent continuously until stopped. When disabled, only the specified count will be sent.",
+  messageCount: "Number of messages to send per token per channel. Only used when Infinite Mode is disabled.",
+  messageInterval: "Time interval in milliseconds between each message. Minimum is 100ms to avoid rate limits.",
+  name: "Enter the name for Godfield bots. Supports /rs/ for random strings and /re/ for random emojis.",
+  room: "Enter the room password for Godfield. This will be used to create and join rooms.",
+  message:
+    "Enter the message that Godfield bots will send. Supports /rs/ for random strings and /re/ for random emojis.",
+  botCount: "Number of Godfield bots to create and run simultaneously. Must be between 1 and 12.",
+}
+
+function showHelp(field) {
+  const modal = document.getElementById("helpModal")
+  const title = document.getElementById("helpTitle")
+  const content = document.getElementById("helpContent")
+
+  title.textContent = field.charAt(0).toUpperCase() + field.slice(1) + " Help"
+  content.textContent = helpTexts[field] || "No help available for this field."
+
+  modal.style.display = "block"
+}
+
+function closeHelp() {
+  document.getElementById("helpModal").style.display = "none"
+}
+
+// Close modal when clicking outside
+window.onclick = (event) => {
+  const modal = document.getElementById("helpModal")
+  if (event.target === modal) {
+    closeHelp()
+  }
+}
+
+// Custom Select functionality
+class CustomSelect {
+  constructor(element) {
+    this.element = element
+    this.display = element.querySelector(".select-display")
+    this.options = element.querySelector(".select-options")
+    this.value = "random"
+
+    this.bindEvents()
+  }
+
+  bindEvents() {
+    this.display.addEventListener("click", () => this.toggle())
+
+    this.options.querySelectorAll(".select-option").forEach((option) => {
+      option.addEventListener("click", (e) => {
+        this.selectOption(e.target.dataset.value, e.target.textContent)
+      })
+    })
+
+    document.addEventListener("click", (e) => {
+      if (!this.element.contains(e.target)) {
+        this.close()
+      }
+    })
+  }
+
+  toggle() {
+    const isActive = this.display.classList.contains("active")
+    if (isActive) {
+      this.close()
+    } else {
+      this.open()
+    }
+  }
+
+  open() {
+    this.display.classList.add("active")
+    this.options.classList.add("active")
+  }
+
+  close() {
+    this.display.classList.remove("active")
+    this.options.classList.remove("active")
+  }
+
+  selectOption(value, text) {
+    this.value = value
+    this.display.querySelector(".select-value").textContent = text
+    this.close()
+  }
+
+  getValue() {
+    return this.value
+  }
+}
+
 class TokenChecker {
   constructor() {
     this.validTokens = []
@@ -541,6 +646,7 @@ class Sender {
     this.isRunning = false
     this.sendIntervals = []
     this.currentMessageIndex = 0
+    this.sendModeSelect = null
     this.initElements()
     this.bindEvents()
   }
@@ -549,7 +655,7 @@ class Sender {
     this.messageInput = document.getElementById("messageInput")
     this.addMessageBtn = document.getElementById("addMessageBtn")
     this.messagePatternsBox = document.getElementById("messagePatterns")
-    this.sendModeSelect = document.getElementById("sendMode")
+    this.sendModeSelect = new CustomSelect(document.getElementById("sendModeSelect"))
     this.infiniteToggle = document.getElementById("infiniteToggle")
     this.messageCountInput = document.getElementById("messageCount")
     this.messageIntervalInput = document.getElementById("messageInterval")
@@ -698,7 +804,6 @@ class Sender {
     this.messagePatterns.push(message)
     this.messageInput.value = ""
     this.renderMessagePatterns()
-    this.log(`Added message pattern ${this.messagePatterns.length}`, "success", "check_circle")
   }
 
   renderMessagePatterns() {
@@ -744,13 +849,12 @@ class Sender {
   deleteMessage(index) {
     this.messagePatterns.splice(index, 1)
     this.renderMessagePatterns()
-    this.log(`Deleted message pattern ${index + 1}`, "warning", "warning")
   }
 
   getNextMessage() {
     if (this.messagePatterns.length === 0) return null
 
-    if (this.sendModeSelect.value === "random") {
+    if (this.sendModeSelect.getValue() === "random") {
       const randomIndex = Math.floor(Math.random() * this.messagePatterns.length)
       return this.messagePatterns[randomIndex]
     } else {
