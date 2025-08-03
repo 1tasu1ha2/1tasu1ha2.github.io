@@ -348,7 +348,7 @@ body::before {
   overflow: hidden;
 }
 
-.message-patterns-container {
+.msg-patterns-container {
   margin-bottom: 1.5rem;
 }
 
@@ -396,7 +396,7 @@ body::before {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.message-pattern {
+.msg-pattern {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -406,14 +406,14 @@ body::before {
   position: relative;
 }
 
-.message-header {
+.msg-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.8rem;
 }
 
-.message-number {
+.msg-number {
   background: rgba(0, 191, 255, 0.2);
   color: #00bfff;
   padding: 0.2rem 0.6rem;
@@ -422,12 +422,12 @@ body::before {
   font-weight: 600;
 }
 
-.message-controls {
+.msg-controls {
   display: flex;
   gap: 0.5rem;
 }
 
-.message-control-btn {
+.msg-control-btn {
   background: rgba(255, 255, 255, 0.1);
   border: none;
   border-radius: 4px;
@@ -440,16 +440,16 @@ body::before {
   justify-content: center;
 }
 
-.message-control-btn:hover {
+.msg-control-btn:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.message-control-btn.delete:hover {
+.msg-control-btn.delete:hover {
   background: rgba(255, 71, 87, 0.3);
   color: #ff4757;
 }
 
-.message-content {
+.msg-content {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
@@ -554,7 +554,6 @@ body::before {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* Modal Styles */
 .modal {
   display: none;
   position: fixed;
@@ -672,7 +671,7 @@ body::before {
   flex-shrink: 0;
 }
 
-.log-message {
+.log-msg {
   flex: 1;
   word-wrap: break-word;
   overflow-wrap: break-word;
