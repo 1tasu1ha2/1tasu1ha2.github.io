@@ -1,51 +1,64 @@
 const helpTexts = {
-  tokens: "Discordのトークンを入力。\n下のボタンで有効かをチェックできます。\n複数入力する場合は改行して入力してください。",
-  configTokens: "Discordのトークンを入力。\nほとんどのツールでこのトークンが使用されます。\n複数入力する場合は改行して入力してください。",
-  serverId: "DiscordのサーバーIDを入力。\nチャンネルやメンバーの取得、サーバー退出などに使用されます。",
-  channelIds: "DiscordのチャンネルIDを入力。\nメッセージの送信などに使用されます。\n複数入力する場合は改行して入力してください。",
-  mentionIds: "DiscordのユーザーIDを入力。\nランダムメンションで使用されます。\n複数入力する場合は改行して入力してください。",
-  messageInput: "送信するメッセージを入力。\n/rs/でランダムな英数字、/re/でランダムな絵文字、/rm/でランダムメンションを追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。",
-  sendMode: "メッセージの送信方法を選択。\nランダムの場合はメッセージのパターンからランダムに選択して送信します。\nローテーションの場合は1番から順番に送信していきます。",
-  infiniteToggle: "オンにするとメッセージを永久に送信し続けるように切り替えます。",
-  messageCount: "メッセージの送信回数を入力。\n入力された回数メッセージを送信します。",
-  messageInterval: "メッセージの送信間隔を入力。\nメッセージを送信してから入力した時間を空けてから次のメッセージを送信します。\n1000msで1秒です。",
-  name: "Godfieldのボットの名前を入力。\n/rs/でランダムな英数字、/re/でランダムな絵文字を追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。\n同じ名前で同じルームには参加できません。",
-  room: "Godfieldのルームの合言葉を入力。\n入力された合言葉のルームに参加します。",
-  message: "送信するメッセージを入力。\n入力されたメッセージをルームで送信し続けます。\n/rs/でランダムな英数字、/re/でランダムな絵文字を追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。",
-  botCount: "ルームに参加するボット数を入力。\n1つのルームには12人以上参加できません。",
+  tokens:
+    "Discordのトークンを入力してください。\n下のボタンで有効かをチェックできます。\n複数入力する場合は改行して入力してください。",
+  cfgTokens:
+    "Discordのトークンを入力してください。\nほとんどのツールでこのトークンが使用されます。\n複数入力する場合は改行して入力してください。",
+  serverId: "DiscordのサーバーIDを入力してください。\nチャンネルやメンバーの取得、サーバー退出などに使用されます。",
+  channelIds:
+    "DiscordのチャンネルIDを入力してください。\nメッセージの送信などに使用されます。\n複数入力する場合は改行して入力してください。",
+  mentionIds:
+    "DiscordのユーザーIDを入力してください。\nランダムメンションで使用されます。\n複数入力する場合は改行して入力してください。",
+  inviteCode:
+    "Discordの招待コードを入力してください。\n設定のトークンを使用してサーバーに参加します。\nhttps://discord.gg/XXXXXX の XXXXXX の部分を入力してください。",
+  msgInput:
+    "送信するメッセージを入力してください。\n/rs/でランダムな英数字、/re/でランダムな絵文字、/rm/でランダムメンションを追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。",
+  sendMode:
+    "メッセージの送信方法を選択してください。\nランダムの場合はメッセージのパターンからランダムに選択して送信します。\nローテーションの場合は1番から順番に送信していきます。",
+  infiniteMode: "オンにするとメッセージを永久に送信し続けるように切り替えます。",
+  msgCount: "メッセージの送信回数を入力してください。\n入力された回数メッセージを送信します。",
+  msgInterval:
+    "メッセージの送信間隔を入力してください。\nメッセージを送信してから入力した時間を空けてから次のメッセージを送信します。\n1000msで1秒です。",
+  botName:
+    "Godfieldのボットの名前を入力してください。\n/rs/でランダムな英数字、/re/でランダムな絵文字を追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。\n同じ名前で同じルームには参加できません。",
+  roomCode: "Godfieldのルームの合言葉を入力してください。\n入力された合言葉のルームに参加します。",
+  botMsg:
+    "送信するメッセージを入力してください。\n入力されたメッセージをルームで送信し続けます。\n/rs/でランダムな英数字、/re/でランダムな絵文字を追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。",
+  botCount: "ルームに参加するボット数を入力してください。\n1つのルームには12人以上参加できません。",
 }
 
 const boxNames = {
   tokens: "トークン確認",
-  configTokens: "設定",
+  cfgTokens: "設定",
   serverId: "設定",
   channelIds: "設定",
   mentionIds: "設定",
-  messageInput: "メッセージ送信",
+  inviteCode: "サーバー",
+  msgInput: "メッセージ送信",
   sendMode: "メッセージ送信",
-  infiniteToggle: "メッセージ送信",
-  messageCount: "メッセージ送信",
-  messageInterval: "メッセージ送信",
-  name: "ころすまん",
-  room: "ころすまん",
-  message: "ころすまん",
+  infiniteMode: "メッセージ送信",
+  msgCount: "メッセージ送信",
+  msgInterval: "メッセージ送信",
+  botName: "ころすまん",
+  roomCode: "ころすまん",
+  botMsg: "ころすまん",
   botCount: "ころすまん",
 }
 
 const fieldNames = {
   tokens: "トークン",
-  configTokens: "トークン",
+  cfgTokens: "トークン",
   serverId: "サーバーID",
   channelIds: "チャンネルID",
   mentionIds: "メンバーID",
-  messageInput: "メッセージ",
+  inviteCode: "招待コード",
+  msgInput: "メッセージ",
   sendMode: "送信方法",
-  infiniteToggle: "永久送信",
-  messageCount: "送信数",
-  messageInterval: "送信間隔",
-  name: "名前",
-  room: "あいことば",
-  message: "メッセージ",
+  infiniteMode: "永久送信",
+  msgCount: "送信数",
+  msgInterval: "送信間隔",
+  botName: "名前",
+  roomCode: "あいことば",
+  botMsg: "メッセージ",
   botCount: "ボット数",
 }
 
@@ -54,9 +67,9 @@ function showHelp(field) {
   const title = document.getElementById("helpTitle")
   const content = document.getElementById("helpContent")
 
-  const boxName = boxNames[field] || "Unknown"
+  const boxName = boxNames[field] || "不明"
   const fieldName = fieldNames[field] || field
-  title.textContent = `${boxName} - ${fieldName} Help`
+  title.textContent = `${boxName} - ${fieldName} ヘルプ`
 
   const helpText = helpTexts[field] || "ヘルプがありません"
   content.textContent = helpText
@@ -75,35 +88,104 @@ window.onclick = (event) => {
   }
 }
 
-class CustomSelect {
-  constructor(element) {
-    this.element = element
-    this.display = element.querySelector(".select-display")
-    this.options = element.querySelector(".select-options")
-    this.value = "random"
+function genSessionID() {
+  return "xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    var r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
 
-    this.bindEvents()
+async function genFingerPrint() {
+  const UA =
+    "Mozilla/5.0 (Linux; Android 6.0; Nexus " +
+    Math.floor(Math.random() * 10) / 10 +
+    " Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36 Edg/114.0.182" +
+    Math.floor(Math.random() * 100) / 100
+  const headers = {
+    Accept: "*/*",
+    "Accept-Language": "en-US,en;q=0.9",
+    Connection: "keep-alive",
+    Referer: "https://discord.com/",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin",
+    "Sec-GPC": "1",
+    "User-Agent": UA,
+    "X-Track": btoa(
+      '{"os":"' +
+        (Math.random() > 0.5 ? "IOS" : "WINDOWS") +
+        '","browser":"Safe","system_locale":"en-GB","browser_user_agent":"' +
+        UA +
+        '","browser_version":"15.0","os_v":"","referrer":"","referring_domain":"","referrer_domain_cookie":"stable","client_build_number":9999,"client_event_source":"stable","client_event_source":"stable"}',
+    ),
   }
 
-  bindEvents() {
-    this.display.addEventListener("click", () => this.toggle())
+  return (
+    (await (await fetch("https://discord.com/api/v9/experiments", { headers })).json()).fingerprint ??
+    "1191414115344855082._nokxHUJzvNiBOhCRr1h1UAa8Ho"
+  )
+}
 
-    this.options.querySelectorAll(".select-option").forEach((option) => {
-      option.addEventListener("click", (e) => {
-        this.selectOption(e.target.dataset.value, e.target.textContent)
+async function joinToken(token, invite) {
+  const fingerprint = await genFingerPrint()
+  const headers = {
+    authorization: token,
+    "x-super-properties":
+      "eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRmlyZWZveCIsImRldmljZSI6IiIsInN5c3RlbV9sb2NhbGUiOiJlbi1VUyIsImJyb3dzZXJfdXNlcl9hZ2VudCI6Ik1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjkzLjApIEdlY2tvLzIwMTAwMTAxIEZpcmVmb3gvOTMuMCIsImJyb3dzZXJfdmVyc2lvbiI6IjkzLjAiLCJvc192ZXJzaW9uIjoiMTAiLCJyZWZlcnJlciI6IiIsInJlZmVycmluZ19kb21haW4iOiIiLCJyZWZlcnJlcl9jdXJyZW50IjoiIiwicmVmZXJyaW5nX2RvbWFpbl9jdXJyZW50IjoiIiwicmVsZWFzZV9jaGFubmVsIjoic3RhYmxlIiwiY2xpZW50X2J1aWxkX251bWJlciI6MTAwODA0LCJjbGllbnRfZXZlbnRfc291cmNlIjpudWxsfQ==",
+    "sec-fetch-dest": "empty",
+    "x-debug-options": "bugReporterEnabled",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    accept: "*/*",
+    "accept-language": "en-GB",
+    "user-agent":
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.16 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36",
+    TE: "trailers",
+    "x-fingerprint": fingerprint,
+    "Content-Type": "application/json",
+  }
+
+  const response = await fetch(`https://discord.com/api/v9/invites/${invite}`, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify({
+      session_id: genSessionID(),
+    }),
+  })
+
+  if (!response.ok) {
+    return "ERROR"
+  }
+  return "OK"
+}
+
+class CustomSelect {
+  constructor(element) {
+    this.el = element
+    this.display = element.querySelector(".select-display")
+    this.opts = element.querySelector(".select-options")
+    this.val = "random"
+    this.bind()
+  }
+
+  bind() {
+    this.display.addEventListener("click", () => this.toggle())
+    this.opts.querySelectorAll(".select-option").forEach((opt) => {
+      opt.addEventListener("click", (e) => {
+        this.select(e.target.dataset.value, e.target.textContent)
       })
     })
-
     document.addEventListener("click", (e) => {
-      if (!this.element.contains(e.target)) {
+      if (!this.el.contains(e.target)) {
         this.close()
       }
     })
   }
 
   toggle() {
-    const isActive = this.display.classList.contains("active")
-    if (isActive) {
+    const active = this.display.classList.contains("active")
+    if (active) {
       this.close()
     } else {
       this.open()
@@ -112,105 +194,98 @@ class CustomSelect {
 
   open() {
     this.display.classList.add("active")
-    this.options.classList.add("active")
+    this.opts.classList.add("active")
   }
 
   close() {
     this.display.classList.remove("active")
-    this.options.classList.remove("active")
+    this.opts.classList.remove("active")
   }
 
-  selectOption(value, text) {
-    this.value = value
+  select(val, text) {
+    this.val = val
     this.display.querySelector(".select-value").textContent = text
     this.close()
   }
 
-  getValue() {
-    return this.value
+  get() {
+    return this.val
   }
 }
 
 class TokenChecker {
   constructor() {
     this.validTokens = []
-    this.initElements()
-    this.bindEvents()
+    this.init()
+    this.bind()
   }
 
-  initElements() {
+  init() {
     this.tokensInput = document.getElementById("tokens")
     this.checkBtn = document.getElementById("checkBtn")
-    this.copyValidBtn = document.getElementById("copyValidBtn")
-    this.resultsBox = document.getElementById("resultsBox")
+    this.copyBtn = document.getElementById("copyBtn")
+    this.results = document.getElementById("results")
   }
 
-  bindEvents() {
-    this.checkBtn.addEventListener("click", () => this.checkTokens())
-    this.copyValidBtn.addEventListener("click", () => this.copyValidTokens())
+  bind() {
+    this.checkBtn.addEventListener("click", () => this.check())
+    this.copyBtn.addEventListener("click", () => this.copy())
   }
 
-  async checkTokens() {
-    const tokens = this.tokensInput.value
-      .split("\n")
-      .map((token) => token.trim())
-      .filter((token) => token.length > 0)
+  async check() {
+    const tokens = this.parse(this.tokensInput.value)
 
     if (tokens.length === 0) {
-      this.showError("トークンを入力してください")
+      this.showErr("トークンを入力してください")
       return
     }
 
     this.checkBtn.disabled = true
-    this.copyValidBtn.disabled = true
-    this.resultsBox.innerHTML = ""
+    this.copyBtn.disabled = true
+    this.results.innerHTML = ""
     this.validTokens = []
 
     for (const token of tokens) {
-      await this.checkSingleToken(token)
+      await this.checkOne(token)
       await new Promise((resolve) => setTimeout(resolve, 100))
     }
 
     this.checkBtn.disabled = false
     if (this.validTokens.length > 0) {
-      this.copyValidBtn.disabled = false
+      this.copyBtn.disabled = false
     }
   }
 
-  async checkSingleToken(token) {
+  async checkOne(token) {
     try {
-      const response = await fetch("https://discord.com/api/v10/users/@me", {
-        headers: {
-          Authorization: `Bot ${token}`,
-        },
+      const res = await fetch("https://discord.com/api/v10/users/@me", {
+        headers: { Authorization: `Bot ${token}` },
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        this.displayAccount(token, data, true)
+      if (res.ok) {
+        const data = await res.json()
+        this.showAcc(token, data, true)
         this.validTokens.push(token)
         return
       }
 
-      const userResponse = await fetch("https://discord.com/api/v10/users/@me", {
-        headers: {
-          Authorization: token,
-        },
+      const userRes = await fetch("https://discord.com/api/v10/users/@me", {
+        headers: { Authorization: token },
       })
 
-      if (userResponse.ok) {
-        const userData = await userResponse.json()
-        this.displayAccount(token, userData, false)
+      if (userRes.ok) {
+        const userData = await userRes.json()
+        this.showAcc(token, userData, false)
         this.validTokens.push(token)
       } else {
-        this.displayInvalidToken(token)
+        this.showInvalid(token)
       }
     } catch (error) {
-      this.displayInvalidToken(token, error.message)
+      this.showInvalid(token, error.message)
     }
   }
 
-  displayAccount(token, data, isBot) {
+  showAcc(token, data, isBot) {
     const card = document.createElement("div")
     card.className = "account-card"
 
@@ -257,15 +332,15 @@ class TokenChecker {
           <span class="account-detail-value">${data.verified ? "はい" : "いいえ"}</span>
         </div>
       </div>
-      <div class="account-token" onclick="navigator.clipboard.writeText('${token}')" title="トークンをコピー>
+      <div class="account-token" onclick="navigator.clipboard.writeText('${token}')" title="トークンをコピー">
         ${token}
       </div>
     `
 
-    this.resultsBox.appendChild(card)
+    this.results.appendChild(card)
   }
 
-  displayInvalidToken(token, error = "Invalid token") {
+  showInvalid(token, error = "無効なトークン") {
     const card = document.createElement("div")
     card.className = "account-card"
     card.style.borderColor = "rgba(255, 71, 87, 0.5)"
@@ -276,8 +351,8 @@ class TokenChecker {
           <span class="material-icons" style="color: #ff4757; font-size: 1.2rem;">error</span>
         </div>
         <div class="account-basic">
-          <div class="account-name">Invalid Token</div>
-          <span class="account-type" style="background: rgba(255, 71, 87, 0.2); color: #ff4757;">ERROR</span>
+          <div class="account-name">無効なトークン</div>
+          <span class="account-type" style="background: rgba(255, 71, 87, 0.2); color: #ff4757;">エラー</span>
         </div>
       </div>
       <div style="color: rgba(255, 255, 255, 0.6); font-size: 0.75rem; margin-bottom: 0.8rem;">
@@ -288,65 +363,71 @@ class TokenChecker {
       </div>
     `
 
-    this.resultsBox.appendChild(card)
+    this.results.appendChild(card)
   }
 
-  copyValidTokens() {
+  copy() {
     if (this.validTokens.length === 0) return
 
-    const tokensText = this.validTokens.join("\n")
-    navigator.clipboard.writeText(tokensText).then(() => {
-      const originalText = this.copyValidBtn.innerHTML
-      this.copyValidBtn.innerHTML = '<span class="material-icons">check</span>Copied!'
+    const text = this.validTokens.join("\n")
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = this.copyBtn.innerHTML
+      this.copyBtn.innerHTML = '<span class="material-icons">check</span>コピー完了!'
       setTimeout(() => {
-        this.copyValidBtn.innerHTML = originalText
+        this.copyBtn.innerHTML = orig
       }, 2000)
     })
   }
 
-  showError(message) {
-    this.resultsBox.innerHTML = `
+  showErr(msg) {
+    this.results.innerHTML = `
       <div style="text-align: center; color: #ff4757; padding: 2rem;">
         <span class="material-icons" style="font-size: 2rem; margin-bottom: 0.5rem;">error</span>
-        <div>${message}</div>
+        <div>${msg}</div>
       </div>
     `
+  }
+
+  parse(input) {
+    return input
+      .split("\n")
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0)
   }
 }
 
 class Config {
   constructor() {
-    this.initElements()
-    this.bindEvents()
-    this.allMembers = new Set()
+    this.init()
+    this.bind()
+    this.members = new Set()
     this.ws = null
-    this.currentToken = null
-    this.currentTokenIndex = 0
+    this.curToken = null
+    this.curTokenIdx = 0
     this.serverId = null
     this.channelIds = []
-    this.currentChannelIndex = 0
-    this.memberFetchTimeout = null
-    this.fetchingLogEntry = null
+    this.curChannelIdx = 0
+    this.timeout = null
   }
 
-  initElements() {
-    this.configTokensInput = document.getElementById("configTokens")
-    this.serverIdInput = document.getElementById("serverId")
-    this.channelIdsInput = document.getElementById("channelIds")
-    this.mentionIdsInput = document.getElementById("mentionIds")
-    this.fetchChannelsBtn = document.getElementById("fetchChannelsBtn")
-    this.fetchMentionsBtn = document.getElementById("fetchMentionsBtn")
-    this.validateTokensBtn = document.getElementById("validateTokensBtn")
-    this.configLogBox = document.getElementById("configLogBox")
+  init() {
+    this.cfgTokens = document.getElementById("cfgTokens")
+    this.serverId = document.getElementById("serverId")
+    this.channelIds = document.getElementById("channelIds")
+    this.mentionIds = document.getElementById("mentionIds")
+    this.getChannelsBtn = document.getElementById("getChannelsBtn")
+    this.getMentionsBtn = document.getElementById("getMentionsBtn")
+    this.validateBtn = document.getElementById("validateBtn")
+    this.log = document.getElementById("cfgLog")
   }
 
-  bindEvents() {
-    this.fetchChannelsBtn.addEventListener("click", () => this.fetchChannels())
-    this.fetchMentionsBtn.addEventListener("click", () => this.fetchMentions())
-    this.validateTokensBtn.addEventListener("click", () => this.validateTokens())
+  bind() {
+    this.getChannelsBtn.addEventListener("click", () => this.getChannels())
+    this.getMentionsBtn.addEventListener("click", () => this.getMentions())
+    this.validateBtn.addEventListener("click", () => this.validate())
   }
 
-  log(message, type = "info", icon = "info", details = null) {
+  addLog(msg, type = "info", icon = "info", details = null) {
     const time = new Date().toLocaleTimeString()
     const entry = document.createElement("div")
     entry.className = `log-entry ${type}`
@@ -363,146 +444,189 @@ class Config {
     entry.innerHTML = `
       <span class="log-time">${time}</span>
       <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-      <span class="log-message">${message}</span>
+      <span class="log-message">${msg}</span>
     `
 
     if (details) {
       entry.addEventListener("click", () => {
-        const messageSpan = entry.querySelector(".log-message")
+        const msgSpan = entry.querySelector(".log-message")
         if (entry.classList.contains("expanded")) {
-          messageSpan.textContent = message
+          msgSpan.textContent = msg
           entry.classList.remove("expanded")
         } else {
-          messageSpan.textContent = details
+          msgSpan.textContent = details
           entry.classList.add("expanded")
         }
       })
     }
 
-    this.configLogBox.appendChild(entry)
-    this.configLogBox.scrollTop = this.configLogBox.scrollHeight
+    this.log.appendChild(entry)
+    this.log.scrollTop = this.log.scrollHeight
     return entry
   }
 
-  parseList(input) {
+  parse(input) {
     return input
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item.length > 0)
   }
 
-  async fetchChannels() {
-    const tokens = this.parseList(this.configTokensInput.value)
-    const serverId = this.serverIdInput.value.trim()
+  async getChannels() {
+    const tokens = this.parse(this.cfgTokens.value)
+    const serverId = this.serverId.value.trim()
 
     if (!tokens.length) {
-      this.log("Please provide tokens", "error", "error")
+      this.addLog("トークンを入力してください", "error", "error")
       return
     }
 
     if (!serverId) {
-      this.log("Please provide server ID", "error", "error")
+      this.addLog("サーバーIDを入力してください", "error", "error")
       return
     }
 
-    this.fetchChannelsBtn.disabled = true
-    this.log("Getting channels...", "info", "list")
+    this.getChannelsBtn.disabled = true
+    this.addLog("チャンネルを取得中...", "info", "list")
 
     for (const token of tokens) {
       try {
-        const response = await fetch(`https://discord.com/api/v10/guilds/${serverId}/channels`, {
-          headers: {
-            Authorization: token,
-          },
+        const res = await fetch(`https://discord.com/api/v10/guilds/${serverId}/channels`, {
+          headers: { Authorization: token },
         })
 
-        if (response.ok) {
-          const channels = await response.json()
-          const textChannels = channels.filter((channel) => channel.type === 0)
-          const channelIds = textChannels.map((channel) => channel.id)
-          this.channelIdsInput.value = channelIds.join("\n")
-          this.log(`Got ${channelIds.length} channels`, "success", "check_circle")
+        if (res.ok) {
+          const channels = await res.json()
+          const textChannels = channels.filter((ch) => ch.type === 0)
+          const channelIds = textChannels.map((ch) => ch.id)
+          this.channelIds.value = channelIds.join("\n")
+          this.addLog(`${channelIds.length}個のチャンネルを取得しました`, "success", "check_circle")
           break
         } else {
-          this.log(`Token failed: ${response.status}`, "warning", "warning")
+          this.addLog(`トークンエラー: ${res.status}`, "warning", "warning")
         }
       } catch (error) {
-        this.log("Request failed", "error", "error", error.message)
+        this.addLog("リクエストに失敗しました", "error", "error", error.message)
       }
     }
 
-    this.fetchChannelsBtn.disabled = false
+    this.getChannelsBtn.disabled = false
   }
 
-  async fetchMentions() {
-    const tokens = this.parseList(this.configTokensInput.value)
-    const serverId = this.serverIdInput.value.trim()
-    const channelIds = this.parseList(this.channelIdsInput.value)
+  async getMentions() {
+    const tokens = this.parse(this.cfgTokens.value)
+    const serverId = this.serverId.value.trim()
+    const channelIds = this.parse(this.channelIds.value)
 
     if (!tokens.length) {
-      this.log("Please provide tokens", "error", "error")
+      this.addLog("トークンを入力してください", "error", "error")
       return
     }
 
     if (!serverId) {
-      this.log("Please provide server ID", "error", "error")
+      this.addLog("サーバーIDを入力してください", "error", "error")
       return
     }
 
     if (!channelIds.length) {
-      this.log("Please provide channel IDs", "error", "error")
+      this.addLog("チャンネルIDを入力してください", "error", "error")
       return
     }
 
-    this.fetchMentionsBtn.disabled = true
-    this.allMembers.clear()
-    this.serverId = serverId
-    this.channelIds = channelIds
-    this.currentTokenIndex = 0
-    this.currentChannelIndex = 0
+    this.getMentionsBtn.this.addLog("チャンネルIDを入力してください", "error", "error")
+    return
+  }
 
-    this.log("Getting members...", "info", "alternate_email")
+  this;
+  .
+  getMentionsBtn;
+  .
+  disabled = true
+  this;
+  .
+  members;
+  .
+  clear()
+  this;
+  .
+  serverId = serverId
+  this;
+  .
+  channelIds = channelIds
+  this;
+  .
+  curTokenIdx = 0
+  this;
+  .
+  curChannelIdx = 0
 
-    let success = false
-    for (let tokenIndex = 0; tokenIndex < tokens.length && !success; tokenIndex++) {
-      this.currentToken = tokens[tokenIndex]
-      this.currentTokenIndex = tokenIndex
+  this;
+  .
+  addLog("メンバーを取得中...", "info", "alternate_email")
 
-      for (let channelIndex = 0; channelIndex < channelIds.length && !success; channelIndex++) {
-        this.currentChannelIndex = channelIndex
-        this.allMembers.clear()
+  let
+  success = false
+  for (let tokenIdx = 0
+  tokenIdx < tokens.length && !success
+  tokenIdx;
+  ++) {
+  this
+  .
+  curToken = tokens[tokenIdx]
+  this;
+  .
+  curTokenIdx = tokenIdx
 
-        success = await this.connectWebSocket()
-        if (success && this.allMembers.size > 0) {
+  for (let channelIdx = 0
+  channelIdx < channelIds.length && !success
+  channelIdx;
+  ++) {
+  this
+  .
+  curChannelIdx = channelIdx
+  this;
+  .
+  members;
+  .
+  clear()
+
+  success = await this.connectWS()
+  if (success && this.members.size > 0) {
           break
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-      }
+  await
+  new
+  Promise((resolve)
+  =>
+  setTimeout(resolve, 1000)
+  )
+}
 
-      if (success && this.allMembers.size > 0) {
-        break
-      }
+if (success && this.members.size > 0) {
+  break
+}
 
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-    }
+await new Promise((resolve) => setTimeout(resolve, 2000))
+}
 
-    if (this.allMembers.size === 0) {
-      this.log("Members not found", "warning", "warning")
-    }
+if (this.members.size === 0) {
+  this.addLog("メンバーが見つかりませんでした", "warning", "warning")
+}
 
-    this.fetchMentionsBtn.disabled = false
-  }
+this.getMentionsBtn.disabled = false
+}
 
-  connectWebSocket() {
-    return new Promise((resolve) => {
+  connectWS()
+{
+  return new Promise((resolve) => {
       if (this.ws) {
         this.ws.close()
       }
 
       this.ws = new WebSocket("wss://gateway.discord.gg/?v=9&encoding=json")
-      let heartbeatInterval = null
-      let hasConnected = false
+      let heartbeat = null
+      let connected = false
 
       this.ws.onopen = () => {}
 
@@ -511,18 +635,18 @@ class Config {
 
         switch (data.op) {
           case 10:
-            const heartbeatIntervalMs = data.d.heartbeat_interval
-            heartbeatInterval = setInterval(() => {
+            const interval = data.d.heartbeat_interval
+            heartbeat = setInterval(() => {
               if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.ws.send(JSON.stringify({ op: 1, d: null }))
               }
-            }, heartbeatIntervalMs)
+            }, interval)
 
             this.ws.send(
               JSON.stringify({
                 op: 2,
                 d: {
-                  token: this.currentToken,
+                  token: this.curToken,
                   properties: {
                     os: "Windows",
                     browser: "Discord Client",
@@ -530,185 +654,335 @@ class Config {
                   },
                   intents: 513,
                 },
-              }),
+              })
             )
             break
 
           case 0:
             if (data.t === "READY") {
-              hasConnected = true
-              this.requestMemberChunk()
+              connected = true
+              this.reqMembers()
             } else if (data.t === "GUILD_MEMBER_LIST_UPDATE") {
-              this.processMemberListUpdate(data.d)
-            } else if (data.t === "GUILD_MEMBERS_CHUNK") {
-              this.processMemberChunk(data.d)
-            }
+              this.procMemberList(data.d)
+            } else if (data.t === "GUILD_MEMBERS_CHUNK") {\
+              this.procMemberChunk(data.d)\
+            }\
             break
-
-          case 9:
-            if (heartbeatInterval) clearInterval(heartbeatInterval)
-            this.ws.close()
+\
+          case 9:\
+            if (heartbeat) clearInterval(heartbeat)\
+            this.ws.close()\
             break
         }
       }
-
-      this.ws.onerror = (error) => {
-        if (heartbeatInterval) clearInterval(heartbeatInterval)
+\
+      this.ws.onerror = (error) => \
+        if (heartbeat) clearInterval(heartbeat)
         resolve(false)
-      }
+\
+      this.ws.onclose = (event) => \
+        if (heartbeat) clearInterval(heartbeat)\
+        if (this.timeout) clearTimeout(this.timeout)
 
-      this.ws.onclose = (event) => {
-        if (heartbeatInterval) clearInterval(heartbeatInterval)
-        if (this.memberFetchTimeout) clearTimeout(this.memberFetchTimeout)
-
-        if (!hasConnected) {
-          resolve(false)
-        } else {
-          this.finalizeMemberCollection()
+        if (!connected) {\
+          resolve(false)\
+        } else {\
+          this.finalize()\
           resolve(true)
         }
-      }
 
-      setTimeout(() => {
-        if (!hasConnected) {
-          this.ws.close()
-          resolve(false)
-        }
+      setTimeout(() => {\
+        if (!connected) {\
+          this.ws.close()\
+          resolve(false)\
+        }\
       }, 10000)
     })
-  }
+}
+\
+\
+  reqMembers()
+{
+  const channelId = this.channelIds[this.curChannelIdx]
 
-  requestMemberChunk() {
-    const channelId = this.channelIds[this.currentChannelIndex]
-
-    this.ws.send(
+  this.ws.send(
       JSON.stringify({
         op: 14,
-        d: {
+        d: {\
           guild_id: this.serverId,
           typing: false,
           activities: false,
           threads: false,
           channels: {
-            [channelId]: [[0, 99]],
+            [channelId]: [[0, 99]],\
           },
         },
-      }),
+      })
     )
 
-    this.memberFetchTimeout = setTimeout(() => {
-      this.ws.close()
-    }, 5000)
+  this.timeout = setTimeout(() => {
+    this.ws.close()
+  }, 5000)
+}
+
+procMemberList(data)
+{
+  if (data.ops) {
+    data.ops.forEach((op) => {
+      if (op.items) {
+        op.items.forEach((item) => {
+          if (item.member && item.member.user && !item.member.user.bot) {
+            this.members.add(item.member.user.id)
+          }
+        })
+      }
+    })
   }
 
-  processMemberListUpdate(data) {
-    if (data.ops) {
-      data.ops.forEach((op) => {
-        if (op.items) {
-          op.items.forEach((item) => {
-            if (item.member && item.member.user && !item.member.user.bot) {
-              this.allMembers.add(item.member.user.id)
-            }
-          })
+  if (this.timeout) {
+    clearTimeout(this.timeout)
+  }
+
+  this.timeout = setTimeout(() => {
+    this.ws.close()
+  }, 2000)
+}
+
+procMemberChunk(data)
+{
+  if (data.members) {
+    data.members.forEach((member) => {
+      if (member.user && !member.user.bot) {
+        this.members.add(member.user.id)
+      }
+    })
+  }
+}
+
+finalize()
+{
+  if (this.members.size > 0) {
+    this.mentionIds.value = Array.from(this.members).join("\n")
+    this.addLog(`${this.members.size}人のメンバーを取得しました`, "success", "check_circle")
+  } else {
+    this.addLog("メンバーが見つかりませんでした", "warning", "warning")
+  }
+}
+
+async
+validate()
+{
+  const tokens = this.parse(this.cfgTokens.value)
+
+  if (tokens.length === 0) {
+    this.addLog("トークンを入力してください", "error", "error")
+    return
+  }
+
+  document.getElementById("tokens").value = tokens.join("\n")
+
+  this.addLog("トークンを検証中...", "info", "info")
+
+  const checker = window.tokenChecker
+  await checker.check()
+
+  if (checker.validTokens.length > 0) {
+    this.cfgTokens.value = checker.validTokens.join("\n")
+    this.addLog(`${checker.validTokens.length}個の有効なトークンを確認しました`, "success", "check_circle")
+  } else {
+    this.cfgTokens.value = ""
+    this.addLog("有効なトークンが見つかりませんでした", "warning", "warning")
+  }
+}
+}
+
+class Server {
+  constructor() {
+    this.init()
+    this.bind()
+  }
+
+  init() {
+    this.inviteCode = document.getElementById("inviteCode")
+    this.joinBtn = document.getElementById("joinBtn")
+    this.leaveBtn = document.getElementById("leaveBtn")
+    this.log = document.getElementById("serverLog")
+  }
+
+  bind() {
+    this.joinBtn.addEventListener("click", () => this.join())
+    this.leaveBtn.addEventListener("click", () => this.leave())
+  }
+
+  addLog(msg, type = "info", icon = "info", details = null) {
+    const time = new Date().toLocaleTimeString()
+    \
+    const entry = document.createElement("div")
+    entry.className = `log-entry ${type}`
+
+    const iconMap = {
+      info: "info",
+      success: "check_circle",
+      error: "error",
+      warning: "warning",
+      login: "login",
+      logout: "logout",
+    }
+
+    entry.innerHTML = `
+      <span class=\"log-time">${time}</span>
+      <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
+      <span class="log-message">${msg}</span>
+    `
+
+    if (details) {
+      entry.addEventListener("click", () => {
+        const msgSpan = entry.querySelector(".log-message")
+        if (entry.classList.contains("expanded")) {
+          msgSpan.textContent = msg
+          entry.classList.remove("expanded")
+        } else {
+          \
+          msgSpan.textContent = details
+          entry.classList.add("expanded")
         }
       })
     }
 
-    if (this.memberFetchTimeout) {
-      clearTimeout(this.memberFetchTimeout)
-    }
-
-    this.memberFetchTimeout = setTimeout(() => {
-      this.ws.close()
-    }, 2000)
+    this.log.appendChild(entry)
+    this.log.scrollTop = this.log.scrollHeight
   }
 
-  processMemberChunk(data) {
-    if (data.members) {
-      data.members.forEach((member) => {
-        if (member.user && !member.user.bot) {
-          this.allMembers.add(member.user.id)
-        }
-      })
-    }
+  parse(input) {
+    return input
+    \
+      .split("\n")
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0)
   }
 
-  finalizeMemberCollection() {
-    if (this.allMembers.size > 0) {
-      this.mentionIdsInput.value = Array.from(this.allMembers).join("\n")
-      this.log(`Got ${this.allMembers.size} members`, "success", "check_circle")
-    } else {
-      this.log("Members not found", "warning", "warning")
+  async join() {
+    const tokens = this.parse(document.getElementById("cfgTokens").value)
+    const invite = this.inviteCode.value.trim()
+
+    if (!tokens.length) {
+      this.addLog("設定でトークンを入力してください", "error", "error")
+      return
     }
-  }
+    \
 
-  async validateTokens() {
-    const configTokens = this.parseList(this.configTokensInput.value)
-
-    if (configTokens.length === 0) {
-      this.log("Please provide tokens", "error", "error")
+    if (!invite) {
+      this.addLog("招待コードを入力してください", "error", "error")
       return
     }
 
-    document.getElementById("tokens").value = configTokens.join("\n")
+    this.joinBtn.disabled = true
+    this.addLog("サーバーに参加中...", "info", "login")
 
-    this.log("Validating tokens...", "info", "info")
-
-    const tokenChecker = window.tokenCheckerInstance
-    await tokenChecker.checkTokens()
-
-    if (tokenChecker.validTokens.length > 0) {
-      this.configTokensInput.value = tokenChecker.validTokens.join("\n")
-      this.log(`Validated ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
-    } else {
-      this.configTokensInput.value = ""
-      this.log("Valid tokens not found", "warning", "warning")
+    let successCount = 0
+    for (let i = 0; i < tokens.length; i++) {
+      try {
+        const result = await joinToken(tokens[i], invite)
+        if (result === "OK") {
+          successCount++
+          this.addLog(`トークン ${i + 1}: 参加成功`, "success", "check_circle")
+        } else {
+          this.addLog(`トークン ${i + 1}: 参加失敗`, "error", "error")
+        }
+      } catch (error) {
+        this.addLog(`トークン ${i + 1}: 参加失敗`, "error", "error", error.message)
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500))
     }
+
+    this.addLog(`${successCount}/${tokens.length}個のトークンが参加しました`, "info", "info")
+    this.joinBtn.disabled = false
+  }
+
+  async leave() {
+    const tokens = this.parse(document.getElementById("cfgTokens").value)
+    const serverId = document.getElementById("serverId").value.trim()
+
+    if (!tokens.length) {
+      this.addLog("設定でトークンを入力してください", "error", "error")
+      return
+    }
+
+    if (!serverId) {
+      this.addLog("設定でサーバーIDを入力してください", "error", "error")
+      return
+    }
+
+    this.leaveBtn.disabled = true
+    this.addLog("サーバーから退出中...", "info", "logout")
+
+    let successCount = 0
+    for (let i = 0; i < tokens.length; i++) {
+      try {
+        const res = await fetch(`https://discord.com/api/v10/users/@me/guilds/${serverId}`, {
+          method: "DELETE",
+          headers: { Authorization: tokens[i] },
+        })
+
+        if (res.ok) {
+          successCount++
+          this.addLog(`トークン ${i + 1}: 退出成功`, "success", "check_circle")
+        } else {
+          this.addLog(`トークン ${i + 1}: 退出失敗`, "error", "error", `Status: ${res.status}`)
+        }
+      } catch (error) {
+        this.addLog(`トークン ${i + 1}: 退出失敗`, "error", "error", error.message)
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500))
+    }
+
+    this.addLog(`${successCount}/${tokens.length}個のトークンが退出しました`, "info", "info")
+    this.leaveBtn.disabled = false
   }
 }
 
 class Sender {
   constructor() {
-    this.messagePatterns = []
-    this.isRunning = false
-    this.sendIntervals = []
-    this.currentMessageIndex = 0
-    this.sendModeSelect = null
-    this.tokenCounters = new Map()
-    this.initElements()
-    this.bindEvents()
+    this.patterns = []
+    this.running = false
+    this.intervals = []
+    this.curIdx = 0
+    this.select = null
+    this.counters = new Map()
+    this.init()
+    this.bind()
   }
 
-  initElements() {
-    this.messageInput = document.getElementById("messageInput")
-    this.addMessageBtn = document.getElementById("addMessageBtn")
-    this.messagePatternsBox = document.getElementById("messagePatterns")
-    this.sendModeSelect = new CustomSelect(document.getElementById("sendModeSelect"))
-    this.infiniteToggle = document.getElementById("infiniteToggle")
-    this.messageCountInput = document.getElementById("messageCount")
-    this.messageIntervalInput = document.getElementById("messageInterval")
-    this.startSendBtn = document.getElementById("startSendBtn")
-    this.stopSendBtn = document.getElementById("stopSendBtn")
-    this.senderLogBox = document.getElementById("senderLogBox")
+  init() {
+    this.msgInput = document.getElementById("msgInput")
+    this.addBtn = document.getElementById("addMsgBtn")
+    this.patternsBox = document.getElementById("msgPatterns")
+    this.select = new CustomSelect(document.getElementById("sendModeSelect"))
+    this.infiniteMode = document.getElementById("infiniteMode")
+    this.msgCount = document.getElementById("msgCount")
+    this.msgInterval = document.getElementById("msgInterval")
+    this.startBtn = document.getElementById("startSendBtn")
+    this.stopBtn = document.getElementById("stopSendBtn")
+    this.log = document.getElementById("sendLog")
     this.countGroup = document.getElementById("countGroup")
   }
 
-  bindEvents() {
-    this.addMessageBtn.addEventListener("click", () => this.addMessage())
-    this.infiniteToggle.addEventListener("change", () => this.toggleInfiniteMode())
-    this.startSendBtn.addEventListener("click", () => this.startSending())
-    this.stopSendBtn.addEventListener("click", () => this.stopSending())
+  bind() {
+    this.addBtn.addEventListener("click", () => this.add())
+    this.infiniteMode.addEventListener("change", () => this.toggleInfinite())
+    this.startBtn.addEventListener("click", () => this.start())
+    this.stopBtn.addEventListener("click", () => this.stop())
   }
 
-  toggleInfiniteMode() {
-    if (this.infiniteToggle.checked) {
+  toggleInfinite() {
+    if (this.infiniteMode.checked) {
       this.countGroup.style.display = "none"
     } else {
       this.countGroup.style.display = "flex"
     }
   }
 
-  log(message, type = "info", icon = "info", details = null) {
+  addLog(msg, type = "info", icon = "info", details = null) {
     const time = new Date().toLocaleTimeString()
     const entry = document.createElement("div")
     entry.className = `log-entry ${type}`
@@ -725,37 +999,37 @@ class Sender {
     entry.innerHTML = `
       <span class="log-time">${time}</span>
       <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-      <span class="log-message">${message}</span>
+      <span class="log-message">${msg}</span>
     `
 
     if (details) {
       entry.addEventListener("click", () => {
-        const messageSpan = entry.querySelector(".log-message")
+        const msgSpan = entry.querySelector(".log-message")
         if (entry.classList.contains("expanded")) {
-          messageSpan.textContent = message
+          msgSpan.textContent = msg
           entry.classList.remove("expanded")
         } else {
-          messageSpan.textContent = details
+          msgSpan.textContent = details
           entry.classList.add("expanded")
         }
       })
     }
 
-    this.senderLogBox.appendChild(entry)
-    this.senderLogBox.scrollTop = this.senderLogBox.scrollHeight
+    this.log.appendChild(entry)
+    this.log.scrollTop = this.log.scrollHeight
   }
 
-  parseList(input) {
+  parse(input) {
     return input
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item.length > 0)
   }
 
-  async processMessage(message) {
-    let processedMessage = message
+  async processMsg(msg) {
+    let processed = msg
 
-    const rsMatch = message.match(/\/rs(\d*)\//g)
+    const rsMatch = msg.match(/\/rs(\d*)\//g)
     if (rsMatch) {
       for (const match of rsMatch) {
         const lengthMatch = match.match(/\/rs(\d+)\//)
@@ -765,16 +1039,16 @@ class Sender {
           : "https://1tasu1ha2.vercel.app/api/random-string"
 
         try {
-          const response = await fetch(url)
-          const data = await response.json()
-          processedMessage = processedMessage.replace(match, data.result || "")
+          const res = await fetch(url)
+          const data = await res.json()
+          processed = processed.replace(match, data.result || "")
         } catch (error) {
-          this.log("String API failed", "error", "error", error.message)
+          this.addLog("文字列APIエラー", "error", "error", error.message)
         }
       }
     }
 
-    const reMatch = message.match(/\/re(\d*)\//g)
+    const reMatch = msg.match(/\/re(\d*)\//g)
     if (reMatch) {
       for (const match of reMatch) {
         const lengthMatch = match.match(/\/re(\d+)\//)
@@ -784,72 +1058,72 @@ class Sender {
           : "https://1tasu1ha2.vercel.app/api/random-emoji"
 
         try {
-          const response = await fetch(url)
-          const data = await response.json()
-          processedMessage = processedMessage.replace(match, data.result || "")
+          const res = await fetch(url)
+          const data = await res.json()
+          processed = processed.replace(match, data.result || "")
         } catch (error) {
-          this.log("Emoji API failed", "error", "error", error.message)
+          this.addLog("絵文字APIエラー", "error", "error", error.message)
         }
       }
     }
 
-    const rmMatch = message.match(/\/rm(\d*)\//g)
+    const rmMatch = msg.match(/\/rm(\d*)\//g)
     if (rmMatch) {
-      const mentionIds = this.parseList(document.getElementById("mentionIds").value)
+      const mentionIds = this.parse(document.getElementById("mentionIds").value)
 
       if (mentionIds.length === 0) {
-        this.log("Please provide mention IDs", "error", "error")
-        return processedMessage
+        this.addLog("メンバーIDを入力してください", "error", "error")
+        return processed
       }
 
       for (const match of rmMatch) {
         const lengthMatch = match.match(/\/rm(\d+)\//)
         const count = lengthMatch ? Number.parseInt(lengthMatch[1]) : 1
 
-        const selectedMentions = []
+        const mentions = []
         for (let i = 0; i < count && i < mentionIds.length; i++) {
-          const randomIndex = Math.floor(Math.random() * mentionIds.length)
-          selectedMentions.push(`<@${mentionIds[randomIndex]}>`)
+          const randomIdx = Math.floor(Math.random() * mentionIds.length)
+          mentions.push(`<@${mentionIds[randomIdx]}>`)
         }
 
-        processedMessage = processedMessage.replace(match, selectedMentions.join(" "))
+        processed = processed.replace(match, mentions.join(" "))
       }
     }
 
-    return processedMessage
+    return processed
   }
 
-  addMessage() {
-    const message = this.messageInput.value.trim()
+  add() {
+    const msg = this.msgInput.value.trim()
 
-    if (!message) {
-      this.log("Please provide message", "error", "error")
+    if (!msg) {
+      this.addLog("メッセージを入力してください", "error", "error")
       return
     }
 
-    this.messagePatterns.push(message)
-    this.messageInput.value = ""
-    this.renderMessagePatterns()
+    this.patterns.push(msg)
+    this.msgInput.value = ""
+    this.render()
   }
 
-  renderMessagePatterns() {
-    this.messagePatternsBox.innerHTML = ""
+  render() {
+    this.patternsBox.innerHTML = ""
 
-    this.messagePatterns.forEach((pattern, index) => {
-      const patternElement = document.createElement("div")
-      patternElement.className = "message-pattern"
+    this.patterns.forEach((pattern, idx) => {
+      const el = document.createElement("div")
+      el.className = "message-pattern"
 
-      patternElement.innerHTML = `
+      el.innerHTML = `
         <div class="message-header">
-          <span class="message-number">${index + 1}</span>
+          <span class="message-number">${idx + 1}</span>
           <div class="message-controls">
-            <button class="message-control-btn" onclick="window.senderInstance.moveMessage(${index}, -1)" ${index === 0 ? "disabled" : ""}>
+            <button class="message-control-btn" onclick="window.sender.move(${idx}, -1)" ${idx === 0 ? "disabled" : ""}>
               <span class="material-icons" style="font-size: 1rem;">keyboard_arrow_up</span>
             </button>
-            <button class="message-control-btn" onclick="window.senderInstance.moveMessage(${index}, 1)" ${index === this.messagePatterns.length - 1 ? "disabled" : ""}>
+            <button class="message-control-btn" onclick="window.sender.move(${idx}, 1)" ${idx === this.patterns.length - 1 ? "disabled" : ""}>
               <span class="material-icons" style="font-size: 1rem;">keyboard_arrow_down</span>
             </button>
-            <button class="message-control-btn delete" onclick="window.senderInstance.deleteMessage(${index})">
+            <button class="message-control-btn delete" onclick="window.sender.del(${idx})">
               <span class="material-icons" style="font-size: 1rem;">delete</span>
             </button>
           </div>
@@ -857,95 +1131,92 @@ class Sender {
         <div class="message-content">${pattern}</div>
       `
 
-      this.messagePatternsBox.appendChild(patternElement)
+      this.patternsBox.appendChild(el)
     })
   }
 
-  moveMessage(index, direction) {
-    const newIndex = index + direction
-    if (newIndex < 0 || newIndex >= this.messagePatterns.length) return
+  move(idx, dir) {
+    const newIdx = idx + dir
+    if (newIdx < 0 || newIdx >= this.patterns.length) return
 
-    const temp = this.messagePatterns[index]
-    this.messagePatterns[index] = this.messagePatterns[newIndex]
-    this.messagePatterns[newIndex] = temp
+    const temp = this.patterns[idx]
+    this.patterns[idx] = this.patterns[newIdx]
+    this.patterns[newIdx] = temp
 
-    this.renderMessagePatterns()
+    this.render()
   }
 
-  deleteMessage(index) {
-    this.messagePatterns.splice(index, 1)
-    this.renderMessagePatterns()
+  del(idx) {
+    this.patterns.splice(idx, 1)
+    this.render()
   }
 
-  getNextMessage() {
-    if (this.messagePatterns.length === 0) return null
+  getNext() {
+    if (this.patterns.length === 0) return null
 
-    if (this.sendModeSelect.getValue() === "random") {
-      const randomIndex = Math.floor(Math.random() * this.messagePatterns.length)
-      return this.messagePatterns[randomIndex]
+    if (this.select.get() === "random") {
+      const randomIdx = Math.floor(Math.random() * this.patterns.length)
+      return this.patterns[randomIdx]
     } else {
-      const message = this.messagePatterns[this.currentMessageIndex]
-      this.currentMessageIndex = (this.currentMessageIndex + 1) % this.messagePatterns.length
-      return message
+      const msg = this.patterns[this.curIdx]
+      this.curIdx = (this.curIdx + 1) % this.patterns.length
+      return msg
     }
   }
 
-  async sendMessage(token, channelId, message, tokenNumber, isInfinite, totalCount) {
+  async sendMsg(token, channelId, msg, tokenNum, isInfinite, totalCount) {
     try {
-      const processedMessage = await this.processMessage(message)
+      const processed = await this.processMsg(msg)
 
-      const response = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+      const res = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
         method: "POST",
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          content: processedMessage,
+          content: processed,
         }),
       })
 
-      if (response.ok) {
-        const tokenKey = `${tokenNumber}-${channelId}`
-        if (!this.tokenCounters.has(tokenKey)) {
-          this.tokenCounters.set(tokenKey, 0)
+      if (res.ok) {
+        const tokenKey = `${tokenNum}-${channelId}`
+        if (!this.counters.has(tokenKey)) {
+          this.counters.set(tokenKey, 0)
         }
-        this.tokenCounters.set(tokenKey, this.tokenCounters.get(tokenKey) + 1)
+        this.counters.set(tokenKey, this.counters.get(tokenKey) + 1)
 
-        const currentCount = this.tokenCounters.get(tokenKey)
-        const truncatedMessage =
-          processedMessage.length > 50 ? processedMessage.substring(0, 50) + "..." : processedMessage
-        const countInfo = isInfinite ? "" : ` (${currentCount}/${totalCount})`
-        const details = `Message: "${processedMessage}"${countInfo}`
+        const curCount = this.counters.get(tokenKey)
+        const countInfo = isInfinite ? "" : ` (${curCount}/${totalCount})`
+        const details = `メッセージ: "${processed}"${countInfo}`
 
-        this.log(`Token ${tokenNumber}: Message sent`, "success", "message", details)
+        this.addLog(`トークン ${tokenNum}: 送信成功`, "success", "message", details)
 
-        // Check if all tokens have completed their count and auto-stop if needed
-        if (!isInfinite && this.checkAllTokensCompleted()) {
-          setTimeout(() => this.stopSending(), 100)
+        if (!isInfinite && this.checkComplete()) {
+          setTimeout(() => this.stop(), 100)
         }
 
-        return { success: true, count: currentCount }
+        return { success: true, count: curCount }
       } else {
-        this.log(`Token ${tokenNumber}: Send failed`, "error", "error", `Status: ${response.status}`)
+        this.addLog(`トークン ${tokenNum}: 送信失敗`, "error", "error", `Status: ${res.status}`)
         return { success: false, count: 0 }
       }
     } catch (error) {
-      this.log(`Token ${tokenNumber}: Send failed`, "error", "error", error.message)
+      this.addLog(`トークン ${tokenNum}: 送信失敗`, "error", "error", error.message)
       return { success: false, count: 0 }
     }
   }
 
-  checkAllTokensCompleted() {
-    const tokens = this.parseList(document.getElementById("configTokens").value)
-    const channelIds = this.parseList(document.getElementById("channelIds").value)
-    const count = Number.parseInt(this.messageCountInput.value)
+  checkComplete() {
+    const tokens = this.parse(document.getElementById("cfgTokens").value)
+    const channelIds = this.parse(document.getElementById("channelIds").value)
+    const count = Number.parseInt(this.msgCount.value)
 
-    for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex++) {
+    for (let tokenIdx = 0; tokenIdx < tokens.length; tokenIdx++) {
       for (const channelId of channelIds) {
-        const tokenKey = `${tokenIndex + 1}-${channelId}`
-        const currentCount = this.tokenCounters.get(tokenKey) || 0
-        if (currentCount < count) {
+        const tokenKey = `${tokenIdx + 1}-${channelId}`
+        const curCount = this.counters.get(tokenKey) || 0
+        if (curCount < count) {
           return false
         }
       }
@@ -953,114 +1224,114 @@ class Sender {
     return true
   }
 
-  async startSending() {
-    if (this.isRunning) return
+  async start() {
+    if (this.running) return
 
-    const tokens = this.parseList(document.getElementById("configTokens").value)
-    const channelIds = this.parseList(document.getElementById("channelIds").value)
-    const isInfinite = this.infiniteToggle.checked
-    const count = isInfinite ? Number.POSITIVE_INFINITY : Number.parseInt(this.messageCountInput.value)
-    const interval = Number.parseInt(this.messageIntervalInput.value)
+    const tokens = this.parse(document.getElementById("cfgTokens").value)
+    const channelIds = this.parse(document.getElementById("channelIds").value)
+    const isInfinite = this.infiniteMode.checked
+    const count = isInfinite ? Number.POSITIVE_INFINITY : Number.parseInt(this.msgCount.value)
+    const interval = Number.parseInt(this.msgInterval.value)
 
     if (!tokens.length) {
-      this.log("Please provide tokens", "error", "error")
+      this.addLog("設定でトークンを入力してください", "error", "error")
       return
     }
 
     if (!channelIds.length) {
-      this.log("Please provide channel IDs", "error", "error")
+      this.addLog("設定でチャンネルIDを入力してください", "error", "error")
       return
     }
 
-    if (this.messagePatterns.length === 0) {
-      this.log("Please provide message patterns", "error", "error")
+    if (this.patterns.length === 0) {
+      this.addLog("メッセージパターンを追加してください", "error", "error")
       return
     }
 
     if (count < 1) {
-      this.log("Please provide valid count", "error", "error")
+      this.addLog("有効な送信数を入力してください", "error", "error")
       return
     }
 
     if (interval < 100) {
-      this.log("Please provide valid interval", "error", "error")
+      this.addLog("有効な送信間隔を入力してください", "error", "error")
       return
     }
 
-    this.isRunning = true
-    this.startSendBtn.disabled = true
-    this.stopSendBtn.disabled = false
-    this.currentMessageIndex = 0
-    this.tokenCounters.clear()
+    this.running = true
+    this.startBtn.disabled = true
+    this.stopBtn.disabled = false
+    this.curIdx = 0
+    this.counters.clear()
 
     const tokenDelay = Math.floor(interval / tokens.length)
 
-    this.log(`Starting ${tokens.length} tokens...`, "info", "send")
+    this.addLog(`${tokens.length}個のトークンを開始中...`, "info", "send")
 
-    tokens.forEach((token, tokenIndex) => {
+    tokens.forEach((token, tokenIdx) => {
       setTimeout(() => {
-        if (!this.isRunning) return
+        if (!this.running) return
 
         channelIds.forEach((channelId) => {
           const sendInterval = setInterval(async () => {
-            if (!this.isRunning) {
+            if (!this.running) {
               clearInterval(sendInterval)
               return
             }
 
-            const message = this.getNextMessage()
-            if (message) {
-              await this.sendMessage(token, channelId, message, tokenIndex + 1, isInfinite, count)
+            const msg = this.getNext()
+            if (msg) {
+              await this.sendMsg(token, channelId, msg, tokenIdx + 1, isInfinite, count)
             }
           }, interval)
 
-          this.sendIntervals.push(sendInterval)
+          this.intervals.push(sendInterval)
         })
-      }, tokenIndex * tokenDelay)
+      }, tokenIdx * tokenDelay)
     })
   }
 
-  stopSending() {
-    if (!this.isRunning) return
+  stop() {
+    if (!this.running) return
 
-    this.isRunning = false
-    this.startSendBtn.disabled = false
-    this.stopSendBtn.disabled = true
+    this.running = false
+    this.startBtn.disabled = false
+    this.stopBtn.disabled = true
 
-    this.log("Stopping tokens...", "warning", "warning")
+    this.addLog("トークンを停止中...", "warning", "warning")
 
-    this.sendIntervals.forEach((interval) => clearInterval(interval))
-    this.sendIntervals = []
+    this.intervals.forEach((interval) => clearInterval(interval))
+    this.intervals = []
 
-    this.log("All tokens stopped", "warning", "warning")
+    this.addLog("全てのトークンが停止しました", "warning", "warning")
   }
 }
 
 class Godfielder {
   constructor() {
-    this.isRunning = false
+    this.running = false
     this.bots = []
-    this.intervalIds = []
-    this.initElements()
-    this.bindEvents()
+    this.intervals = []
+    this.init()
+    this.bind()
   }
 
-  initElements() {
-    this.nameInput = document.getElementById("name")
-    this.roomInput = document.getElementById("room")
-    this.messageInput = document.getElementById("message")
-    this.botCountInput = document.getElementById("botCount")
-    this.startBtn = document.getElementById("startBtn")
-    this.stopBtn = document.getElementById("stopBtn")
-    this.logBox = document.getElementById("logBox")
+  init() {
+    this.nameInput = document.getElementById("botName")
+    this.roomInput = document.getElementById("roomCode")
+    this.msgInput = document.getElementById("botMsg")
+    this.countInput = document.getElementById("botCount")
+    this.startBtn = document.getElementById("startBotBtn")
+    this.stopBtn = document.getElementById("stopBotBtn")
+    this.log = document.getElementById("botLog")
   }
 
-  bindEvents() {
+  bind() {
     this.startBtn.addEventListener("click", () => this.start())
     this.stopBtn.addEventListener("click", () => this.stop())
   }
 
-  log(message, type = "info", icon = "info", details = null) {
+  addLog(msg, type = "info", icon = "info", details = null) {
     const time = new Date().toLocaleTimeString()
     const entry = document.createElement("div")
     entry.className = `log-entry ${type}`
@@ -1076,30 +1347,30 @@ class Godfielder {
     }
 
     entry.innerHTML = `
-    <span class="log-time">${time}</span>
-    <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-    <span class="log-message">${message}</span>
-  `
+      <span class="log-time">${time}</span>
+      <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
+      <span class="log-message">${msg}</span>
+    `
 
     if (details) {
       entry.addEventListener("click", () => {
-        const messageSpan = entry.querySelector(".log-message")
+        const msgSpan = entry.querySelector(".log-message")
         if (entry.classList.contains("expanded")) {
-          messageSpan.textContent = message
+          msgSpan.textContent = msg
           entry.classList.remove("expanded")
         } else {
-          messageSpan.textContent = details
+          msgSpan.textContent = details
           entry.classList.add("expanded")
         }
       })
     }
 
-    this.logBox.appendChild(entry)
-    this.logBox.scrollTop = this.logBox.scrollHeight
+    this.log.appendChild(entry)
+    this.log.scrollTop = this.log.scrollHeight
   }
 
   async processText(text, botId) {
-    let processedText = text
+    let processed = text
 
     const reMatch = text.match(/\/re(\d*)\//g)
     if (reMatch) {
@@ -1111,11 +1382,11 @@ class Godfielder {
           : "https://1tasu1ha2.vercel.app/api/random-emoji"
 
         try {
-          const response = await fetch(url)
-          const data = await response.json()
-          processedText = processedText.replace(match, data.result || "")
+          const res = await fetch(url)
+          const data = await res.json()
+          processed = processed.replace(match, data.result || "")
         } catch (error) {
-          this.log(`Bot ${botId}: Emoji failed`, "error", "error", error.message)
+          this.addLog(`ボット ${botId}: 絵文字エラー`, "error", "error", error.message)
         }
       }
     }
@@ -1130,21 +1401,21 @@ class Godfielder {
           : "https://1tasu1ha2.vercel.app/api/random-string"
 
         try {
-          const response = await fetch(url)
-          const data = await response.json()
-          processedText = processedText.replace(match, data.result || "")
+          const res = await fetch(url)
+          const data = await res.json()
+          processed = processed.replace(match, data.result || "")
         } catch (error) {
-          this.log(`Bot ${botId}: String failed`, "error", "error", error.message)
+          this.addLog(`ボット ${botId}: 文字列エラー`, "error", "error", error.message)
         }
       }
     }
 
-    return processedText
+    return processed
   }
 
-  async createBot(botId, name, room, message) {
+  async createBot(botId, name, room, msg) {
     try {
-      this.log(`Bot ${botId}: Connecting...`, "info", "bot")
+      this.addLog(`ボット ${botId}: 接続中...`, "info", "bot")
 
       const tokenRes = await fetch(
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCBvMvZkHymK04BfEaERtbmELhyL8-mtAg",
@@ -1157,17 +1428,17 @@ class Godfielder {
 
       if (!tokenRes.ok) {
         const errorText = await tokenRes.text()
-        throw new Error(`Auth failed: ${tokenRes.status} - ${errorText}`)
+        throw new Error(`認証失敗: ${tokenRes.status} - ${errorText}`)
       }
 
       const tokenData = await tokenRes.json()
       const token = tokenData.idToken
 
-      this.log(`Bot ${botId}: Connected`, "success", "check_circle")
+      this.addLog(`ボット ${botId}: 接続完了`, "success", "check_circle")
 
       const processedName = await this.processText(name, botId)
 
-      this.log(`Bot ${botId}: Creating room...`, "info", "room")
+      this.addLog(`ボット ${botId}: ルーム作成中...`, "info", "room")
       const roomRes = await fetch("https://asia-northeast1-godfield.cloudfunctions.net/createRoom", {
         method: "POST",
         headers: {
@@ -1183,15 +1454,15 @@ class Godfielder {
 
       if (!roomRes.ok) {
         const errorText = await roomRes.text()
-        throw new Error(`Room creation failed: ${roomRes.status} - ${errorText}`)
+        throw new Error(`ルーム作成失敗: ${roomRes.status} - ${errorText}`)
       }
 
       const roomData = await roomRes.json()
       const roomId = roomData.roomId
 
-      this.log(`Bot ${botId}: Room created`, "success", "check_circle", `Room ID: ${roomId}`)
+      this.addLog(`ボット ${botId}: ルーム作成完了`, "success", "check_circle", `ルームID: ${roomId}`)
 
-      this.log(`Bot ${botId}: Joining room...`, "info", "room")
+      this.addLog(`ボット ${botId}: ルーム参加中...`, "info", "room")
       const joinRes = await fetch("https://asia-northeast1-godfield.cloudfunctions.net/addRoomUser", {
         method: "POST",
         headers: {
@@ -1207,23 +1478,23 @@ class Godfielder {
 
       if (!joinRes.ok) {
         const errorText = await joinRes.text()
-        throw new Error(`Room join failed: ${joinRes.status} - ${errorText}`)
+        throw new Error(`ルーム参加失敗: ${joinRes.status} - ${errorText}`)
       }
 
-      this.log(`Bot ${botId}: Room joined`, "success", "check_circle")
+      this.addLog(`ボット ${botId}: ルーム参加完了`, "success", "check_circle")
 
       return { token, roomId, processedName }
     } catch (error) {
-      this.log(`Bot ${botId}: Setup failed`, "error", "error", error.message)
+      this.addLog(`ボット ${botId}: セットアップ失敗`, "error", "error", error.message)
       return null
     }
   }
 
-  async sendMessage(botId, token, roomId, message) {
+  async sendMsg(botId, token, roomId, msg) {
     try {
-      const processedMessage = await this.processText(message, botId)
+      const processed = await this.processText(msg, botId)
 
-      const response = await fetch("https://asia-northeast1-godfield.cloudfunctions.net/setComment", {
+      const res = await fetch("https://asia-northeast1-godfield.cloudfunctions.net/setComment", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1232,28 +1503,28 @@ class Godfielder {
         body: JSON.stringify({
           mode: "hidden",
           roomId: roomId,
-          text: processedMessage,
+          text: processed,
         }),
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Message send failed: ${response.status} - ${errorText}`)
+      if (!res.ok) {
+        const errorText = await res.text()
+        throw new Error(`メッセージ送信失敗: ${res.status} - ${errorText}`)
       }
 
-      this.log(`Bot ${botId}: Message sent`, "success", "message", `Message: "${processedMessage}"`)
+      this.addLog(`ボット ${botId}: メッセージ送信`, "success", "message", `メッセージ: "${processed}"`)
       return true
     } catch (error) {
-      this.log(`Bot ${botId}: Send failed`, "error", "error", error.message)
+      this.addLog(`ボット ${botId}: 送信失敗`, "error", "error", error.message)
       return false
     }
   }
 
   async removeBot(botId, token, roomId) {
     try {
-      this.log(`Bot ${botId}: Leaving room...`, "info", "room")
+      this.addLog(`ボット ${botId}: ルーム退出中...`, "info", "room")
 
-      const response = await fetch("https://asia-northeast1-godfield.cloudfunctions.net/removeRoomUser", {
+      const res = await fetch("https://asia-northeast1-godfield.cloudfunctions.net/removeRoomUser", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1265,93 +1536,93 @@ class Godfielder {
         }),
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Room leave failed: ${response.status} - ${errorText}`)
+      if (!res.ok) {
+        const errorText = await res.text()
+        throw new Error(`ルーム退出失敗: ${res.status} - ${errorText}`)
       }
 
-      this.log(`Bot ${botId}: Room left`, "success", "check_circle")
+      this.addLog(`ボット ${botId}: ルーム退出完了`, "success", "check_circle")
       return true
     } catch (error) {
-      this.log(`Bot ${botId}: Leave failed`, "error", "error", error.message)
+      this.addLog(`ボット ${botId}: 退出失敗`, "error", "error", error.message)
       return false
     }
   }
 
   async start() {
-    if (this.isRunning) return
+    if (this.running) return
 
     const name = this.nameInput.value.trim()
     const room = this.roomInput.value.trim()
-    const message = this.messageInput.value.trim()
-    const botCount = Number.parseInt(this.botCountInput.value)
+    const msg = this.msgInput.value.trim()
+    const count = Number.parseInt(this.countInput.value)
 
     if (!name) {
-      this.log("Please provide name", "error", "error")
+      this.addLog("名前を入力してください", "error", "error")
       return
     }
 
     if (!room) {
-      this.log("Please provide room", "error", "error")
+      this.addLog("あいことばを入力してください", "error", "error")
       return
     }
 
-    if (!message) {
-      this.log("Please provide message", "error", "error")
+    if (!msg) {
+      this.addLog("メッセージを入力してください", "error", "error")
       return
     }
 
-    if (botCount < 1 || botCount > 12) {
-      this.log("Please provide bot count 1-12", "error", "error")
+    if (count < 1 || count > 12) {
+      this.addLog("ボット数は1-12で入力してください", "error", "error")
       return
     }
 
-    this.isRunning = true
+    this.running = true
     this.startBtn.disabled = true
     this.stopBtn.disabled = false
     this.bots = []
-    this.intervalIds = []
+    this.intervals = []
 
-    this.log(`Starting ${botCount} bots...`, "info", "bot")
+    this.addLog(`${count}個のボットを開始中...`, "info", "bot")
 
-    for (let i = 1; i <= botCount; i++) {
-      if (!this.isRunning) break
+    for (let i = 1; i <= count; i++) {
+      if (!this.running) break
 
-      const botData = await this.createBot(i, name, room, message)
+      const botData = await this.createBot(i, name, room, msg)
       if (botData) {
         this.bots.push({ id: i, ...botData })
 
         const intervalId = setInterval(
           async () => {
-            if (!this.isRunning) return
-            await this.sendMessage(i, botData.token, botData.roomId, message)
+            if (!this.running) return
+            await this.sendMsg(i, botData.token, botData.roomId, msg)
           },
           2000 + i * 100,
         )
 
-        this.intervalIds.push(intervalId)
+        this.intervals.push(intervalId)
       }
 
       await new Promise((resolve) => setTimeout(resolve, 500))
     }
 
     if (this.bots.length === 0) {
-      this.log("Bots not created", "error", "error")
+      this.addLog("ボットが作成されませんでした", "error", "error")
       this.stop()
     }
   }
 
   async stop() {
-    if (!this.isRunning) return
+    if (!this.running) return
 
-    this.isRunning = false
+    this.running = false
     this.startBtn.disabled = true
     this.stopBtn.disabled = true
 
-    this.intervalIds.forEach((id) => clearInterval(id))
-    this.intervalIds = []
+    this.intervals.forEach((id) => clearInterval(id))
+    this.intervals = []
 
-    this.log("Stopping bots...", "warning", "warning")
+    this.addLog("ボットを停止中...", "warning", "warning")
 
     for (const bot of this.bots) {
       await this.removeBot(bot.id, bot.token, bot.roomId)
@@ -1362,13 +1633,14 @@ class Godfielder {
     this.startBtn.disabled = false
     this.stopBtn.disabled = true
 
-    this.log("All bots stopped", "warning", "warning")
+    this.addLog("全てのボットが停止しました", "warning", "warning")
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  window.tokenCheckerInstance = new TokenChecker()
+  window.tokenChecker = new TokenChecker()
   new Config()
-  window.senderInstance = new Sender()
+  new Server()
+  window.sender = new Sender()
   new Godfielder()
 })
