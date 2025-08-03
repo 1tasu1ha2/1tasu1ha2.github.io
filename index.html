@@ -16,8 +16,8 @@
             <h1 class="title">NIKKORI</h1>
         </header>
 
-        <main class="tools-grid" id="toolsGrid">
-            <div class="tool-box" id="tokenChecker">
+        <main class="tools-grid">
+            <div class="tool-box">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">verified_user</span>
                     <h2 class="tool-title">Token Checker</h2>
@@ -30,7 +30,7 @@
                                 Tokens
                                 <span class="help-icon material-icons" onclick="showHelp('tokens')">help_outline</span>
                             </label>
-                            <textarea id="tokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
+                            <textarea id="tokens" placeholder="Enter Discord tokens (one per line)" rows="4"></textarea>
                         </div>
                     </div>
                     
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="tool-box" id="config">
+            <div class="tool-box">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">settings</span>
                     <h2 class="tool-title">Config</h2>
@@ -68,12 +68,12 @@
                                 Tokens
                                 <span class="help-icon material-icons" onclick="showHelp('configTokens')">help_outline</span>
                             </label>
-                            <textarea id="configTokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
+                            <textarea id="configTokens" placeholder="Enter Discord tokens (one per line)" rows="4"></textarea>
                         </div>
                     </div>
 
                     <div class="controls">
-                        <button id="validateTokensBtn" class="btn btn-start">
+                        <button id="validateBtn" class="btn btn-start">
                             <span class="material-icons">verified</span>
                             Validate Tokens
                         </button>
@@ -85,7 +85,7 @@
                                 Server ID
                                 <span class="help-icon material-icons" onclick="showHelp('serverId')">help_outline</span>
                             </label>
-                            <input type="text" id="serverId" placeholder="Enter server ID">
+                            <input type="text" id="serverId" placeholder="Enter Discord server ID">
                         </div>
                         
                         <div class="input-group">
@@ -98,7 +98,7 @@
                     </div>
                     
                     <div class="controls">
-                        <button id="fetchChannelsBtn" class="btn btn-start">
+                        <button id="getChannelsBtn" class="btn btn-start">
                             <span class="material-icons">list</span>
                             Get Channels
                         </button>
@@ -110,12 +110,12 @@
                                 Mention IDs
                                 <span class="help-icon material-icons" onclick="showHelp('mentionIds')">help_outline</span>
                             </label>
-                            <textarea id="mentionIds" placeholder="Enter mention IDs (one per line)" rows="4"></textarea>
+                            <textarea id="mentionIds" placeholder="Enter user IDs (one per line)" rows="4"></textarea>
                         </div>
                     </div>
                     
                     <div class="controls">
-                        <button id="fetchMentionsBtn" class="btn btn-start">
+                        <button id="getMentionsBtn" class="btn btn-start">
                             <span class="material-icons">alternate_email</span>
                             Get Mentions
                         </button>
@@ -126,12 +126,50 @@
                             <span class="material-icons">terminal</span>
                             <span>Logs</span>
                         </div>
-                        <div id="configLogBox" class="log-box"></div>
+                        <div id="configLogs" class="log-box"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="tool-box" id="sender">
+            <div class="tool-box">
+                <div class="tool-header">
+                    <span class="material-icons tool-icon">dns</span>
+                    <h2 class="tool-title">Server</h2>
+                </div>
+                
+                <div class="tool-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="inviteCode">
+                                Invite Code
+                                <span class="help-icon material-icons" onclick="showHelp('inviteCode')">help_outline</span>
+                            </label>
+                            <input type="text" id="inviteCode" placeholder="Enter Discord invite code">
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="joinBtn" class="btn btn-start">
+                            <span class="material-icons">login</span>
+                            Join Server
+                        </button>
+                        <button id="leaveBtn" class="btn btn-stop">
+                            <span class="material-icons">logout</span>
+                            Leave Server
+                        </button>
+                    </div>
+                    
+                    <div class="log-container">
+                        <div class="log-header">
+                            <span class="material-icons">terminal</span>
+                            <span>Logs</span>
+                        </div>
+                        <div id="serverLogs" class="log-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-box">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">send</span>
                     <h2 class="tool-title">Sender</h2>
@@ -140,27 +178,27 @@
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="messageInput">
+                            <label for="msgInput">
                                 Message
-                                <span class="help-icon material-icons" onclick="showHelp('messageInput')">help_outline</span>
+                                <span class="help-icon material-icons" onclick="showHelp('msgInput')">help_outline</span>
                             </label>
-                            <textarea id="messageInput" placeholder="Enter message" rows="4"></textarea>
+                            <textarea id="msgInput" placeholder="Enter message with /rs/, /re/, /rm/ patterns" rows="4"></textarea>
                         </div>
                     </div>
                     
                     <div class="controls">
-                        <button id="addMessageBtn" class="btn btn-start">
+                        <button id="addMsgBtn" class="btn btn-start">
                             <span class="material-icons">add</span>
                             Add Message
                         </button>
                     </div>
                     
-                    <div class="results-container message-patterns-container">
+                    <div class="results-container msg-patterns-container">
                         <div class="results-header">
                             <span class="material-icons">message</span>
                             <span>Message Patterns</span>
                         </div>
-                        <div id="messagePatterns" class="results-box"></div>
+                        <div id="msgPatterns" class="results-box"></div>
                     </div>
 
                     <div class="input-grid">
@@ -182,32 +220,32 @@
                         </div>
                         
                         <div class="input-group">
-                            <label for="infiniteToggle">
+                            <label for="infiniteMode">
                                 Infinite Mode
-                                <span class="help-icon material-icons" onclick="showHelp('infiniteToggle')">help_outline</span>
+                                <span class="help-icon material-icons" onclick="showHelp('infiniteMode')">help_outline</span>
                             </label>
                             <div class="toggle-container">
-                                <input type="checkbox" id="infiniteToggle" class="toggle-input">
-                                <label for="infiniteToggle" class="toggle-label">
+                                <input type="checkbox" id="infiniteMode" class="toggle-input">
+                                <label for="infiniteMode" class="toggle-label">
                                     <span class="toggle-slider"></span>
                                 </label>
                             </div>
                         </div>
                         
                         <div class="input-group" id="countGroup">
-                            <label for="messageCount">
+                            <label for="msgCount">
                                 Count
-                                <span class="help-icon material-icons" onclick="showHelp('messageCount')">help_outline</span>
+                                <span class="help-icon material-icons" onclick="showHelp('msgCount')">help_outline</span>
                             </label>
-                            <input type="number" id="messageCount" min="1" value="1" placeholder="Enter count">
+                            <input type="number" id="msgCount" min="1" value="1" placeholder="Number of messages to send">
                         </div>
                         
                         <div class="input-group">
-                            <label for="messageInterval">
+                            <label for="msgInterval">
                                 Interval (ms)
-                                <span class="help-icon material-icons" onclick="showHelp('messageInterval')">help_outline</span>
+                                <span class="help-icon material-icons" onclick="showHelp('msgInterval')">help_outline</span>
                             </label>
-                            <input type="number" id="messageInterval" min="100" value="1000" placeholder="Enter interval">
+                            <input type="number" id="msgInterval" min="1" value="1000" placeholder="Interval between messages">
                         </div>
                     </div>
                     
@@ -227,12 +265,12 @@
                             <span class="material-icons">terminal</span>
                             <span>Logs</span>
                         </div>
-                        <div id="senderLogBox" class="log-box"></div>
+                        <div id="senderLogs" class="log-box"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="tool-box" id="godfielder">
+            <div class="tool-box">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">flash_on</span>
                     <h2 class="tool-title">Godfielder</h2>
@@ -241,27 +279,27 @@
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="name">
+                            <label for="botName">
                                 Name
-                                <span class="help-icon material-icons" onclick="showHelp('name')">help_outline</span>
+                                <span class="help-icon material-icons" onclick="showHelp('botName')">help_outline</span>
                             </label>
-                            <input type="text" id="name" placeholder="Enter name">
+                            <input type="text" id="botName" placeholder="Enter bot name with /rs/, /re/ patterns">
                         </div>
                         
                         <div class="input-group">
-                            <label for="room">
+                            <label for="roomCode">
                                 Room
-                                <span class="help-icon material-icons" onclick="showHelp('room')">help_outline</span>
+                                <span class="help-icon material-icons" onclick="showHelp('roomCode')">help_outline</span>
                             </label>
-                            <input type="text" id="room" placeholder="Enter room">
+                            <input type="text" id="roomCode" placeholder="Enter room password">
                         </div>
                         
                         <div class="input-group">
-                            <label for="message">
+                            <label for="botMsg">
                                 Message
-                                <span class="help-icon material-icons" onclick="showHelp('message')">help_outline</span>
+                                <span class="help-icon material-icons" onclick="showHelp('botMsg')">help_outline</span>
                             </label>
-                            <input type="text" id="message" placeholder="Enter message">
+                            <input type="text" id="botMsg" placeholder="Enter message with /rs/, /re/ patterns">
                         </div>
                         
                         <div class="input-group">
@@ -269,16 +307,16 @@
                                 Bot Count
                                 <span class="help-icon material-icons" onclick="showHelp('botCount')">help_outline</span>
                             </label>
-                            <input type="number" id="botCount" min="1" max="12" value="1" placeholder="Enter bot count 1-12">
+                            <input type="number" id="botCount" min="1" max="12" value="1" placeholder="Number of bots (1-12)">
                         </div>
                     </div>
                     
                     <div class="controls">
-                        <button id="startBtn" class="btn btn-start">
+                        <button id="startBotsBtn" class="btn btn-start">
                             <span class="material-icons">play_arrow</span>
                             Start
                         </button>
-                        <button id="stopBtn" class="btn btn-stop" disabled>
+                        <button id="stopBotsBtn" class="btn btn-stop" disabled>
                             <span class="material-icons">stop</span>
                             Stop
                         </button>
@@ -289,7 +327,7 @@
                             <span class="material-icons">terminal</span>
                             <span>Logs</span>
                         </div>
-                        <div id="logBox" class="log-box"></div>
+                        <div id="godfielderLogs" class="log-box"></div>
                     </div>
                 </div>
             </div>
