@@ -729,32 +729,44 @@ class Server {
   }
 
   async joinServer(token, invite) {
-    const fingerprint = await this.genFingerprint()
+    try {
+      const fingerprint = await this.genFingerprint()
 
-    const headers = {
-      authorization: token,
-      "x-super-properties":
-        "eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRmlyZWZveCIsImRldmljZSI6IiIsInN5c3RlbV9sb2NhbGUiOiJlbi1VUyIsImJyb3dzZXJfdXNlcl9hZ2VudCI6Ik1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjkzLjApIEdlY2tvLzIwMTAwMTAxIEZpcmVmb3gvOTMuMCIsImJyb3dzZXJfdmVyc2lvbiI6IjkzLjAiLCJvc192ZXJzaW9uIjoiMTAiLCJyZWZlcnJlciI6IiIsInJlZmVycmluZ19kb21haW4iOiIiLCJyZWZlcnJlcl9jdXJyZW50IjoiIiwicmVmZXJyaW5nX2RvbWFpbl9jdXJyZW50IjoiIiwicmVsZWFzZV9jaGFubmVsIjoic3RhYmxlIiwiY2xpZW50X2J1aWxkX251bWJlciI6MTAwODA0LCJjbGllbnRfZXZlbnRfc291cmNlIjpudWxsfQ==",
-      "sec-fetch-dest": "empty",
-      "x-debug-options": "bugReporterEnabled",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
-      accept: "*/*",
-      "accept-language": "en-GB",
-      "user-agent":
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.16 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36",
-      TE: "trailers",
-      "x-fingerprint": fingerprint,
-      "Content-Type": "application/json",
+      const headers = {
+        authorization: token,
+        "x-super-properties":
+          "eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRmlyZWZveCIsImRldmljZSI6IiIsInN5c3RlbV9sb2NhbGUiOiJlbi1VUyIsImJyb3dzZXJfdXNlcl9hZ2VudCI6Ik1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjkzLjApIEdlY2tvLzIwMTAwMTAxIEZpcmVmb3gvOTMuMCIsImJyb3dzZXJfdmVyc2lvbiI6IjkzLjAiLCJvc192ZXJzaW9uIjoiMTAiLCJyZWZlcnJlciI6IiIsInJlZmVycmluZ19kb21haW4iOiIiLCJyZWZlcnJlcl9jdXJyZW50IjoiIiwicmVmZXJyaW5nX2RvbWFpbl9jdXJyZW50IjoiIiwicmVsZWFzZV9jaGFubmVsIjoic3RhYmxlIiwiY2xpZW50X2J1aWxkX251bWJlciI6MTAwODA0LCJjbGllbnRfZXZlbnRfc291cmNlIjpudWxsfQ==",
+        "sec-fetch-dest": "empty",
+        "x-debug-options": "bugReporterEnabled",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        accept: "*/*",
+        "accept-language": "en-GB",
+        "user-agent":
+          "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.16 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36",
+        TE: "trailers",
+        "x-fingerprint": fingerprint,
+        "Content-Type": "application/json",
+      }
+
+      const response = await fetch(`https://discord.com/api/v9/invites/${invite}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ session_id: this.genSessionID() }),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`HTTP ${response.status}: ${errorText}`)
+      }
+
+      return true
+    } catch (error) {
+      if (error.name === "TypeError" && error.message.includes("Failed to fetch")) {
+        throw new Error("CORS Error: Cannot access Discord API from browser. Use a proxy or extension.")
+      }
+      throw error
     }
-
-    const response = await fetch(`https://discord.com/api/v9/invites/${invite}`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ session_id: this.genSessionID() }),
-    })
-
-    return response.ok
   }
 
   async leaveServer(token, serverId) {
@@ -790,16 +802,32 @@ class Server {
         if (success) {
           successCount++
           this.log(`Token ${i + 1}: Joined successfully`, "success", "check_circle")
-        } else {
-          this.log(`Token ${i + 1}: Join failed`, "error", "error")
         }
       } catch (error) {
-        this.log(`Token ${i + 1}: Join failed`, "error", "error", error.message)
+        if (error.message.includes("CORS Error")) {
+          this.log(
+            `CORS Error: Browser blocks Discord API`,
+            "error",
+            "error",
+            "Discord API requests are blocked by CORS policy. You need to:\n1. Use a CORS proxy\n2. Use a browser extension\n3. Run from a Discord client\n4. Use a backend server",
+          )
+          break
+        } else {
+          this.log(`Token ${i + 1}: ${error.message}`, "error", "error")
+        }
       }
       await this.delay(500)
     }
 
-    this.log(`Joined with ${successCount}/${tokens.length} tokens`, successCount > 0 ? "success" : "warning", "login")
+    if (
+      successCount === 0 &&
+      !this.logs.querySelector(".log-entry:last-child .log-msg").textContent.includes("CORS Error")
+    ) {
+      this.log("All tokens failed to join", "warning", "warning")
+    } else if (successCount > 0) {
+      this.log(`Joined with ${successCount}/${tokens.length} tokens`, "success", "login")
+    }
+
     this.joinBtn.disabled = false
   }
 
