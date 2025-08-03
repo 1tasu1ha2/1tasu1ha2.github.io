@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,280 +16,318 @@
             <h1 class="title">NIKKORI</h1>
         </header>
 
-        <main class="tools-grid" id="toolsGrid">
-            <div class="tool-box" id="tokenChecker">
+        <main class="tools-grid">
+            <div class="tool-box">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">verified_user</span>
-                    <h2 class="tool-title">Token Checker</h2>
+                    <h2 class="tool-title">トークン確認</h2>
                 </div>
                 
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="tokens">
-                                Tokens
+                                トークン
                                 <span class="help-icon material-icons" onclick="showHelp('tokens')">help_outline</span>
                             </label>
-                            <textarea id="tokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
+                            <textarea id="tokens" placeholder="トークンを入力 (改行区切り)" rows="4"></textarea>
                         </div>
                     </div>
                     
                     <div class="controls">
                         <button id="checkBtn" class="btn btn-start">
                             <span class="material-icons">search</span>
-                            Check
+                            確認
                         </button>
-                        <button id="copyValidBtn" class="btn btn-copy" disabled>
+                        <button id="copyBtn" class="btn btn-copy" disabled>
                             <span class="material-icons">content_copy</span>
-                            Copy Valid
+                            有効をコピー
                         </button>
                     </div>
                     
                     <div class="results-container">
                         <div class="results-header">
                             <span class="material-icons">account_circle</span>
-                            <span>Results</span>
+                            <span>結果</span>
                         </div>
-                        <div id="resultsBox" class="results-box"></div>
+                        <div id="results" class="results-box"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="tool-box" id="config">
+            <div class="tool-box">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">settings</span>
-                    <h2 class="tool-title">Config</h2>
+                    <h2 class="tool-title">設定</h2>
                 </div>
                 
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="configTokens">
-                                Tokens
-                                <span class="help-icon material-icons" onclick="showHelp('configTokens')">help_outline</span>
+                            <label for="cfgTokens">
+                                トークン
+                                <span class="help-icon material-icons" onclick="showHelp('cfgTokens')">help_outline</span>
                             </label>
-                            <textarea id="configTokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
+                            <textarea id="cfgTokens" placeholder="トークンを入力 (改行区切り)" rows="4"></textarea>
                         </div>
                     </div>
 
                     <div class="controls">
-                        <button id="validateTokensBtn" class="btn btn-start">
+                        <button id="validateBtn" class="btn btn-start">
                             <span class="material-icons">verified</span>
-                            Validate Tokens
+                            トークン検証
                         </button>
                     </div>
 
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="serverId">
-                                Server ID
+                                サーバーID
                                 <span class="help-icon material-icons" onclick="showHelp('serverId')">help_outline</span>
                             </label>
-                            <input type="text" id="serverId" placeholder="Enter server ID">
+                            <input type="text" id="serverId" placeholder="サーバーIDを入力">
                         </div>
                         
                         <div class="input-group">
                             <label for="channelIds">
-                                Channel IDs
+                                チャンネルID
                                 <span class="help-icon material-icons" onclick="showHelp('channelIds')">help_outline</span>
                             </label>
-                            <textarea id="channelIds" placeholder="Enter channel IDs (one per line)" rows="4"></textarea>
+                            <textarea id="channelIds" placeholder="チャンネルIDを入力 (改行区切り)" rows="4"></textarea>
                         </div>
                     </div>
                     
                     <div class="controls">
-                        <button id="fetchChannelsBtn" class="btn btn-start">
+                        <button id="getChannelsBtn" class="btn btn-start">
                             <span class="material-icons">list</span>
-                            Get Channels
+                            チャンネル取得
                         </button>
                     </div>
                     
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="mentionIds">
-                                Mention IDs
+                                メンバーID
                                 <span class="help-icon material-icons" onclick="showHelp('mentionIds')">help_outline</span>
                             </label>
-                            <textarea id="mentionIds" placeholder="Enter mention IDs (one per line)" rows="4"></textarea>
+                            <textarea id="mentionIds" placeholder="メンバーIDを入力 (改行区切り)" rows="4"></textarea>
                         </div>
                     </div>
                     
                     <div class="controls">
-                        <button id="fetchMentionsBtn" class="btn btn-start">
+                        <button id="getMentionsBtn" class="btn btn-start">
                             <span class="material-icons">alternate_email</span>
-                            Get Mentions
+                            メンバー取得
                         </button>
                     </div>
                     
                     <div class="log-container">
                         <div class="log-header">
                             <span class="material-icons">terminal</span>
-                            <span>Logs</span>
+                            <span>ログ</span>
                         </div>
-                        <div id="configLogBox" class="log-box"></div>
+                        <div id="cfgLog" class="log-box"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="tool-box" id="sender">
+            <div class="tool-box">
                 <div class="tool-header">
-                    <span class="material-icons tool-icon">send</span>
-                    <h2 class="tool-title">Sender</h2>
+                    <span class="material-icons tool-icon">group_add</span>
+                    <h2 class="tool-title">サーバー</h2>
                 </div>
                 
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="messageInput">
-                                Message
-                                <span class="help-icon material-icons" onclick="showHelp('messageInput')">help_outline</span>
+                            <label for="inviteCode">
+                                招待コード
+                                <span class="help-icon material-icons" onclick="showHelp('inviteCode')">help_outline</span>
                             </label>
-                            <textarea id="messageInput" placeholder="Enter message" rows="4"></textarea>
+                            <input type="text" id="inviteCode" placeholder="招待コードを入力">
                         </div>
                     </div>
                     
                     <div class="controls">
-                        <button id="addMessageBtn" class="btn btn-start">
+                        <button id="joinBtn" class="btn btn-start">
+                            <span class="material-icons">login</span>
+                            参加
+                        </button>
+                        <button id="leaveBtn" class="btn btn-stop">
+                            <span class="material-icons">logout</span>
+                            退出
+                        </button>
+                    </div>
+                    
+                    <div class="log-container">
+                        <div class="log-header">
+                            <span class="material-icons">terminal</span>
+                            <span>ログ</span>
+                        </div>
+                        <div id="serverLog" class="log-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-box">
+                <div class="tool-header">
+                    <span class="material-icons tool-icon">send</span>
+                    <h2 class="tool-title">メッセージ送信</h2>
+                </div>
+                
+                <div class="tool-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="msgInput">
+                                メッセージ
+                                <span class="help-icon material-icons" onclick="showHelp('msgInput')">help_outline</span>
+                            </label>
+                            <textarea id="msgInput" placeholder="メッセージを入力" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="addMsgBtn" class="btn btn-start">
                             <span class="material-icons">add</span>
-                            Add Message
+                            追加
                         </button>
                     </div>
                     
                     <div class="results-container message-patterns-container">
                         <div class="results-header">
                             <span class="material-icons">message</span>
-                            <span>Message Patterns</span>
+                            <span>メッセージパターン</span>
                         </div>
-                        <div id="messagePatterns" class="results-box"></div>
+                        <div id="msgPatterns" class="results-box"></div>
                     </div>
 
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="sendMode">
-                                Send Mode
+                                送信方法
                                 <span class="help-icon material-icons" onclick="showHelp('sendMode')">help_outline</span>
                             </label>
                             <div class="custom-select" id="sendModeSelect">
                                 <div class="select-display">
-                                    <span class="select-value">Random</span>
+                                    <span class="select-value">ランダム</span>
                                     <span class="material-icons select-arrow">expand_more</span>
                                 </div>
                                 <div class="select-options">
-                                    <div class="select-option" data-value="random">Random</div>
-                                    <div class="select-option" data-value="sequential">Sequential</div>
+                                    <div class="select-option" data-value="random">ランダム</div>
+                                    <div class="select-option" data-value="sequential">ローテーション</div>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="input-group">
-                            <label for="infiniteToggle">
-                                Infinite Mode
-                                <span class="help-icon material-icons" onclick="showHelp('infiniteToggle')">help_outline</span>
+                            <label for="infiniteMode">
+                                永久送信
+                                <span class="help-icon material-icons" onclick="showHelp('infiniteMode')">help_outline</span>
                             </label>
                             <div class="toggle-container">
-                                <input type="checkbox" id="infiniteToggle" class="toggle-input">
-                                <label for="infiniteToggle" class="toggle-label">
+                                <input type="checkbox" id="infiniteMode" class="toggle-input">
+                                <label for="infiniteMode" class="toggle-label">
                                     <span class="toggle-slider"></span>
                                 </label>
                             </div>
                         </div>
                         
                         <div class="input-group" id="countGroup">
-                            <label for="messageCount">
-                                Count
-                                <span class="help-icon material-icons" onclick="showHelp('messageCount')">help_outline</span>
+                            <label for="msgCount">
+                                送信数
+                                <span class="help-icon material-icons" onclick="showHelp('msgCount')">help_outline</span>
                             </label>
-                            <input type="number" id="messageCount" min="1" value="1" placeholder="Enter count">
+                            <input type="number" id="msgCount" min="1" value="1" placeholder="送信数を入力">
                         </div>
                         
                         <div class="input-group">
-                            <label for="messageInterval">
-                                Interval (ms)
-                                <span class="help-icon material-icons" onclick="showHelp('messageInterval')">help_outline</span>
+                            <label for="msgInterval">
+                                送信間隔 (ms)
+                                <span class="help-icon material-icons" onclick="showHelp('msgInterval')">help_outline</span>
                             </label>
-                            <input type="number" id="messageInterval" min="100" value="1000" placeholder="Enter interval">
+                            <input type="number" id="msgInterval" min="100" value="1000" placeholder="送信間隔を入力">
                         </div>
                     </div>
                     
                     <div class="controls">
                         <button id="startSendBtn" class="btn btn-start">
                             <span class="material-icons">play_arrow</span>
-                            Start
+                            開始
                         </button>
                         <button id="stopSendBtn" class="btn btn-stop" disabled>
                             <span class="material-icons">stop</span>
-                            Stop
+                            停止
                         </button>
                     </div>
                     
                     <div class="log-container">
                         <div class="log-header">
                             <span class="material-icons">terminal</span>
-                            <span>Logs</span>
+                            <span>ログ</span>
                         </div>
-                        <div id="senderLogBox" class="log-box"></div>
+                        <div id="sendLog" class="log-box"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="tool-box" id="godfielder">
+            <div class="tool-box">
                 <div class="tool-header">
                     <span class="material-icons tool-icon">flash_on</span>
-                    <h2 class="tool-title">Godfielder</h2>
+                    <h2 class="tool-title">ころすまん</h2>
                 </div>
                 
                 <div class="tool-content">
                     <div class="input-grid">
                         <div class="input-group">
-                            <label for="name">
-                                Name
-                                <span class="help-icon material-icons" onclick="showHelp('name')">help_outline</span>
+                            <label for="botName">
+                                名前
+                                <span class="help-icon material-icons" onclick="showHelp('botName')">help_outline</span>
                             </label>
-                            <input type="text" id="name" placeholder="Enter name">
+                            <input type="text" id="botName" placeholder="名前を入力">
                         </div>
                         
                         <div class="input-group">
-                            <label for="room">
-                                Room
-                                <span class="help-icon material-icons" onclick="showHelp('room')">help_outline</span>
+                            <label for="roomCode">
+                                あいことば
+                                <span class="help-icon material-icons" onclick="showHelp('roomCode')">help_outline</span>
                             </label>
-                            <input type="text" id="room" placeholder="Enter room">
+                            <input type="text" id="roomCode" placeholder="あいことばを入力">
                         </div>
                         
                         <div class="input-group">
-                            <label for="message">
-                                Message
-                                <span class="help-icon material-icons" onclick="showHelp('message')">help_outline</span>
+                            <label for="botMsg">
+                                メッセージ
+                                <span class="help-icon material-icons" onclick="showHelp('botMsg')">help_outline</span>
                             </label>
-                            <input type="text" id="message" placeholder="Enter message">
+                            <input type="text" id="botMsg" placeholder="メッセージを入力">
                         </div>
                         
                         <div class="input-group">
                             <label for="botCount">
-                                Bot Count
+                                ボット数
                                 <span class="help-icon material-icons" onclick="showHelp('botCount')">help_outline</span>
                             </label>
-                            <input type="number" id="botCount" min="1" max="12" value="1" placeholder="Enter bot count 1-12">
+                            <input type="number" id="botCount" min="1" max="12" value="1" placeholder="ボット数を入力 1-12">
                         </div>
                     </div>
                     
                     <div class="controls">
-                        <button id="startBtn" class="btn btn-start">
+                        <button id="startBotBtn" class="btn btn-start">
                             <span class="material-icons">play_arrow</span>
-                            Start
+                            開始
                         </button>
-                        <button id="stopBtn" class="btn btn-stop" disabled>
+                        <button id="stopBotBtn" class="btn btn-stop" disabled>
                             <span class="material-icons">stop</span>
-                            Stop
+                            停止
                         </button>
                     </div>
                     
                     <div class="log-container">
                         <div class="log-header">
                             <span class="material-icons">terminal</span>
-                            <span>Logs</span>
+                            <span>ログ</span>
                         </div>
-                        <div id="logBox" class="log-box"></div>
+                        <div id="botLog" class="log-box"></div>
                     </div>
                 </div>
             </div>
@@ -299,7 +337,7 @@
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="helpTitle">Help</h3>
+                <h3 id="helpTitle">ヘルプ</h3>
                 <span class="modal-close" onclick="closeHelp()">&times;</span>
             </div>
             <div class="modal-body">
