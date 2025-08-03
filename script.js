@@ -1,60 +1,26 @@
 const helpTexts = {
   tokens:
-    "Enter Discord bot tokens or user tokens, one per line.\nThese will be validated to check if they're working.",
+    "Enter Discord tokens to validate.\nYou can check if they're working with the button below.\nEnter multiple tokens on separate lines.",
   configTokens:
-    "Enter Discord tokens that will be used for fetching channels and sending messages.\nOne token per line.",
-  serverId: "Enter the Discord server (guild) ID where you want to fetch channels or send messages.",
-  channelIds:
-    "Enter Discord channel IDs where messages will be sent, one per line.\nUse 'Get Channels' to automatically fetch them.",
-  mentionIds:
-    "Enter user IDs that can be mentioned in messages, one per line.\nUse 'Get Mentions' to automatically fetch server members.",
-  messageInput:
-    "Enter your message pattern.\nSupports /rs/ for random strings, /re/ for random emojis, and /rm/ for random mentions.",
+    "Enter Discord tokens to use for most tools.\nThese tokens will be used for fetching channels, sending messages, etc.\nEnter multiple tokens on separate lines.",
+  serverId: "Enter Discord server ID.\nUsed for fetching channels, members, leaving servers, etc.",
+  channelIds: "Enter Discord channel IDs for message sending.\nEnter multiple channel IDs on separate lines.",
+  mentionIds: "Enter Discord user IDs for random mentions.\nEnter multiple user IDs on separate lines.",
+  inviteCode:
+    "Enter Discord server invite code (without discord.gg/).\nTokens from Config will be used to join this server.",
+  msgInput:
+    "Enter message to send.\nSupports /rs/ for random strings, /re/ for random emojis, /rm/ for random mentions.\nYou can add numbers (e.g., /rs5/ generates pH4J0).",
   sendMode:
-    "Choose how messages are selected:\nRandom picks a random pattern each time, Sequential goes through patterns in order.",
-  infiniteToggle:
-    "When enabled, messages will be sent continuously until stopped.\nWhen disabled, only the specified count will be sent.",
-  messageCount: "Number of messages to send per token per channel.\nOnly used when Infinite Mode is disabled.",
-  messageInterval: "Time interval in milliseconds between each message.\nMinimum is 100ms to avoid rate limits.",
-  name: "Enter the name for Godfield bots.\nSupports /rs/ for random strings and /re/ for random emojis.",
-  room: "Enter the room password for Godfield.\nThis will be used to create and join rooms.",
-  message:
-    "Enter the message that Godfield bots will send.\nSupports /rs/ for random strings and /re/ for random emojis.",
-  botCount: "Number of Godfield bots to create and run simultaneously.\nMust be between 1 and 12.",
-}
-
-const boxNames = {
-  tokens: "Token Checker",
-  configTokens: "Config",
-  serverId: "Config",
-  channelIds: "Config",
-  mentionIds: "Config",
-  messageInput: "Sender",
-  sendMode: "Sender",
-  infiniteToggle: "Sender",
-  messageCount: "Sender",
-  messageInterval: "Sender",
-  name: "Godfielder",
-  room: "Godfielder",
-  message: "Godfielder",
-  botCount: "Godfielder",
-}
-
-const fieldNames = {
-  tokens: "Tokens",
-  configTokens: "Tokens",
-  serverId: "Server ID",
-  channelIds: "Channel IDs",
-  mentionIds: "Mention IDs",
-  messageInput: "Message",
-  sendMode: "Send Mode",
-  infiniteToggle: "Infinite Mode",
-  messageCount: "Count",
-  messageInterval: "Interval",
-  name: "Name",
-  room: "Room",
-  message: "Message",
-  botCount: "Bot Count",
+    "Choose message selection method.\nRandom: picks random pattern each time.\nSequential: goes through patterns in order from 1st.",
+  infiniteMode: "Toggle infinite message sending.\nWhen enabled, messages are sent continuously until stopped.",
+  msgCount: "Number of messages to send.\nOnly used when Infinite Mode is disabled.",
+  msgInterval: "Time interval between messages in milliseconds.\n1000ms = 1 second.",
+  botName:
+    "Enter name for Godfield bots.\nSupports /rs/ for random strings, /re/ for random emojis.\nYou can add numbers (e.g., /rs5/ generates pH4J0).\nSame names cannot join the same room.",
+  roomCode: "Enter Godfield room password.\nBots will join rooms with this password.",
+  botMsg:
+    "Enter message for bots to send continuously.\nSupports /rs/ for random strings, /re/ for random emojis.\nYou can add numbers (e.g., /rs5/ generates pH4J0).",
+  botCount: "Number of bots to create and run simultaneously.\nMaximum 12 bots per room.",
 }
 
 function showHelp(field) {
@@ -62,12 +28,8 @@ function showHelp(field) {
   const title = document.getElementById("helpTitle")
   const content = document.getElementById("helpContent")
 
-  const boxName = boxNames[field] || "Unknown"
-  const fieldName = fieldNames[field] || field
-  title.textContent = `${boxName} - ${fieldName} Help`
-
-  const helpText = helpTexts[field] || "No help available for this field."
-  content.textContent = helpText
+  title.textContent = `${field.charAt(0).toUpperCase() + field.slice(1)} Help`
+  content.textContent = helpTexts[field] || "No help available for this field."
 
   modal.style.display = "block"
 }
@@ -85,37 +47,29 @@ window.onclick = (event) => {
 
 class CustomSelect {
   constructor(element) {
-    this.element = element
+    this.el = element
     this.display = element.querySelector(".select-display")
     this.options = element.querySelector(".select-options")
     this.value = "random"
-
-    this.bindEvents()
+    this.init()
   }
 
-  bindEvents() {
+  init() {
     this.display.addEventListener("click", () => this.toggle())
-
     this.options.querySelectorAll(".select-option").forEach((option) => {
       option.addEventListener("click", (e) => {
-        this.selectOption(e.target.dataset.value, e.target.textContent)
+        this.select(e.target.dataset.value, e.target.textContent)
       })
     })
-
     document.addEventListener("click", (e) => {
-      if (!this.element.contains(e.target)) {
+      if (!this.el.contains(e.target)) {
         this.close()
       }
     })
   }
 
   toggle() {
-    const isActive = this.display.classList.contains("active")
-    if (isActive) {
-      this.close()
-    } else {
-      this.open()
-    }
+    this.display.classList.contains("active") ? this.close() : this.open()
   }
 
   open() {
@@ -128,7 +82,7 @@ class CustomSelect {
     this.options.classList.remove("active")
   }
 
-  selectOption(value, text) {
+  select(value, text) {
     this.value = value
     this.display.querySelector(".select-value").textContent = text
     this.close()
@@ -142,55 +96,46 @@ class CustomSelect {
 class TokenChecker {
   constructor() {
     this.validTokens = []
-    this.initElements()
-    this.bindEvents()
+    this.init()
   }
 
-  initElements() {
+  init() {
     this.tokensInput = document.getElementById("tokens")
     this.checkBtn = document.getElementById("checkBtn")
-    this.copyValidBtn = document.getElementById("copyValidBtn")
+    this.copyBtn = document.getElementById("copyValidBtn")
     this.resultsBox = document.getElementById("resultsBox")
+
+    this.checkBtn.addEventListener("click", () => this.check())
+    this.copyBtn.addEventListener("click", () => this.copy())
   }
 
-  bindEvents() {
-    this.checkBtn.addEventListener("click", () => this.checkTokens())
-    this.copyValidBtn.addEventListener("click", () => this.copyValidTokens())
-  }
-
-  async checkTokens() {
-    const tokens = this.tokensInput.value
-      .split("\n")
-      .map((token) => token.trim())
-      .filter((token) => token.length > 0)
-
-    if (tokens.length === 0) {
+  async check() {
+    const tokens = this.parseInput(this.tokensInput.value)
+    if (!tokens.length) {
       this.showError("Please provide tokens")
       return
     }
 
     this.checkBtn.disabled = true
-    this.copyValidBtn.disabled = true
+    this.copyBtn.disabled = true
     this.resultsBox.innerHTML = ""
     this.validTokens = []
 
     for (const token of tokens) {
-      await this.checkSingleToken(token)
-      await new Promise((resolve) => setTimeout(resolve, 100))
+      await this.checkToken(token)
+      await this.delay(100)
     }
 
     this.checkBtn.disabled = false
     if (this.validTokens.length > 0) {
-      this.copyValidBtn.disabled = false
+      this.copyBtn.disabled = false
     }
   }
 
-  async checkSingleToken(token) {
+  async checkToken(token) {
     try {
-      const response = await fetch("https://discord.com/api/v10/users/@me", {
-        headers: {
-          Authorization: `Bot ${token}`,
-        },
+      let response = await fetch("https://discord.com/api/v10/users/@me", {
+        headers: { Authorization: `Bot ${token}` },
       })
 
       if (response.ok) {
@@ -200,21 +145,19 @@ class TokenChecker {
         return
       }
 
-      const userResponse = await fetch("https://discord.com/api/v10/users/@me", {
-        headers: {
-          Authorization: token,
-        },
+      response = await fetch("https://discord.com/api/v10/users/@me", {
+        headers: { Authorization: token },
       })
 
-      if (userResponse.ok) {
-        const userData = await userResponse.json()
-        this.displayAccount(token, userData, false)
+      if (response.ok) {
+        const data = await response.json()
+        this.displayAccount(token, data, false)
         this.validTokens.push(token)
       } else {
-        this.displayInvalidToken(token)
+        this.displayInvalid(token)
       }
     } catch (error) {
-      this.displayInvalidToken(token, error.message)
+      this.displayInvalid(token, error.message)
     }
   }
 
@@ -273,7 +216,7 @@ class TokenChecker {
     this.resultsBox.appendChild(card)
   }
 
-  displayInvalidToken(token, error = "Invalid token") {
+  displayInvalid(token, error = "Invalid token") {
     const card = document.createElement("div")
     card.className = "account-card"
     card.style.borderColor = "rgba(255, 71, 87, 0.5)"
@@ -299,67 +242,73 @@ class TokenChecker {
     this.resultsBox.appendChild(card)
   }
 
-  copyValidTokens() {
-    if (this.validTokens.length === 0) return
+  copy() {
+    if (!this.validTokens.length) return
 
-    const tokensText = this.validTokens.join("\n")
-    navigator.clipboard.writeText(tokensText).then(() => {
-      const originalText = this.copyValidBtn.innerHTML
-      this.copyValidBtn.innerHTML = '<span class="material-icons">check</span>Copied!'
+    navigator.clipboard.writeText(this.validTokens.join("\n")).then(() => {
+      const original = this.copyBtn.innerHTML
+      this.copyBtn.innerHTML = '<span class="material-icons">check</span>Copied!'
       setTimeout(() => {
-        this.copyValidBtn.innerHTML = originalText
+        this.copyBtn.innerHTML = original
       }, 2000)
     })
   }
 
-  showError(message) {
+  showError(msg) {
     this.resultsBox.innerHTML = `
       <div style="text-align: center; color: #ff4757; padding: 2rem;">
         <span class="material-icons" style="font-size: 2rem; margin-bottom: 0.5rem;">error</span>
-        <div>${message}</div>
+        <div>${msg}</div>
       </div>
     `
+  }
+
+  parseInput(input) {
+    return input
+      .split("\n")
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0)
+  }
+
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
 
 class Config {
   constructor() {
-    this.initElements()
-    this.bindEvents()
-    this.allMembers = new Set()
+    this.members = new Set()
     this.ws = null
     this.currentToken = null
-    this.currentTokenIndex = 0
+    this.currentTokenIdx = 0
     this.serverId = null
     this.channelIds = []
-    this.currentChannelIndex = 0
-    this.memberFetchTimeout = null
-    this.fetchingLogEntry = null
+    this.currentChannelIdx = 0
+    this.memberTimeout = null
+    this.init()
   }
 
-  initElements() {
-    this.configTokensInput = document.getElementById("configTokens")
-    this.serverIdInput = document.getElementById("serverId")
-    this.channelIdsInput = document.getElementById("channelIds")
-    this.mentionIdsInput = document.getElementById("mentionIds")
-    this.fetchChannelsBtn = document.getElementById("fetchChannelsBtn")
-    this.fetchMentionsBtn = document.getElementById("fetchMentionsBtn")
-    this.validateTokensBtn = document.getElementById("validateTokensBtn")
-    this.configLogBox = document.getElementById("configLogBox")
+  init() {
+    this.tokensInput = document.getElementById("configTokens")
+    this.serverInput = document.getElementById("serverId")
+    this.channelsInput = document.getElementById("channelIds")
+    this.mentionsInput = document.getElementById("mentionIds")
+    this.getChannelsBtn = document.getElementById("getChannelsBtn")
+    this.getMentionsBtn = document.getElementById("getMentionsBtn")
+    this.validateBtn = document.getElementById("validateBtn")
+    this.logs = document.getElementById("configLogs")
+
+    this.getChannelsBtn.addEventListener("click", () => this.getChannels())
+    this.getMentionsBtn.addEventListener("click", () => this.getMentions())
+    this.validateBtn.addEventListener("click", () => this.validate())
   }
 
-  bindEvents() {
-    this.fetchChannelsBtn.addEventListener("click", () => this.fetchChannels())
-    this.fetchMentionsBtn.addEventListener("click", () => this.fetchMentions())
-    this.validateTokensBtn.addEventListener("click", () => this.validateTokens())
-  }
-
-  log(message, type = "info", icon = "info", details = null) {
+  log(msg, type = "info", icon = "info", details = null) {
     const time = new Date().toLocaleTimeString()
     const entry = document.createElement("div")
     entry.className = `log-entry ${type}`
 
-    const iconMap = {
+    const icons = {
       info: "info",
       success: "check_circle",
       error: "error",
@@ -370,38 +319,38 @@ class Config {
 
     entry.innerHTML = `
       <span class="log-time">${time}</span>
-      <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-      <span class="log-message">${message}</span>
+      <span class="material-icons log-icon">${icons[icon] || icon}</span>
+      <span class="log-msg">${msg}</span>
     `
 
     if (details) {
       entry.addEventListener("click", () => {
-        const messageSpan = entry.querySelector(".log-message")
+        const msgSpan = entry.querySelector(".log-msg")
         if (entry.classList.contains("expanded")) {
-          messageSpan.textContent = message
+          msgSpan.textContent = msg
           entry.classList.remove("expanded")
         } else {
-          messageSpan.textContent = details
+          msgSpan.textContent = details
           entry.classList.add("expanded")
         }
       })
     }
 
-    this.configLogBox.appendChild(entry)
-    this.configLogBox.scrollTop = this.configLogBox.scrollHeight
+    this.logs.appendChild(entry)
+    this.logs.scrollTop = this.logs.scrollHeight
     return entry
   }
 
-  parseList(input) {
+  parseInput(input) {
     return input
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item.length > 0)
   }
 
-  async fetchChannels() {
-    const tokens = this.parseList(this.configTokensInput.value)
-    const serverId = this.serverIdInput.value.trim()
+  async getChannels() {
+    const tokens = this.parseInput(this.tokensInput.value)
+    const serverId = this.serverInput.value.trim()
 
     if (!tokens.length) {
       this.log("Please provide tokens", "error", "error")
@@ -413,22 +362,20 @@ class Config {
       return
     }
 
-    this.fetchChannelsBtn.disabled = true
+    this.getChannelsBtn.disabled = true
     this.log("Getting channels...", "info", "list")
 
     for (const token of tokens) {
       try {
         const response = await fetch(`https://discord.com/api/v10/guilds/${serverId}/channels`, {
-          headers: {
-            Authorization: token,
-          },
+          headers: { Authorization: token },
         })
 
         if (response.ok) {
           const channels = await response.json()
-          const textChannels = channels.filter((channel) => channel.type === 0)
-          const channelIds = textChannels.map((channel) => channel.id)
-          this.channelIdsInput.value = channelIds.join("\n")
+          const textChannels = channels.filter((ch) => ch.type === 0)
+          const channelIds = textChannels.map((ch) => ch.id)
+          this.channelsInput.value = channelIds.join("\n")
           this.log(`Got ${channelIds.length} channels`, "success", "check_circle")
           break
         } else {
@@ -439,13 +386,13 @@ class Config {
       }
     }
 
-    this.fetchChannelsBtn.disabled = false
+    this.getChannelsBtn.disabled = false
   }
 
-  async fetchMentions() {
-    const tokens = this.parseList(this.configTokensInput.value)
-    const serverId = this.serverIdInput.value.trim()
-    const channelIds = this.parseList(this.channelIdsInput.value)
+  async getMentions() {
+    const tokens = this.parseInput(this.tokensInput.value)
+    const serverId = this.serverInput.value.trim()
+    const channelIds = this.parseInput(this.channelsInput.value)
 
     if (!tokens.length) {
       this.log("Please provide tokens", "error", "error")
@@ -462,55 +409,55 @@ class Config {
       return
     }
 
-    this.fetchMentionsBtn.disabled = true
-    this.allMembers.clear()
+    this.getMentionsBtn.disabled = true
+    this.members.clear()
     this.serverId = serverId
     this.channelIds = channelIds
-    this.currentTokenIndex = 0
-    this.currentChannelIndex = 0
+    this.currentTokenIdx = 0
+    this.currentChannelIdx = 0
 
     this.log("Getting members...", "info", "alternate_email")
 
     let success = false
-    for (let tokenIndex = 0; tokenIndex < tokens.length && !success; tokenIndex++) {
-      this.currentToken = tokens[tokenIndex]
-      this.currentTokenIndex = tokenIndex
+    for (let tokenIdx = 0; tokenIdx < tokens.length && !success; tokenIdx++) {
+      this.currentToken = tokens[tokenIdx]
+      this.currentTokenIdx = tokenIdx
 
-      for (let channelIndex = 0; channelIndex < channelIds.length && !success; channelIndex++) {
-        this.currentChannelIndex = channelIndex
-        this.allMembers.clear()
+      for (let channelIdx = 0; channelIdx < channelIds.length && !success; channelIdx++) {
+        this.currentChannelIdx = channelIdx
+        this.members.clear()
 
-        success = await this.connectWebSocket()
-        if (success && this.allMembers.size > 0) {
+        success = await this.connectWS()
+        if (success && this.members.size > 0) {
           break
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await this.delay(1000)
       }
 
-      if (success && this.allMembers.size > 0) {
+      if (success && this.members.size > 0) {
         break
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await this.delay(2000)
     }
 
-    if (this.allMembers.size === 0) {
+    if (this.members.size === 0) {
       this.log("Members not found", "warning", "warning")
     }
 
-    this.fetchMentionsBtn.disabled = false
+    this.getMentionsBtn.disabled = false
   }
 
-  connectWebSocket() {
+  connectWS() {
     return new Promise((resolve) => {
       if (this.ws) {
         this.ws.close()
       }
 
       this.ws = new WebSocket("wss://gateway.discord.gg/?v=9&encoding=json")
-      let heartbeatInterval = null
-      let hasConnected = false
+      let heartbeat = null
+      let connected = false
 
       this.ws.onopen = () => {}
 
@@ -519,12 +466,12 @@ class Config {
 
         switch (data.op) {
           case 10:
-            const heartbeatIntervalMs = data.d.heartbeat_interval
-            heartbeatInterval = setInterval(() => {
+            const interval = data.d.heartbeat_interval
+            heartbeat = setInterval(() => {
               if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.ws.send(JSON.stringify({ op: 1, d: null }))
               }
-            }, heartbeatIntervalMs)
+            }, interval)
 
             this.ws.send(
               JSON.stringify({
@@ -544,32 +491,32 @@ class Config {
 
           case 0:
             if (data.t === "READY") {
-              hasConnected = true
-              this.requestMemberChunk()
+              connected = true
+              this.requestMembers()
             } else if (data.t === "GUILD_MEMBER_LIST_UPDATE") {
-              this.processMemberListUpdate(data.d)
+              this.processMemberUpdate(data.d)
             } else if (data.t === "GUILD_MEMBERS_CHUNK") {
               this.processMemberChunk(data.d)
             }
             break
 
           case 9:
-            if (heartbeatInterval) clearInterval(heartbeatInterval)
+            if (heartbeat) clearInterval(heartbeat)
             this.ws.close()
             break
         }
       }
 
-      this.ws.onerror = (error) => {
-        if (heartbeatInterval) clearInterval(heartbeatInterval)
+      this.ws.onerror = () => {
+        if (heartbeat) clearInterval(heartbeat)
         resolve(false)
       }
 
-      this.ws.onclose = (event) => {
-        if (heartbeatInterval) clearInterval(heartbeatInterval)
-        if (this.memberFetchTimeout) clearTimeout(this.memberFetchTimeout)
+      this.ws.onclose = () => {
+        if (heartbeat) clearInterval(heartbeat)
+        if (this.memberTimeout) clearTimeout(this.memberTimeout)
 
-        if (!hasConnected) {
+        if (!connected) {
           resolve(false)
         } else {
           this.finalizeMemberCollection()
@@ -578,7 +525,7 @@ class Config {
       }
 
       setTimeout(() => {
-        if (!hasConnected) {
+        if (!connected) {
           this.ws.close()
           resolve(false)
         }
@@ -586,8 +533,8 @@ class Config {
     })
   }
 
-  requestMemberChunk() {
-    const channelId = this.channelIds[this.currentChannelIndex]
+  requestMembers() {
+    const channelId = this.channelIds[this.currentChannelIdx]
 
     this.ws.send(
       JSON.stringify({
@@ -604,29 +551,29 @@ class Config {
       }),
     )
 
-    this.memberFetchTimeout = setTimeout(() => {
+    this.memberTimeout = setTimeout(() => {
       this.ws.close()
     }, 5000)
   }
 
-  processMemberListUpdate(data) {
+  processMemberUpdate(data) {
     if (data.ops) {
       data.ops.forEach((op) => {
         if (op.items) {
           op.items.forEach((item) => {
             if (item.member && item.member.user && !item.member.user.bot) {
-              this.allMembers.add(item.member.user.id)
+              this.members.add(item.member.user.id)
             }
           })
         }
       })
     }
 
-    if (this.memberFetchTimeout) {
-      clearTimeout(this.memberFetchTimeout)
+    if (this.memberTimeout) {
+      clearTimeout(this.memberTimeout)
     }
 
-    this.memberFetchTimeout = setTimeout(() => {
+    this.memberTimeout = setTimeout(() => {
       this.ws.close()
     }, 2000)
   }
@@ -635,93 +582,309 @@ class Config {
     if (data.members) {
       data.members.forEach((member) => {
         if (member.user && !member.user.bot) {
-          this.allMembers.add(member.user.id)
+          this.members.add(member.user.id)
         }
       })
     }
   }
 
   finalizeMemberCollection() {
-    if (this.allMembers.size > 0) {
-      this.mentionIdsInput.value = Array.from(this.allMembers).join("\n")
-      this.log(`Got ${this.allMembers.size} members`, "success", "check_circle")
+    if (this.members.size > 0) {
+      this.mentionsInput.value = Array.from(this.members).join("\n")
+      this.log(`Got ${this.members.size} members`, "success", "check_circle")
     } else {
       this.log("Members not found", "warning", "warning")
     }
   }
 
-  async validateTokens() {
-    const configTokens = this.parseList(this.configTokensInput.value)
+  async validate() {
+    const tokens = this.parseInput(this.tokensInput.value)
 
-    if (configTokens.length === 0) {
+    if (!tokens.length) {
       this.log("Please provide tokens", "error", "error")
       return
     }
 
-    document.getElementById("tokens").value = configTokens.join("\n")
+    document.getElementById("tokens").value = tokens.join("\n")
 
     this.log("Validating tokens...", "info", "info")
 
-    const tokenChecker = window.tokenCheckerInstance
-    await tokenChecker.checkTokens()
+    const checker = window.tokenChecker
+    await checker.check()
 
-    if (tokenChecker.validTokens.length > 0) {
-      this.configTokensInput.value = tokenChecker.validTokens.join("\n")
-      this.log(`Validated ${tokenChecker.validTokens.length} valid tokens`, "success", "check_circle")
+    if (checker.validTokens.length > 0) {
+      this.tokensInput.value = checker.validTokens.join("\n")
+      this.log(`Validated ${checker.validTokens.length} valid tokens`, "success", "check_circle")
     } else {
-      this.configTokensInput.value = ""
+      this.tokensInput.value = ""
       this.log("Valid tokens not found", "warning", "warning")
     }
+  }
+
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+}
+
+class Server {
+  constructor() {
+    this.init()
+  }
+
+  init() {
+    this.inviteInput = document.getElementById("inviteCode")
+    this.joinBtn = document.getElementById("joinBtn")
+    this.leaveBtn = document.getElementById("leaveBtn")
+    this.logs = document.getElementById("serverLogs")
+
+    this.joinBtn.addEventListener("click", () => this.join())
+    this.leaveBtn.addEventListener("click", () => this.leave())
+  }
+
+  log(msg, type = "info", icon = "info", details = null) {
+    const time = new Date().toLocaleTimeString()
+    const entry = document.createElement("div")
+    entry.className = `log-entry ${type}`
+
+    const icons = {
+      info: "info",
+      success: "check_circle",
+      error: "error",
+      warning: "warning",
+      login: "login",
+      logout: "logout",
+    }
+
+    entry.innerHTML = `
+      <span class="log-time">${time}</span>
+      <span class="material-icons log-icon">${icons[icon] || icon}</span>
+      <span class="log-msg">${msg}</span>
+    `
+
+    if (details) {
+      entry.addEventListener("click", () => {
+        const msgSpan = entry.querySelector(".log-msg")
+        if (entry.classList.contains("expanded")) {
+          msgSpan.textContent = msg
+          entry.classList.remove("expanded")
+        } else {
+          msgSpan.textContent = details
+          entry.classList.add("expanded")
+        }
+      })
+    }
+
+    this.logs.appendChild(entry)
+    this.logs.scrollTop = this.logs.scrollHeight
+  }
+
+  parseInput(input) {
+    return input
+      .split("\n")
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0)
+  }
+
+  genSessionID() {
+    return "xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0
+      const v = c === "x" ? r : (r & 0x3) | 0x8
+      return v.toString(16)
+    })
+  }
+
+  async genFingerprint() {
+    const ua =
+      "Mozilla/5.0 (Linux; Android 6.0; Nexus " +
+      Math.floor(Math.random() * 10) / 10 +
+      " Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36 Edg/114.0.182" +
+      Math.floor(Math.random() * 100) / 100
+
+    const headers = {
+      Accept: "*/*",
+      "Accept-Language": "en-US,en;q=0.9",
+      Connection: "keep-alive",
+      Referer: "https://discord.com/",
+      "Sec-Fetch-Dest": "empty",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Site": "same-origin",
+      "Sec-GPC": "1",
+      "User-Agent": ua,
+      "X-Track": btoa(
+        '{"os":"' +
+          (Math.random() > 0.5 ? "IOS" : "WINDOWS") +
+          '","browser":"Safe","system_locale":"en-GB","browser_user_agent":"' +
+          ua +
+          '","browser_version":"15.0","os_v":"","referrer":"","referring_domain":"","referrer_domain_cookie":"stable","client_build_number":9999,"client_event_source":"stable"}',
+      ),
+    }
+
+    try {
+      const response = await fetch("https://discord.com/api/v9/experiments", { headers })
+      const data = await response.json()
+      return data.fingerprint || "1191414115344855082._nokxHUJzvNiBOhCRr1h1UAa8Ho"
+    } catch {
+      return "1191414115344855082._nokxHUJzvNiBOhCRr1h1UAa8Ho"
+    }
+  }
+
+  async joinServer(token, invite) {
+    const fingerprint = await this.genFingerprint()
+
+    const headers = {
+      authorization: token,
+      "x-super-properties":
+        "eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRmlyZWZveCIsImRldmljZSI6IiIsInN5c3RlbV9sb2NhbGUiOiJlbi1VUyIsImJyb3dzZXJfdXNlcl9hZ2VudCI6Ik1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjkzLjApIEdlY2tvLzIwMTAwMTAxIEZpcmVmb3gvOTMuMCIsImJyb3dzZXJfdmVyc2lvbiI6IjkzLjAiLCJvc192ZXJzaW9uIjoiMTAiLCJyZWZlcnJlciI6IiIsInJlZmVycmluZ19kb21haW4iOiIiLCJyZWZlcnJlcl9jdXJyZW50IjoiIiwicmVmZXJyaW5nX2RvbWFpbl9jdXJyZW50IjoiIiwicmVsZWFzZV9jaGFubmVsIjoic3RhYmxlIiwiY2xpZW50X2J1aWxkX251bWJlciI6MTAwODA0LCJjbGllbnRfZXZlbnRfc291cmNlIjpudWxsfQ==",
+      "sec-fetch-dest": "empty",
+      "x-debug-options": "bugReporterEnabled",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      accept: "*/*",
+      "accept-language": "en-GB",
+      "user-agent":
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.16 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36",
+      TE: "trailers",
+      "x-fingerprint": fingerprint,
+      "Content-Type": "application/json",
+    }
+
+    const response = await fetch(`https://discord.com/api/v9/invites/${invite}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ session_id: this.genSessionID() }),
+    })
+
+    return response.ok
+  }
+
+  async leaveServer(token, serverId) {
+    const response = await fetch(`https://discord.com/api/v9/users/@me/guilds/${serverId}`, {
+      method: "DELETE",
+      headers: { Authorization: token },
+    })
+
+    return response.ok
+  }
+
+  async join() {
+    const invite = this.inviteInput.value.trim().replace(/^https?:\/\/(discord\.gg\/|discordapp\.com\/invite\/)/, "")
+    const tokens = this.parseInput(document.getElementById("configTokens").value)
+
+    if (!invite) {
+      this.log("Please provide invite code", "error", "error")
+      return
+    }
+
+    if (!tokens.length) {
+      this.log("Please provide tokens in Config", "error", "error")
+      return
+    }
+
+    this.joinBtn.disabled = true
+    this.log(`Joining server with ${tokens.length} tokens...`, "info", "login")
+
+    let successCount = 0
+    for (let i = 0; i < tokens.length; i++) {
+      try {
+        const success = await this.joinServer(tokens[i], invite)
+        if (success) {
+          successCount++
+          this.log(`Token ${i + 1}: Joined successfully`, "success", "check_circle")
+        } else {
+          this.log(`Token ${i + 1}: Join failed`, "error", "error")
+        }
+      } catch (error) {
+        this.log(`Token ${i + 1}: Join failed`, "error", "error", error.message)
+      }
+      await this.delay(500)
+    }
+
+    this.log(`Joined with ${successCount}/${tokens.length} tokens`, successCount > 0 ? "success" : "warning", "login")
+    this.joinBtn.disabled = false
+  }
+
+  async leave() {
+    const serverId = document.getElementById("serverId").value.trim()
+    const tokens = this.parseInput(document.getElementById("configTokens").value)
+
+    if (!serverId) {
+      this.log("Please provide server ID in Config", "error", "error")
+      return
+    }
+
+    if (!tokens.length) {
+      this.log("Please provide tokens in Config", "error", "error")
+      return
+    }
+
+    this.leaveBtn.disabled = true
+    this.log(`Leaving server with ${tokens.length} tokens...`, "info", "logout")
+
+    let successCount = 0
+    for (let i = 0; i < tokens.length; i++) {
+      try {
+        const success = await this.leaveServer(tokens[i], serverId)
+        if (success) {
+          successCount++
+          this.log(`Token ${i + 1}: Left successfully`, "success", "check_circle")
+        } else {
+          this.log(`Token ${i + 1}: Leave failed`, "error", "error")
+        }
+      } catch (error) {
+        this.log(`Token ${i + 1}: Leave failed`, "error", "error", error.message)
+      }
+      await this.delay(500)
+    }
+
+    this.log(`Left with ${successCount}/${tokens.length} tokens`, successCount > 0 ? "success" : "warning", "logout")
+    this.leaveBtn.disabled = false
+  }
+
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
 
 class Sender {
   constructor() {
-    this.messagePatterns = []
-    this.isRunning = false
-    this.sendIntervals = []
-    this.currentMessageIndex = 0
-    this.sendModeSelect = null
+    this.patterns = []
+    this.running = false
+    this.intervals = []
+    this.currentIdx = 0
+    this.sendMode = null
     this.tokenCounters = new Map()
-    this.initElements()
-    this.bindEvents()
+    this.init()
   }
 
-  initElements() {
-    this.messageInput = document.getElementById("messageInput")
-    this.addMessageBtn = document.getElementById("addMessageBtn")
-    this.messagePatternsBox = document.getElementById("messagePatterns")
-    this.sendModeSelect = new CustomSelect(document.getElementById("sendModeSelect"))
-    this.infiniteToggle = document.getElementById("infiniteToggle")
-    this.messageCountInput = document.getElementById("messageCount")
-    this.messageIntervalInput = document.getElementById("messageInterval")
-    this.startSendBtn = document.getElementById("startSendBtn")
-    this.stopSendBtn = document.getElementById("stopSendBtn")
-    this.senderLogBox = document.getElementById("senderLogBox")
+  init() {
+    this.msgInput = document.getElementById("msgInput")
+    this.addBtn = document.getElementById("addMsgBtn")
+    this.patternsBox = document.getElementById("msgPatterns")
+    this.sendMode = new CustomSelect(document.getElementById("sendModeSelect"))
+    this.infiniteToggle = document.getElementById("infiniteMode")
+    this.countInput = document.getElementById("msgCount")
+    this.intervalInput = document.getElementById("msgInterval")
+    this.startBtn = document.getElementById("startSendBtn")
+    this.stopBtn = document.getElementById("stopSendBtn")
+    this.logs = document.getElementById("senderLogs")
     this.countGroup = document.getElementById("countGroup")
+
+    this.addBtn.addEventListener("click", () => this.addPattern())
+    this.infiniteToggle.addEventListener("change", () => this.toggleInfinite())
+    this.startBtn.addEventListener("click", () => this.start())
+    this.stopBtn.addEventListener("click", () => this.stop())
   }
 
-  bindEvents() {
-    this.addMessageBtn.addEventListener("click", () => this.addMessage())
-    this.infiniteToggle.addEventListener("change", () => this.toggleInfiniteMode())
-    this.startSendBtn.addEventListener("click", () => this.startSending())
-    this.stopSendBtn.addEventListener("click", () => this.stopSending())
+  toggleInfinite() {
+    this.countGroup.style.display = this.infiniteToggle.checked ? "none" : "flex"
   }
 
-  toggleInfiniteMode() {
-    if (this.infiniteToggle.checked) {
-      this.countGroup.style.display = "none"
-    } else {
-      this.countGroup.style.display = "flex"
-    }
-  }
-
-  log(message, type = "info", icon = "info", details = null) {
+  log(msg, type = "info", icon = "info", details = null) {
     const time = new Date().toLocaleTimeString()
     const entry = document.createElement("div")
     entry.className = `log-entry ${type}`
 
-    const iconMap = {
+    const icons = {
       info: "info",
       success: "check_circle",
       error: "error",
@@ -732,40 +895,40 @@ class Sender {
 
     entry.innerHTML = `
       <span class="log-time">${time}</span>
-      <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-      <span class="log-message">${message}</span>
+      <span class="material-icons log-icon">${icons[icon] || icon}</span>
+      <span class="log-msg">${msg}</span>
     `
 
     if (details) {
       entry.addEventListener("click", () => {
-        const messageSpan = entry.querySelector(".log-message")
+        const msgSpan = entry.querySelector(".log-msg")
         if (entry.classList.contains("expanded")) {
-          messageSpan.textContent = message
+          msgSpan.textContent = msg
           entry.classList.remove("expanded")
         } else {
-          messageSpan.textContent = details
+          msgSpan.textContent = details
           entry.classList.add("expanded")
         }
       })
     }
 
-    this.senderLogBox.appendChild(entry)
-    this.senderLogBox.scrollTop = this.senderLogBox.scrollHeight
+    this.logs.appendChild(entry)
+    this.logs.scrollTop = this.logs.scrollHeight
   }
 
-  parseList(input) {
+  parseInput(input) {
     return input
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item.length > 0)
   }
 
-  async processMessage(message) {
-    let processedMessage = message
+  async processMsg(msg) {
+    let processed = msg
 
-    const rsMatch = message.match(/\/rs(\d*)\//g)
-    if (rsMatch) {
-      for (const match of rsMatch) {
+    const rsMatches = msg.match(/\/rs(\d*)\//g)
+    if (rsMatches) {
+      for (const match of rsMatches) {
         const lengthMatch = match.match(/\/rs(\d+)\//)
         const length = lengthMatch ? lengthMatch[1] : ""
         const url = length
@@ -775,16 +938,16 @@ class Sender {
         try {
           const response = await fetch(url)
           const data = await response.json()
-          processedMessage = processedMessage.replace(match, data.result || "")
+          processed = processed.replace(match, data.result || "")
         } catch (error) {
           this.log("String API failed", "error", "error", error.message)
         }
       }
     }
 
-    const reMatch = message.match(/\/re(\d*)\//g)
-    if (reMatch) {
-      for (const match of reMatch) {
+    const reMatches = msg.match(/\/re(\d*)\//g)
+    if (reMatches) {
+      for (const match of reMatches) {
         const lengthMatch = match.match(/\/re(\d+)\//)
         const length = lengthMatch ? lengthMatch[1] : ""
         const url = length
@@ -794,113 +957,113 @@ class Sender {
         try {
           const response = await fetch(url)
           const data = await response.json()
-          processedMessage = processedMessage.replace(match, data.result || "")
+          processed = processed.replace(match, data.result || "")
         } catch (error) {
           this.log("Emoji API failed", "error", "error", error.message)
         }
       }
     }
 
-    const rmMatch = message.match(/\/rm(\d*)\//g)
-    if (rmMatch) {
-      const mentionIds = this.parseList(document.getElementById("mentionIds").value)
+    const rmMatches = msg.match(/\/rm(\d*)\//g)
+    if (rmMatches) {
+      const mentionIds = this.parseInput(document.getElementById("mentionIds").value)
 
-      if (mentionIds.length === 0) {
+      if (!mentionIds.length) {
         this.log("Please provide mention IDs", "error", "error")
-        return processedMessage
+        return processed
       }
 
-      for (const match of rmMatch) {
+      for (const match of rmMatches) {
         const lengthMatch = match.match(/\/rm(\d+)\//)
         const count = lengthMatch ? Number.parseInt(lengthMatch[1]) : 1
 
-        const selectedMentions = []
+        const mentions = []
         for (let i = 0; i < count && i < mentionIds.length; i++) {
-          const randomIndex = Math.floor(Math.random() * mentionIds.length)
-          selectedMentions.push(`<@${mentionIds[randomIndex]}>`)
+          const randomIdx = Math.floor(Math.random() * mentionIds.length)
+          mentions.push(`<@${mentionIds[randomIdx]}>`)
         }
 
-        processedMessage = processedMessage.replace(match, selectedMentions.join(" "))
+        processed = processed.replace(match, mentions.join(" "))
       }
     }
 
-    return processedMessage
+    return processed
   }
 
-  addMessage() {
-    const message = this.messageInput.value.trim()
+  addPattern() {
+    const msg = this.msgInput.value.trim()
 
-    if (!message) {
+    if (!msg) {
       this.log("Please provide message", "error", "error")
       return
     }
 
-    this.messagePatterns.push(message)
-    this.messageInput.value = ""
-    this.renderMessagePatterns()
+    this.patterns.push(msg)
+    this.msgInput.value = ""
+    this.renderPatterns()
   }
 
-  renderMessagePatterns() {
-    this.messagePatternsBox.innerHTML = ""
+  renderPatterns() {
+    this.patternsBox.innerHTML = ""
 
-    this.messagePatterns.forEach((pattern, index) => {
-      const patternElement = document.createElement("div")
-      patternElement.className = "message-pattern"
+    this.patterns.forEach((pattern, idx) => {
+      const el = document.createElement("div")
+      el.className = "msg-pattern"
 
-      patternElement.innerHTML = `
-        <div class="message-header">
-          <span class="message-number">${index + 1}</span>
-          <div class="message-controls">
-            <button class="message-control-btn" onclick="window.senderInstance.moveMessage(${index}, -1)" ${index === 0 ? "disabled" : ""}>
+      el.innerHTML = `
+        <div class="msg-header">
+          <span class="msg-number">${idx + 1}</span>
+          <div class="msg-controls">
+            <button class="msg-control-btn" onclick="window.sender.movePattern(${idx}, -1)" ${idx === 0 ? "disabled" : ""}>
               <span class="material-icons" style="font-size: 1rem;">keyboard_arrow_up</span>
             </button>
-            <button class="message-control-btn" onclick="window.senderInstance.moveMessage(${index}, 1)" ${index === this.messagePatterns.length - 1 ? "disabled" : ""}>
+            <button class="msg-control-btn" onclick="window.sender.movePattern(${idx}, 1)" ${idx === this.patterns.length - 1 ? "disabled" : ""}>
               <span class="material-icons" style="font-size: 1rem;">keyboard_arrow_down</span>
             </button>
-            <button class="message-control-btn delete" onclick="window.senderInstance.deleteMessage(${index})">
+            <button class="msg-control-btn delete" onclick="window.sender.deletePattern(${idx})">
               <span class="material-icons" style="font-size: 1rem;">delete</span>
             </button>
           </div>
         </div>
-        <div class="message-content">${pattern}</div>
+        <div class="msg-content">${pattern}</div>
       `
 
-      this.messagePatternsBox.appendChild(patternElement)
+      this.patternsBox.appendChild(el)
     })
   }
 
-  moveMessage(index, direction) {
-    const newIndex = index + direction
-    if (newIndex < 0 || newIndex >= this.messagePatterns.length) return
+  movePattern(idx, direction) {
+    const newIdx = idx + direction
+    if (newIdx < 0 || newIdx >= this.patterns.length) return
 
-    const temp = this.messagePatterns[index]
-    this.messagePatterns[index] = this.messagePatterns[newIndex]
-    this.messagePatterns[newIndex] = temp
+    const temp = this.patterns[idx]
+    this.patterns[idx] = this.patterns[newIdx]
+    this.patterns[newIdx] = temp
 
-    this.renderMessagePatterns()
+    this.renderPatterns()
   }
 
-  deleteMessage(index) {
-    this.messagePatterns.splice(index, 1)
-    this.renderMessagePatterns()
+  deletePattern(idx) {
+    this.patterns.splice(idx, 1)
+    this.renderPatterns()
   }
 
-  getNextMessage() {
-    if (this.messagePatterns.length === 0) return null
+  getNextMsg() {
+    if (!this.patterns.length) return null
 
-    if (this.sendModeSelect.getValue() === "random") {
-      const randomIndex = Math.floor(Math.random() * this.messagePatterns.length)
-      return this.messagePatterns[randomIndex]
+    if (this.sendMode.getValue() === "random") {
+      const randomIdx = Math.floor(Math.random() * this.patterns.length)
+      return this.patterns[randomIdx]
     } else {
-      const message = this.messagePatterns[this.currentMessageIndex]
-      this.currentMessageIndex = (this.currentMessageIndex + 1) % this.messagePatterns.length
-      return message
+      const msg = this.patterns[this.currentIdx]
+      this.currentIdx = (this.currentIdx + 1) % this.patterns.length
+      return msg
     }
   }
 
-  async sendMessage(token, channelId, message, tokenNumber, isInfinite, totalCount) {
+  async sendMsg(token, channelId, msg, tokenNum, isInfinite, totalCount) {
     try {
-      const processedMessage = await this.processMessage(message)
+      const processed = await this.processMsg(msg)
 
       const response = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
         method: "POST",
@@ -908,50 +1071,45 @@ class Sender {
           Authorization: token,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          content: processedMessage,
-        }),
+        body: JSON.stringify({ content: processed }),
       })
 
       if (response.ok) {
-        const tokenKey = `${tokenNumber}-${channelId}`
+        const tokenKey = `${tokenNum}-${channelId}`
         if (!this.tokenCounters.has(tokenKey)) {
           this.tokenCounters.set(tokenKey, 0)
         }
         this.tokenCounters.set(tokenKey, this.tokenCounters.get(tokenKey) + 1)
 
         const currentCount = this.tokenCounters.get(tokenKey)
-        const truncatedMessage =
-          processedMessage.length > 50 ? processedMessage.substring(0, 50) + "..." : processedMessage
         const countInfo = isInfinite ? "" : ` (${currentCount}/${totalCount})`
-        const details = `Message: "${processedMessage}"${countInfo}`
+        const details = `Message: "${processed}"${countInfo}`
 
-        this.log(`Token ${tokenNumber}: Message sent`, "success", "message", details)
+        this.log(`Token ${tokenNum}: Message sent`, "success", "message", details)
 
-        // Check if all tokens have completed their count and auto-stop if needed
-        if (!isInfinite && this.checkAllTokensCompleted()) {
-          setTimeout(() => this.stopSending(), 100)
+        if (!isInfinite && this.checkAllCompleted()) {
+          setTimeout(() => this.stop(), 100)
         }
 
         return { success: true, count: currentCount }
       } else {
-        this.log(`Token ${tokenNumber}: Send failed`, "error", "error", `Status: ${response.status}`)
+        this.log(`Token ${tokenNum}: Send failed`, "error", "error", `Status: ${response.status}`)
         return { success: false, count: 0 }
       }
     } catch (error) {
-      this.log(`Token ${tokenNumber}: Send failed`, "error", "error", error.message)
+      this.log(`Token ${tokenNum}: Send failed`, "error", "error", error.message)
       return { success: false, count: 0 }
     }
   }
 
-  checkAllTokensCompleted() {
-    const tokens = this.parseList(document.getElementById("configTokens").value)
-    const channelIds = this.parseList(document.getElementById("channelIds").value)
-    const count = Number.parseInt(this.messageCountInput.value)
+  checkAllCompleted() {
+    const tokens = this.parseInput(document.getElementById("configTokens").value)
+    const channelIds = this.parseInput(document.getElementById("channelIds").value)
+    const count = Number.parseInt(this.countInput.value)
 
-    for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex++) {
+    for (let tokenIdx = 0; tokenIdx < tokens.length; tokenIdx++) {
       for (const channelId of channelIds) {
-        const tokenKey = `${tokenIndex + 1}-${channelId}`
+        const tokenKey = `${tokenIdx + 1}-${channelId}`
         const currentCount = this.tokenCounters.get(tokenKey) || 0
         if (currentCount < count) {
           return false
@@ -961,14 +1119,14 @@ class Sender {
     return true
   }
 
-  async startSending() {
-    if (this.isRunning) return
+  async start() {
+    if (this.running) return
 
-    const tokens = this.parseList(document.getElementById("configTokens").value)
-    const channelIds = this.parseList(document.getElementById("channelIds").value)
+    const tokens = this.parseInput(document.getElementById("configTokens").value)
+    const channelIds = this.parseInput(document.getElementById("channelIds").value)
     const isInfinite = this.infiniteToggle.checked
-    const count = isInfinite ? Number.POSITIVE_INFINITY : Number.parseInt(this.messageCountInput.value)
-    const interval = Number.parseInt(this.messageIntervalInput.value)
+    const count = isInfinite ? Number.POSITIVE_INFINITY : Number.parseInt(this.countInput.value)
+    const interval = Number.parseInt(this.intervalInput.value)
 
     if (!tokens.length) {
       this.log("Please provide tokens", "error", "error")
@@ -980,7 +1138,7 @@ class Sender {
       return
     }
 
-    if (this.messagePatterns.length === 0) {
+    if (!this.patterns.length) {
       this.log("Please provide message patterns", "error", "error")
       return
     }
@@ -990,90 +1148,91 @@ class Sender {
       return
     }
 
-    if (interval < 100) {
+    if (interval < 1) {
       this.log("Please provide valid interval", "error", "error")
       return
     }
 
-    this.isRunning = true
-    this.startSendBtn.disabled = true
-    this.stopSendBtn.disabled = false
-    this.currentMessageIndex = 0
+    this.running = true
+    this.startBtn.disabled = true
+    this.stopBtn.disabled = false
+    this.currentIdx = 0
     this.tokenCounters.clear()
 
     const tokenDelay = Math.floor(interval / tokens.length)
 
     this.log(`Starting ${tokens.length} tokens...`, "info", "send")
 
-    tokens.forEach((token, tokenIndex) => {
+    tokens.forEach((token, tokenIdx) => {
       setTimeout(() => {
-        if (!this.isRunning) return
+        if (!this.running) return
 
         channelIds.forEach((channelId) => {
           const sendInterval = setInterval(async () => {
-            if (!this.isRunning) {
+            if (!this.running) {
               clearInterval(sendInterval)
               return
             }
 
-            const message = this.getNextMessage()
-            if (message) {
-              await this.sendMessage(token, channelId, message, tokenIndex + 1, isInfinite, count)
+            const msg = this.getNextMsg()
+            if (msg) {
+              await this.sendMsg(token, channelId, msg, tokenIdx + 1, isInfinite, count)
             }
           }, interval)
 
-          this.sendIntervals.push(sendInterval)
+          this.intervals.push(sendInterval)
         })
-      }, tokenIndex * tokenDelay)
+      }, tokenIdx * tokenDelay)
     })
   }
 
-  stopSending() {
-    if (!this.isRunning) return
+  stop() {
+    if (!this.running) return
 
-    this.isRunning = false
-    this.startSendBtn.disabled = false
-    this.stopSendBtn.disabled = true
+    this.running = false
+    this.startBtn.disabled = false
+    this.stopBtn.disabled = true
 
     this.log("Stopping tokens...", "warning", "warning")
 
-    this.sendIntervals.forEach((interval) => clearInterval(interval))
-    this.sendIntervals = []
+    this.intervals.forEach((interval) => clearInterval(interval))
+    this.intervals = []
 
     this.log("All tokens stopped", "warning", "warning")
+  }
+
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
 
 class Godfielder {
   constructor() {
-    this.isRunning = false
+    this.running = false
     this.bots = []
-    this.intervalIds = []
-    this.initElements()
-    this.bindEvents()
+    this.intervals = []
+    this.init()
   }
 
-  initElements() {
-    this.nameInput = document.getElementById("name")
-    this.roomInput = document.getElementById("room")
-    this.messageInput = document.getElementById("message")
-    this.botCountInput = document.getElementById("botCount")
-    this.startBtn = document.getElementById("startBtn")
-    this.stopBtn = document.getElementById("stopBtn")
-    this.logBox = document.getElementById("logBox")
-  }
+  init() {
+    this.nameInput = document.getElementById("botName")
+    this.roomInput = document.getElementById("roomCode")
+    this.msgInput = document.getElementById("botMsg")
+    this.countInput = document.getElementById("botCount")
+    this.startBtn = document.getElementById("startBotsBtn")
+    this.stopBtn = document.getElementById("stopBotsBtn")
+    this.logs = document.getElementById("godfielderLogs")
 
-  bindEvents() {
     this.startBtn.addEventListener("click", () => this.start())
     this.stopBtn.addEventListener("click", () => this.stop())
   }
 
-  log(message, type = "info", icon = "info", details = null) {
+  log(msg, type = "info", icon = "info", details = null) {
     const time = new Date().toLocaleTimeString()
     const entry = document.createElement("div")
     entry.className = `log-entry ${type}`
 
-    const iconMap = {
+    const icons = {
       info: "info",
       success: "check_circle",
       error: "error",
@@ -1084,34 +1243,34 @@ class Godfielder {
     }
 
     entry.innerHTML = `
-    <span class="log-time">${time}</span>
-    <span class="material-icons log-icon">${iconMap[icon] || icon}</span>
-    <span class="log-message">${message}</span>
-  `
+      <span class="log-time">${time}</span>
+      <span class="material-icons log-icon">${icons[icon] || icon}</span>
+      <span class="log-msg">${msg}</span>
+    `
 
     if (details) {
       entry.addEventListener("click", () => {
-        const messageSpan = entry.querySelector(".log-message")
+        const msgSpan = entry.querySelector(".log-msg")
         if (entry.classList.contains("expanded")) {
-          messageSpan.textContent = message
+          msgSpan.textContent = msg
           entry.classList.remove("expanded")
         } else {
-          messageSpan.textContent = details
+          msgSpan.textContent = details
           entry.classList.add("expanded")
         }
       })
     }
 
-    this.logBox.appendChild(entry)
-    this.logBox.scrollTop = this.logBox.scrollHeight
+    this.logs.appendChild(entry)
+    this.logs.scrollTop = this.logs.scrollHeight
   }
 
   async processText(text, botId) {
-    let processedText = text
+    let processed = text
 
-    const reMatch = text.match(/\/re(\d*)\//g)
-    if (reMatch) {
-      for (const match of reMatch) {
+    const reMatches = text.match(/\/re(\d*)\//g)
+    if (reMatches) {
+      for (const match of reMatches) {
         const lengthMatch = match.match(/\/re(\d+)\//)
         const length = lengthMatch ? lengthMatch[1] : ""
         const url = length
@@ -1121,16 +1280,16 @@ class Godfielder {
         try {
           const response = await fetch(url)
           const data = await response.json()
-          processedText = processedText.replace(match, data.result || "")
+          processed = processed.replace(match, data.result || "")
         } catch (error) {
           this.log(`Bot ${botId}: Emoji failed`, "error", "error", error.message)
         }
       }
     }
 
-    const rsMatch = text.match(/\/rs(\d*)\//g)
-    if (rsMatch) {
-      for (const match of rsMatch) {
+    const rsMatches = text.match(/\/rs(\d*)\//g)
+    if (rsMatches) {
+      for (const match of rsMatches) {
         const lengthMatch = match.match(/\/rs(\d+)\//)
         const length = lengthMatch ? lengthMatch[1] : ""
         const url = length
@@ -1140,17 +1299,17 @@ class Godfielder {
         try {
           const response = await fetch(url)
           const data = await response.json()
-          processedText = processedText.replace(match, data.result || "")
+          processed = processed.replace(match, data.result || "")
         } catch (error) {
           this.log(`Bot ${botId}: String failed`, "error", "error", error.message)
         }
       }
     }
 
-    return processedText
+    return processed
   }
 
-  async createBot(botId, name, room, message) {
+  async createBot(botId, name, room, msg) {
     try {
       this.log(`Bot ${botId}: Connecting...`, "info", "bot")
 
@@ -1227,9 +1386,9 @@ class Godfielder {
     }
   }
 
-  async sendMessage(botId, token, roomId, message) {
+  async sendMsg(botId, token, roomId, msg) {
     try {
-      const processedMessage = await this.processText(message, botId)
+      const processed = await this.processText(msg, botId)
 
       const response = await fetch("https://asia-northeast1-godfield.cloudfunctions.net/setComment", {
         method: "POST",
@@ -1240,7 +1399,7 @@ class Godfielder {
         body: JSON.stringify({
           mode: "hidden",
           roomId: roomId,
-          text: processedMessage,
+          text: processed,
         }),
       })
 
@@ -1249,7 +1408,7 @@ class Godfielder {
         throw new Error(`Message send failed: ${response.status} - ${errorText}`)
       }
 
-      this.log(`Bot ${botId}: Message sent`, "success", "message", `Message: "${processedMessage}"`)
+      this.log(`Bot ${botId}: Message sent`, "success", "message", `Message: "${processed}"`)
       return true
     } catch (error) {
       this.log(`Bot ${botId}: Send failed`, "error", "error", error.message)
@@ -1287,12 +1446,12 @@ class Godfielder {
   }
 
   async start() {
-    if (this.isRunning) return
+    if (this.running) return
 
     const name = this.nameInput.value.trim()
     const room = this.roomInput.value.trim()
-    const message = this.messageInput.value.trim()
-    const botCount = Number.parseInt(this.botCountInput.value)
+    const msg = this.msgInput.value.trim()
+    const botCount = Number.parseInt(this.countInput.value)
 
     if (!name) {
       this.log("Please provide name", "error", "error")
@@ -1304,7 +1463,7 @@ class Godfielder {
       return
     }
 
-    if (!message) {
+    if (!msg) {
       this.log("Please provide message", "error", "error")
       return
     }
@@ -1314,33 +1473,33 @@ class Godfielder {
       return
     }
 
-    this.isRunning = true
+    this.running = true
     this.startBtn.disabled = true
     this.stopBtn.disabled = false
     this.bots = []
-    this.intervalIds = []
+    this.intervals = []
 
     this.log(`Starting ${botCount} bots...`, "info", "bot")
 
     for (let i = 1; i <= botCount; i++) {
-      if (!this.isRunning) break
+      if (!this.running) break
 
-      const botData = await this.createBot(i, name, room, message)
+      const botData = await this.createBot(i, name, room, msg)
       if (botData) {
         this.bots.push({ id: i, ...botData })
 
         const intervalId = setInterval(
           async () => {
-            if (!this.isRunning) return
-            await this.sendMessage(i, botData.token, botData.roomId, message)
+            if (!this.running) return
+            await this.sendMsg(i, botData.token, botData.roomId, msg)
           },
           2000 + i * 100,
         )
 
-        this.intervalIds.push(intervalId)
+        this.intervals.push(intervalId)
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      await this.delay(500)
     }
 
     if (this.bots.length === 0) {
@@ -1350,20 +1509,20 @@ class Godfielder {
   }
 
   async stop() {
-    if (!this.isRunning) return
+    if (!this.running) return
 
-    this.isRunning = false
+    this.running = false
     this.startBtn.disabled = true
     this.stopBtn.disabled = true
 
-    this.intervalIds.forEach((id) => clearInterval(id))
-    this.intervalIds = []
+    this.intervals.forEach((id) => clearInterval(id))
+    this.intervals = []
 
     this.log("Stopping bots...", "warning", "warning")
 
     for (const bot of this.bots) {
       await this.removeBot(bot.id, bot.token, bot.roomId)
-      await new Promise((resolve) => setTimeout(resolve, 200))
+      await this.delay(200)
     }
 
     this.bots = []
@@ -1372,11 +1531,16 @@ class Godfielder {
 
     this.log("All bots stopped", "warning", "warning")
   }
+
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  window.tokenCheckerInstance = new TokenChecker()
+  window.tokenChecker = new TokenChecker()
   new Config()
-  window.senderInstance = new Sender()
+  new Server()
+  window.sender = new Sender()
   new Godfielder()
 })
