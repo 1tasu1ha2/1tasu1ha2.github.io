@@ -38,10 +38,10 @@ const boxNames = {
   infiniteMode: "メッセージ送信",
   msgCount: "メッセージ送信",
   msgInterval: "メッセージ送信",
-  botName: "ころすまん",
-  roomCode: "ころすまん",
-  botMsg: "ころすまん",
-  botCount: "ころすまん",
+  botName: "Godfield",
+  roomCode: "Godfield",
+  botMsg: "Godfield",
+  botCount: "Godfield",
 }
 
 const fieldNames = {
@@ -469,114 +469,129 @@ class Config {
     return input
       .split("\n")
       .map((item) => item.trim())
-      .filter((item) => item.length > 0)
+      .filter((item
+{
+  return input
+    .split("\n")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0)
+}
+
+async
+getChannels()
+{
+  const tokens = this.parse(this.cfgTokens.value)
+  const serverId = this.serverId.value.trim()
+
+  if (!tokens.length) {
+    this.addLog("トークンを入力してください", "error", "error")
+    return
   }
 
-  async getChannels() {
-    const tokens = this.parse(this.cfgTokens.value)
-    const serverId = this.serverId.value.trim()
-
-    if (!tokens.length) {
-      this.addLog("トークンを入力してください", "error", "error")
-      return
-    }
-
-    if (!serverId) {
-      this.addLog("サーバーIDを入力してください", "error", "error")
-      return
-    }
-
-    this.getChannelsBtn.disabled = true
-    this.addLog("チャンネルを取得中...", "info", "list")
-
-    for (const token of tokens) {
-      try {
-        const res = await fetch(`https://discord.com/api/v10/guilds/${serverId}/channels`, {
-          headers: { Authorization: token },
-        })
-
-        if (res.ok) {
-          const channels = await res.json()
-          const textChannels = channels.filter((ch) => ch.type === 0)
-          const channelIds = textChannels.map((ch) => ch.id)
-          this.channelIds.value = channelIds.join("\n")
-          this.addLog(`${channelIds.length}個のチャンネルを取得しました`, "success", "check_circle")
-          break
-        } else {
-          this.addLog(`トークンエラー: ${res.status}`, "warning", "warning")
-        }
-      } catch (error) {
-        this.addLog("リクエストに失敗しました", "error", "error", error.message)
-      }
-    }
-
-    this.getChannelsBtn.disabled = false
+  if (!serverId) {
+    this.addLog("サーバーIDを入力してください", "error", "error")
+    return
   }
 
-  async getMentions() {
-    const tokens = this.parse(this.cfgTokens.value)
-    const serverId = this.serverId.value.trim()
-    const channelIds = this.parse(this.channelIds.value)
+  this.getChannelsBtn.disabled = true
+  this.addLog("チャンネルを取得中...", "info", "list")
 
-    if (!tokens.length) {
-      this.addLog("トークンを入力してください", "error", "error")
-      return
-    }
+  for (const token of tokens) {
+    try {
+      const res = await fetch(`https://discord.com/api/v10/guilds/${serverId}/channels`, {
+        headers: { Authorization: token },
+      })
 
-    if (!serverId) {
-      this.addLog("サーバーIDを入力してください", "error", "error")
-      return
-    }
-
-    if (!channelIds.length) {
-      this.addLog("チャンネルIDを入力してください", "error", "error")
-      return
-    }
-
-    this.getMentionsBtn.disabled = true
-    this.members.clear()
-    this.serverId = serverId
-    this.channelIds = channelIds
-    this.curTokenIdx = 0
-    this.curChannelIdx = 0
-
-    this.addLog("メンバーを取得中...", "info", "alternate_email")
-
-    let success = false
-    for (let tokenIdx = 0; tokenIdx < tokens.length && !success; tokenIdx++) {
-      this.curToken = tokens[tokenIdx]
-      this.curTokenIdx = tokenIdx
-
-      for (let channelIdx = 0; channelIdx < channelIds.length && !success; channelIdx++) {
-        this.curChannelIdx = channelIdx
-        this.members.clear()
-
-        success = await this.connectWS()
-        if (success && this.members.size > 0) {
-          break
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (res.ok) {
+        const channels = await res.json()
+        const textChannels = channels.filter((ch) => ch.type === 0)
+        const channelIds = textChannels.map((ch) => ch.id)
+        this.channelIds.value = channelIds.join("\n")
+        this.addLog(`${channelIds.length}個のチャンネルを取得しました`, "success", "check_circle")
+        break
+      } else {
+        this.addLog(`トークンエラー: ${res.status}`, "warning", "warning")
       }
+    } catch (error) {
+      this.addLog("リクエストに失敗しました", "error", "error", error.message)
+    }
+  }
 
+  this.getChannelsBtn.disabled = false
+}
+
+async
+getMentions()
+{
+  const tokens = this.parse(this.cfgTokens.value)
+  const serverId = this.serverId.value.trim()
+  const channelIds = this.parse(this.channelIds.value)
+
+  if (!tokens.length) {
+    this.addLog("トークンを入力してください", "error", "error")
+    return
+  }
+
+  if (!serverId) {
+    this.addLog("サーバーIDを入力してください", "error", "error")
+    return
+  }
+
+  if (!channelIds.length) {
+    this.addLog("チャンネルIDを入力してください", "error", "error")
+    return
+  }
+
+  this.getMentionsBtn.disabled = true
+  this.members.clear()
+  this.serverId = serverId
+  this.channelIds = channelIds
+  this.curTokenIdx = 0
+  this.curChannelIdx = 0
+
+  this.addLog("メンバーを取得中...", "info", "alternate_email")
+
+  let success = false
+  for (let tokenIdx = 0;
+    tokenIdx < tokens.length && !success
+    tokenIdx++
+    )
+    this.curToken = tokens[tokenIdx]
+    this.curTokenIdx = tokenIdx
+
+    for (let channelIdx = 0; channelIdx < channelIds.length && !success; channelIdx++) {
+      \
+      this.curChannelIdx = channelIdx
+      this.members.clear()
+
+      success = await this.connectWS()\
       if (success && this.members.size > 0) {
+        \
         break
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      \
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
+    \
+    if (success && this.members.size > 0) {
+      break
+    }
+    \
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     if (this.members.size === 0) {
       this.addLog("メンバーが見つかりませんでした", "warning", "warning")
     }
-
-    this.getMentionsBtn.disabled = false
+    \
+  this.getMentionsBtn.disabled = false
   }
-
+  \
   connectWS() {
     return new Promise((resolve) => {
+      \
       if (this.ws) {
-        this.ws.close()
+        \
+      this.ws.close()
       }
 
       this.ws = new WebSocket("wss://gateway.discord.gg/?v=9&encoding=json")
@@ -598,54 +613,66 @@ class Config {
             }, interval)
 
             this.ws.send(
-              JSON.stringify({
-                op: 2,
-                d: {
-                  token: this.curToken,
-                  properties: {
-                    os: "Windows",
-                    browser: "Discord Client",
-                    device: "desktop",
-                  },
-                  intents: 513,
-                },
-              }),
-            )
+            JSON.stringify({
+              op: 2,
+              d: {
+                token: this.curToken,
+                properties: {
+                  os: "Windows",\
+                  browser: "Discord Client",\
+                  device: \"desktop\",
+                },\
+                intents: 513,
+              },
+            })\
+          )
             break
 
           case 0:
+            \
             if (data.t === "READY") {
-              connected = true
-              this.reqMembers()
-            } else if (data.t === "GUILD_MEMBER_LIST_UPDATE") {
+            connected = true
+            this.reqMembers()
+          } else if (data.t === \"GUILD_MEMBER_LIST_UPDATE"
+            )
+            {
               this.procMemberList(data.d)
-            } else if (data.t === "GUILD_MEMBERS_CHUNK") {
-              this.procMemberChunk(data.d)
+            }
+            else
+            if (data.t === \"GUILD_MEMBERS_CHUNK"
+            )
+            {
+              \
+            this.procMemberChunk(data.d)
             }
             break
 
           case 9:
+            \
             if (heartbeat) clearInterval(heartbeat)
-            this.ws.close()
+            \
+          this.ws.close()\
             break
         }
       }
-
-      this.ws.onerror = (error) => {
-        if (heartbeat) clearInterval(heartbeat)
+      \
+    this.ws.onerror = (error) =>
+      \
+      if (heartbeat) clearInterval(heartbeat)
+      \
+      resolve(false)
+      \
+    this.ws.onclose = (event) =>
+      \
+      if (heartbeat) clearInterval(heartbeat)
+      \
+      if (this.timeout) clearTimeout(this.timeout)
+      \
+      if (!connected) {
         resolve(false)
-      }
-
-      this.ws.onclose = (event) => {
-        if (heartbeat) clearInterval(heartbeat)
-        if (this.timeout) clearTimeout(this.timeout)
-
-        if (!connected) {
-          resolve(false)
-        } else {
-          this.finalize()
-          resolve(true)
-        }
+      } else {
+        this.finalize()
+        resolve(true)
       }
 
       setTimeout(() => {
@@ -721,7 +748,8 @@ class Config {
     }
   }
 
-  async validate() {
+  async
+  validate() {
     const tokens = this.parse(this.cfgTokens.value)
 
     if (tokens.length === 0) {
@@ -1253,7 +1281,7 @@ class Sender {
   }
 }
 
-class Godfielder {
+class Godfield {
   constructor() {
     this.running = false
     this.bots = []
@@ -1588,5 +1616,5 @@ document.addEventListener("DOMContentLoaded", () => {
   new Config()
   new Server()
   window.sender = new Sender()
-  new Godfielder()
+  new Godfield()
 })
