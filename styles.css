@@ -554,7 +554,6 @@ body::before {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* Modal Styles */
 .modal {
   display: none;
   position: fixed;
