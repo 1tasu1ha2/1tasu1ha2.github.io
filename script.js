@@ -1,60 +1,52 @@
 const helpTexts = {
-  tokens:
-    "Enter Discord bot tokens or user tokens, one per line.\nThese will be validated to check if they're working.",
-  configTokens:
-    "Enter Discord tokens that will be used for fetching channels and sending messages.\nOne token per line.",
-  serverId: "Enter the Discord server (guild) ID where you want to fetch channels or send messages.",
-  channelIds:
-    "Enter Discord channel IDs where messages will be sent, one per line.\nUse 'Get Channels' to automatically fetch them.",
-  mentionIds:
-    "Enter user IDs that can be mentioned in messages, one per line.\nUse 'Get Mentions' to automatically fetch server members.",
-  messageInput:
-    "Enter your message pattern.\nSupports /rs/ for random strings, /re/ for random emojis, and /rm/ for random mentions.",
-  sendMode:
-    "Choose how messages are selected:\nRandom picks a random pattern each time, Sequential goes through patterns in order.",
-  infiniteToggle:
-    "When enabled, messages will be sent continuously until stopped.\nWhen disabled, only the specified count will be sent.",
-  messageCount: "Number of messages to send per token per channel.\nOnly used when Infinite Mode is disabled.",
-  messageInterval: "Time interval in milliseconds between each message.\nMinimum is 100ms to avoid rate limits.",
-  name: "Enter the name for Godfield bots.\nSupports /rs/ for random strings and /re/ for random emojis.",
-  room: "Enter the room password for Godfield.\nThis will be used to create and join rooms.",
-  message:
-    "Enter the message that Godfield bots will send.\nSupports /rs/ for random strings and /re/ for random emojis.",
-  botCount: "Number of Godfield bots to create and run simultaneously.\nMust be between 1 and 12.",
+  tokens: "Discordのトークンを入力。\n下のボタンで有効かをチェックできます。\n複数入力する場合は改行して入力してください。",
+  configTokens: "Discordのトークンを入力。\nほとんどのツールでこのトークンが使用されます。\n複数入力する場合は改行して入力してください。",
+  serverId: "DiscordのサーバーIDを入力。\nチャンネルやメンバーの取得、サーバー退出などに使用されます。",
+  channelIds: "DiscordのチャンネルIDを入力。\nメッセージの送信などに使用されます。\n複数入力する場合は改行して入力してください。",
+  mentionIds: "DiscordのユーザーIDを入力。\nランダムメンションで使用されます。\n複数入力する場合は改行して入力してください。",
+  messageInput: "送信するメッセージを入力。\n/rs/でランダムな英数字、/re/でランダムな絵文字、/rm/でランダムメンションを追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。",
+  sendMode: "メッセージの送信方法を選択。\nランダムの場合はメッセージのパターンからランダムに選択して送信します。\nローテーションの場合は1番から順番に送信していきます。",
+  infiniteToggle: "オンにするとメッセージを永久に送信し続けるように切り替えます。",
+  messageCount: "メッセージの送信回数を入力。\n入力された回数メッセージを送信します。",
+  messageInterval: "メッセージの送信間隔を入力。\nメッセージを送信してから入力した時間を空けてから次のメッセージを送信します。\n1000msで1秒です。",
+  name: "Godfieldのボットの名前を入力。\n/rs/でランダムな英数字、/re/でランダムな絵文字を追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。\n同じ名前で同じルームには参加できません。",
+  room: "Godfieldのルームの合言葉を入力。\n入力された合言葉のルームに参加します。",
+  message: "送信するメッセージを入力。\n入力されたメッセージをルームで送信し続けます。\n/rs/でランダムな英数字、/re/でランダムな絵文字を追加できます。\n数字を付け足す(例: /rs5/ で pH4J0)こともできます。",
+  botCount: "ルームに参加するボット数を入力。\n1つのルームには12人以上参加できません。",
 }
 
 const boxNames = {
-  tokens: "Token Checker",
-  configTokens: "Config",
-  serverId: "Config",
-  channelIds: "Config",
-  mentionIds: "Config",
-  messageInput: "Sender",
-  sendMode: "Sender",
-  infiniteToggle: "Sender",
-  messageCount: "Sender",
-  messageInterval: "Sender",
-  name: "Godfielder",
-  room: "Godfielder",
-  message: "Godfielder",
-  botCount: "Godfielder",
+  tokens: "トークン確認",
+  configTokens: "設定",
+  serverId: "設定",
+  channelIds: "設定",
+  mentionIds: "設定",
+  messageInput: "メッセージ送信",
+  sendMode: "メッセージ送信",
+  infiniteToggle: "メッセージ送信",
+  messageCount: "メッセージ送信",
+  messageInterval: "メッセージ送信",
+  name: "ころすまん",
+  room: "ころすまん",
+  message: "ころすまん",
+  botCount: "ころすまん",
 }
 
 const fieldNames = {
-  tokens: "Tokens",
-  configTokens: "Tokens",
-  serverId: "Server ID",
-  channelIds: "Channel IDs",
-  mentionIds: "Mention IDs",
-  messageInput: "Message",
-  sendMode: "Send Mode",
-  infiniteToggle: "Infinite Mode",
-  messageCount: "Count",
-  messageInterval: "Interval",
-  name: "Name",
-  room: "Room",
-  message: "Message",
-  botCount: "Bot Count",
+  tokens: "トークン",
+  configTokens: "トークン",
+  serverId: "サーバーID",
+  channelIds: "チャンネルID",
+  mentionIds: "メンバーID",
+  messageInput: "メッセージ",
+  sendMode: "送信方法",
+  infiniteToggle: "永久送信",
+  messageCount: "送信数",
+  messageInterval: "送信間隔",
+  name: "名前",
+  room: "あいことば",
+  message: "メッセージ",
+  botCount: "ボット数",
 }
 
 function showHelp(field) {
@@ -66,7 +58,7 @@ function showHelp(field) {
   const fieldName = fieldNames[field] || field
   title.textContent = `${boxName} - ${fieldName} Help`
 
-  const helpText = helpTexts[field] || "No help available for this field."
+  const helpText = helpTexts[field] || "ヘルプがありません"
   content.textContent = helpText
 
   modal.style.display = "block"
@@ -165,7 +157,7 @@ class TokenChecker {
       .filter((token) => token.length > 0)
 
     if (tokens.length === 0) {
-      this.showError("Please provide tokens")
+      this.showError("トークンを入力してください")
       return
     }
 
@@ -226,17 +218,17 @@ class TokenChecker {
       ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png?size=128`
       : `https://cdn.discordapp.com/embed/avatars/${(Number.parseInt(data.discriminator) || 0) % 5}.png`
 
-    const globalName = data.global_name || "None"
-    const username = data.username || "Unknown"
-    const email = !isBot && data.email ? data.email : "None"
-    const phone = !isBot && data.phone ? data.phone : "None"
+    const globalName = data.global_name || "なし"
+    const username = data.username
+    const email = !isBot && data.email ? data.email : "なし"
+    const phone = !isBot && data.phone ? data.phone : "なし"
 
     card.innerHTML = `
       <div class="account-header">
         <img src="${avatarUrl}" alt="Avatar" class="account-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
         <div class="account-basic">
-          <div class="account-name">${globalName !== "None" ? globalName : username}</div>
-          <span class="account-type ${isBot ? "bot" : "user"}">${isBot ? "BOT" : "USER"}</span>
+          <div class="account-name">${globalName !== "なし" ? globalName : username}</div>
+          <span class="account-type ${isBot ? "bot" : "user"}">${isBot ? "ボット" : "ユーザー"}</span>
         </div>
       </div>
       <div class="account-details">
@@ -245,27 +237,27 @@ class TokenChecker {
           <span class="account-detail-value">${data.id}</span>
         </div>
         <div class="account-detail">
-          <span class="account-detail-label">Global Name</span>
+          <span class="account-detail-label">グローバルネーム</span>
           <span class="account-detail-value">${globalName}</span>
         </div>
         <div class="account-detail">
-          <span class="account-detail-label">Username</span>
+          <span class="account-detail-label">ユーザーネーム</span>
           <span class="account-detail-value">${username}</span>
         </div>
         <div class="account-detail">
-          <span class="account-detail-label">Email</span>
+          <span class="account-detail-label">メール</span>
           <span class="account-detail-value">${email}</span>
         </div>
         <div class="account-detail">
-          <span class="account-detail-label">Phone</span>
+          <span class="account-detail-label">電話番号</span>
           <span class="account-detail-value">${phone}</span>
         </div>
         <div class="account-detail">
-          <span class="account-detail-label">Verified</span>
-          <span class="account-detail-value">${data.verified ? "Yes" : "No"}</span>
+          <span class="account-detail-label">認証済み</span>
+          <span class="account-detail-value">${data.verified ? "はい" : "いいえ"}</span>
         </div>
       </div>
-      <div class="account-token" onclick="navigator.clipboard.writeText('${token}')" title="Click to copy token">
+      <div class="account-token" onclick="navigator.clipboard.writeText('${token}')" title="トークンをコピー>
         ${token}
       </div>
     `
