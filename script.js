@@ -440,7 +440,7 @@ class Config {
     this.membersInput.value = memberIds.join("\n")
 
     this.getMembersBtn.disabled = false
-    this.getMembersBtn.innerHTML = '<span class="material-icons">alternate_email</span>Get Members'
+    this.getMembersBtn.innerHTML = '<span class="material-icons">group</span>Get Members'
 
     this.log(`Got ${memberIds.length} member IDs`, "success", "check_circle")
   }
