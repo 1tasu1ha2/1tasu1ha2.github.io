@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1tasu1ha2</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Orbitron:wght@400;500;700&family=M+PLUS+1+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">1tasu1ha2</h1>
+        </header>
+
+        <main class="grid">
+            <div class="box">
+                <div class="box-header">
+                    <span class="material-icons icon">verified</span>
+                    <h2 class="box-title">Checker</h2>
+                </div>
+                
+                <div class="box-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="tokens">Tokens</label>
+                            <textarea id="tokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="checkBtn" class="btn btn-start">
+                            <span class="material-icons">check_circle</span>
+                            Check
+                        </button>
+                        <button id="copyBtn" class="btn btn-copy" disabled>
+                            <span class="material-icons">content_copy</span>
+                            Copy Valid Tokens
+                        </button>
+                    </div>
+                    
+                    <div class="results-container">
+                        <div class="results-header">
+                            <span class="material-icons">account_circle</span>
+                            <span>Results</span>
+                        </div>
+                        <div id="results" class="results-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header">
+                    <span class="material-icons icon">settings</span>
+                    <h2 class="box-title">Config</h2>
+                </div>
+                
+                <div class="box-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="configTokens">Tokens</label>
+                            <textarea id="configTokens" placeholder="Enter tokens (one per line)" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button id="validateBtn" class="btn btn-start">
+                            <span class="material-icons">verified</span>
+                            Validate Tokens
+                        </button>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="serverId">Server ID</label>
+                            <input type="text" id="serverId" placeholder="Enter server ID">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="channelIds">Channel IDs</label>
+                            <textarea id="channelIds" placeholder="Enter channel IDs (one per line)" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="getChannelsBtn" class="btn btn-start">
+                            <span class="material-icons">numbers</span>
+                            Get Channels
+                        </button>
+                    </div>
+                    
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="memberIds">Member IDs</label>
+                            <textarea id="memberIds" placeholder="Enter member IDs (one per line)" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="getMembersBtn" class="btn btn-start">
+                            <span class="material-icons">alternate_email</span>
+                            Get Members
+                        </button>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="urlMode">Each</label>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="urlMode" class="toggle-input">
+                                <label for="urlMode" class="toggle-label">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="urlInput" class="input-grid">
+                        <div class="input-group">
+                            <label for="msgUrl">Message URL</label>
+                            <input type="text" id="msgUrl" placeholder="https://discord.com/channels/<Server ID>/<Channel ID>/<Message ID>">
+                        </div>
+                    </div>
+
+                    <div id="individualInputs" class="input-grid" style="display: none;">
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label for="msgServerId">Server ID</label>
+                            <input type="text" id="msgServerId" placeholder="Enter server ID">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label for="msgChannelId">Channel ID</label>
+                            <input type="text" id="msgChannelId" placeholder="Enter channel ID">
+                        </div>
+                        <div class="input-group">
+                            <label for="msgMessageId">Message ID</label>
+                            <input type="text" id="msgMessageId" placeholder="Enter message ID">
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="addMsgBtn" class="btn btn-start">
+                            <span class="material-icons">add_circle</span>
+                            Add Message
+                        </button>
+                    </div>
+
+                    <div class="results-container msg-patterns-container">
+                        <div class="results-header">
+                            <span class="material-icons">message</span>
+                            <span>Messages</span>
+                        </div>
+                        <div id="messages" class="results-box"></div>
+                    </div>
+                    
+                    <div class="log-container">
+                        <div class="log-header">
+                            <span class="material-icons">monitor</span>
+                            <span>Logs</span>
+                        </div>
+                        <div id="configLogs" class="log-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header">
+                    <span class="material-icons icon">send</span>
+                    <h2 class="box-title">Sender</h2>
+                </div>
+                
+                <div class="box-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="msgInput">Message</label>
+                            <textarea id="msgInput" placeholder="Enter message&#10;&#10;/ra/ - Random alphanumeric&#10;/re/ - Random emoji&#10;/rm/ - Random mention&#10;&#10;Example: Hello /ra10/&#10;      => Hello dMT53OypnF" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="addSendMsgBtn" class="btn btn-start">
+                            <span class="material-icons">add_circle</span>
+                            Add Message
+                        </button>
+                    </div>
+                    
+                    <div class="results-container msg-patterns-container">
+                        <div class="results-header">
+                            <span class="material-icons">message</span>
+                            <span>Message Patterns</span>
+                        </div>
+                        <div id="msgPatterns" class="results-box"></div>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>File (Optional)</label>
+                            <input type="file" id="fileInput" accept="*/*" style="display: none;">
+                            <div id="fileContainer" class="file-container">
+                                <button id="fileSelectBtn" class="btn btn-file">
+                                    <span class="material-icons">upload_file</span>
+                                    Select File
+                                </button>
+                                <div id="fileDisplay" class="file-display" style="display: none;">
+                                    <span id="fileName" class="file-name"></span>
+                                    <button id="clearFileBtn" class="btn-trash">
+                                        <span class="material-icons">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="sendMode">Send Mode</label>
+                            <div class="custom-select" id="sendModeSelect">
+                                <div class="select-display">
+                                    <span class="select-value">Random</span>
+                                    <span class="material-icons select-arrow">expand_more</span>
+                                </div>
+                                <div class="select-options">
+                                    <div class="select-option" data-value="random">Random</div>
+                                    <div class="select-option" data-value="sequential">Sequential</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="infiniteMode">Infinite Mode</label>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="infiniteMode" class="toggle-input">
+                                <label for="infiniteMode" class="toggle-label">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group" id="countGroup">
+                            <label for="msgCount">Count</label>
+                            <input type="number" id="msgCount" min="1" value="1" placeholder="Enter count">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="msgInterval">Interval (ms)</label>
+                            <input type="number" id="msgInterval" min="1" value="1000" placeholder="Enter interval">
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="startSendBtn" class="btn btn-start">
+                            <span class="material-icons">play_circle</span>
+                            Start
+                        </button>
+                        <button id="stopSendBtn" class="btn btn-stop" disabled>
+                            <span class="material-icons">stop_circle</span>
+                            Stop
+                        </button>
+                    </div>
+                    
+                    <div class="log-container">
+                        <div class="log-header">
+                            <span class="material-icons">monitor</span>
+                            <span>Logs</span>
+                        </div>
+                        <div id="senderLogs" class="log-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header">
+                    <span class="material-icons icon">reply</span>
+                    <h2 class="box-title">Replyer</h2>
+                </div>
+                
+                <div class="box-content">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="replyMsgInput">Message</label>
+                            <textarea id="replyMsgInput" placeholder="Enter message&#10;&#10;/ra/ - Random alphanumeric&#10;/re/ - Random emoji&#10;/rm/ - Random mention&#10;&#10;Example: Hello /ra10/&#10;      => Hello dMT53OypnF" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="addReplyMsgBtn" class="btn btn-start">
+                            <span class="material-icons">add_circle</span>
+                            Add Message
+                        </button>
+                    </div>
+                    
+                    <div class="results-container msg-patterns-container">
+                        <div class="results-header">
+                            <span class="material-icons">message</span>
+                            <span>Message Patterns</span>
+                        </div>
+                        <div id="replyMsgPatterns" class="results-box"></div>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>File (Optional)</label>
+                            <input type="file" id="replyFileInput" accept="*/*" style="display: none;">
+                            <div id="replyFileContainer" class="file-container">
+                                <button id="replyFileSelectBtn" class="btn btn-file">
+                                    <span class="material-icons">upload_file</span>
+                                    Select File
+                                </button>
+                                <div id="replyFileDisplay" class="file-display" style="display: none;">
+                                    <span id="replyFileName" class="file-name"></span>
+                                    <button id="clearReplyFileBtn" class="btn-trash">
+                                        <span class="material-icons">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="replyMode">Reply Mode</label>
+                            <div class="custom-select" id="replyModeSelect">
+                                <div class="select-display">
+                                    <span class="select-value">Random</span>
+                                    <span class="material-icons select-arrow">expand_more</span>
+                                </div>
+                                <div class="select-options">
+                                    <div class="select-option" data-value="random">Random</div>
+                                    <div class="select-option" data-value="sequential">Sequential</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="replySendMode">Send Mode</label>
+                            <div class="custom-select" id="replySendModeSelect">
+                                <div class="select-display">
+                                    <span class="select-value">Random</span>
+                                    <span class="material-icons select-arrow">expand_more</span>
+                                </div>
+                                <div class="select-options">
+                                    <div class="select-option" data-value="random">Random</div>
+                                    <div class="select-option" data-value="sequential">Sequential</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="replyInfiniteMode">Infinite Mode</label>
+                            <div class="toggle-container">
+                                <input type="checkbox" id="replyInfiniteMode" class="toggle-input">
+                                <label for="replyInfiniteMode" class="toggle-label">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group" id="replyCountGroup">
+                            <label for="replyMsgCount">Count</label>
+                            <input type="number" id="replyMsgCount" min="1" value="1" placeholder="Enter count">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="replyMsgInterval">Interval (ms)</label>
+                            <input type="number" id="replyMsgInterval" min="1" value="1000" placeholder="Enter interval">
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="startReplyBtn" class="btn btn-start">
+                            <span class="material-icons">play_circle</span>
+                            Start
+                        </button>
+                        <button id="stopReplyBtn" class="btn btn-stop" disabled>
+                            <span class="material-icons">stop_circle</span>
+                            Stop
+                        </button>
+                    </div>
+                    
+                    <div class="log-container">
+                        <div class="log-header">
+                            <span class="material-icons">monitor</span>
+                            <span>Logs</span>
+                        </div>
+                        <div id="replyLogs" class="log-box"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
