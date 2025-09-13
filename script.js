@@ -756,8 +756,8 @@ class Sender {
         const lengthMatch = match.match(/\/ra(\d+)\//)
         const length = lengthMatch ? lengthMatch[1] : ""
         const url = length
-          ? `https://1tasu1ha2.vercel.app/api/random/alphanumeric?length=${length}`
-          : "https://1tasu1ha2.vercel.app/api/random/alphanumeric"
+          ? `https://1tasu1ha2-api.vercel.app/api/random/alphanumeric?length=${length}`
+          : "https://1tasu1ha2-api.vercel.app/api/random/alphanumeric"
 
         try {
           const response = await fetch(url)
@@ -775,8 +775,8 @@ class Sender {
         const lengthMatch = match.match(/\/re(\d+)\//)
         const length = lengthMatch ? lengthMatch[1] : ""
         const url = length
-          ? `https://1tasu1ha2.vercel.app/api/random/emoji?length=${length}`
-          : "https://1tasu1ha2.vercel.app/api/random/emoji"
+          ? `https://1tasu1ha2-api.vercel.app/api/random/emoji?length=${length}`
+          : "https://1tasu1ha2-api.vercel.app/api/random/emoji"
 
         try {
           const response = await fetch(url)
@@ -1186,8 +1186,8 @@ class Replyer {
         const lengthMatch = match.match(/\/ra(\d+)\//)
         const length = lengthMatch ? lengthMatch[1] : ""
         const url = length
-          ? `https://1tasu1ha2.vercel.app/api/random/alphanumeric?length=${length}`
-          : "https://1tasu1ha2.vercel.app/api/random/alphanumeric"
+          ? `https://1tasu1ha2-api.vercel.app/api/random/alphanumeric?length=${length}`
+          : "https://1tasu1ha2-api.vercel.app/api/random/alphanumeric"
 
         try {
           const response = await fetch(url)
@@ -1205,8 +1205,8 @@ class Replyer {
         const lengthMatch = match.match(/\/re(\d+)\//)
         const length = lengthMatch ? lengthMatch[1] : ""
         const url = length
-          ? `https://1tasu1ha2.vercel.app/api/random/emoji?length=${length}`
-          : "https://1tasu1ha2.vercel.app/api/random/emoji"
+          ? `https://1tasu1ha2-api.vercel.app/api/random/emoji?length=${length}`
+          : "https://1tasu1ha2-api.vercel.app/api/random/emoji"
 
         try {
           const response = await fetch(url)
